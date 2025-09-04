@@ -1,0 +1,23 @@
+# Changelog
+
+## [1.0.0] - 2024-12-19
+
+### Added
+- Initial release of Excel Localizations Generator
+- Multi-sheet Excel file support
+- Type-safe localization generation
+- BuildContext extension for easy access
+- String interpolation with dynamic parameters
+- Command-line generation tool
+- Comprehensive example application
+- Support for multiple languages per sheet
+- Automatic fallback handling
+- Clean, modular code generation
+
+### Features
+- Generate localizations from Excel files with multiple sheets
+- Access translations via `context.loc.sheetName.key`
+- String interpolation support with `{variable}` syntax
+- Type-safe parameter handling
+- Automatic code generation with proper imports
+- Support for unlimited languages and sheets

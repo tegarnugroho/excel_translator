@@ -1,0 +1,31 @@
+name: excel_translator_example
+description: Example app for excel_translator package
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+  flutter: ">=3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  excel_translator:
+    path: ../
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/
+
+# Excel Translator Configuration
+excel_translator:
+  excel_file: assets/example_localizations.xlsx
+  output_dir: lib/generated
+  class_name: AppLocalizations

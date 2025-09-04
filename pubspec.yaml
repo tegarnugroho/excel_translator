@@ -1,0 +1,28 @@
+name: excel_translator
+description: A Flutter package for generating localizations from Excel files with multi-sheet support
+version: 1.0.0
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+  flutter: ">=3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  excel: ^4.0.3
+  path: ^1.8.3
+  yaml: ^3.1.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+  test: ^1.24.0
+
+executables:
+  excel_translator: excel_translator
+
+# No longer a plugin - pure Dart package
+flutter:

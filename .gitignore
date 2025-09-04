@@ -1,0 +1,46 @@
+# Dart/Flutter gitignore
+
+# Compiled executables
+*.exe
+*.so
+*.dylib
+
+# Dart snapshots
+*.snapshot
+
+# Dart tool files
+.dart_tool/
+.packages
+build/
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+
+# Dependencies
+.pub/
+.pub-cache/
+pubspec.lock
+
+# Test coverage
+coverage/
+
+# Temporary files
+*.tmp
+*.temp
+*.kotlin
