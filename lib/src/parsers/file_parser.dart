@@ -3,24 +3,33 @@ import 'package:csv/csv.dart';
 import 'package:excel/excel.dart';
 import '../models/models.dart';
 
-/// Supported file formats
-enum FileFormat { xlsx, csv, ods }
+/// Supported file formats with their extensions
+enum FileFormat {
+  xlsx('xlsx'),
+  csv('csv'),
+  ods('ods');
+
+  const FileFormat(this.extension);
+  final String extension;
+
+  /// Get FileFormat from file extension
+  static FileFormat fromExtension(String extension) {
+    final normalizedExt = extension.toLowerCase();
+    for (final format in FileFormat.values) {
+      if (format.extension == normalizedExt) {
+        return format;
+      }
+    }
+    throw UnsupportedError(
+        'Unsupported file format: .$extension. Supported formats: ${FileFormat.values.map((f) => '.${f.extension}').join(', ')}');
+  }
+}
 
 /// Factory for parsing different file formats
 class FileParserFactory {
   static FileFormat detectFormat(String filePath) {
     final extension = filePath.toLowerCase().split('.').last;
-    switch (extension) {
-      case 'xlsx':
-        return FileFormat.xlsx;
-      case 'csv':
-        return FileFormat.csv;
-      case 'ods':
-        return FileFormat.ods;
-      default:
-        throw UnsupportedError(
-            'Unsupported file format: .$extension. Supported formats: .xlsx, .csv, .ods');
-    }
+    return FileFormat.fromExtension(extension);
   }
 
   static FileParser createParser(String filePath) {
