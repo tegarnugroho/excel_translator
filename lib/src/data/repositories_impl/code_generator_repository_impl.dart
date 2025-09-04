@@ -2,11 +2,21 @@
 import 'dart:io';
 import '../../domain/entities/entities.dart';
 import '../../domain/repositories/repositories.dart';
-import '../../generators/implementations/implementations.dart';
-import '../models/entity_model_mapper.dart';
+import '../sources/sources.dart';
 
-/// Implementation of code generator repository
+/// Implementation of code generator repository using data sources
 class CodeGeneratorRepositoryImpl implements ICodeGeneratorRepository {
+  final MainCodeDataSource _mainCodeDataSource;
+  final SheetCodeDataSource _sheetCodeDataSource;
+  final ExtensionCodeDataSource _extensionCodeDataSource;
+
+  CodeGeneratorRepositoryImpl({
+    MainCodeDataSource? mainCodeDataSource,
+    SheetCodeDataSource? sheetCodeDataSource,
+    ExtensionCodeDataSource? extensionCodeDataSource,
+  })  : _mainCodeDataSource = mainCodeDataSource ?? MainCodeDataSource(),
+        _sheetCodeDataSource = sheetCodeDataSource ?? SheetCodeDataSource(),
+        _extensionCodeDataSource = extensionCodeDataSource ?? ExtensionCodeDataSource();
   @override
   Future<void> generateLocalizationClasses({
     required List<LocalizationSheet> sheets,
@@ -20,21 +30,21 @@ class CodeGeneratorRepositoryImpl implements ICodeGeneratorRepository {
       await dir.create(recursive: true);
     }
 
-    // Generate all classes
+    // Generate all classes using data sources
     await Future.wait([
-      generateMainClass(
-        sheets: sheets,
-        outputDir: outputDir,
-        className: className,
-        includeFlutterDelegates: includeFlutterDelegates,
+      _mainCodeDataSource.generateMainClass(
+        sheets,
+        outputDir,
+        className,
+        includeFlutterDelegates,
       ),
-      generateBuildContextExtension(
-        outputDir: outputDir,
-        className: className,
+      _extensionCodeDataSource.generateBuildContextExtension(
+        outputDir,
+        className,
       ),
-      ...sheets.map((sheet) => generateSheetClass(
-        sheet: sheet,
-        outputDir: outputDir,
+      ...sheets.map((sheet) => _sheetCodeDataSource.generateSheetClass(
+        sheet,
+        outputDir,
       )),
     ]);
   }
@@ -44,8 +54,7 @@ class CodeGeneratorRepositoryImpl implements ICodeGeneratorRepository {
     required LocalizationSheet sheet,
     required String outputDir,
   }) async {
-    final oldModelSheet = EntityModelMapper.toOldModel(sheet);
-    await SheetClassGenerator.generate(oldModelSheet, outputDir);
+    await _sheetCodeDataSource.generateSheetClass(sheet, outputDir);
   }
 
   @override
@@ -55,9 +64,8 @@ class CodeGeneratorRepositoryImpl implements ICodeGeneratorRepository {
     required String className,
     bool includeFlutterDelegates = true,
   }) async {
-    final oldModelSheets = EntityModelMapper.toOldModels(sheets);
-    await MainClassGenerator.generate(
-      oldModelSheets,
+    await _mainCodeDataSource.generateMainClass(
+      sheets,
       outputDir,
       className,
       includeFlutterDelegates,
@@ -69,7 +77,9 @@ class CodeGeneratorRepositoryImpl implements ICodeGeneratorRepository {
     required String outputDir,
     required String className,
   }) async {
-    final emptySheets = <dynamic>[]; // Empty list as ExtensionGenerator doesn't actually use sheets
-    await ExtensionGenerator.generate(emptySheets.cast(), outputDir, className);
+    await _extensionCodeDataSource.generateBuildContextExtension(
+      outputDir,
+      className,
+    );
   }
 }

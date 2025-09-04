@@ -1,13 +1,11 @@
-// BuildContext extension generator
+// Code generation data source for BuildContext extension
 import 'dart:io';
 import 'package:path/path.dart' as path;
-import '../../data/models/models.dart';
 
-/// Generator for BuildContext extension
-class ExtensionGenerator {
-  /// Generate BuildContext extension
-  static Future<void> generate(
-    List<LocalizationSheet> sheets,
+/// Data source for generating BuildContext extension
+class ExtensionCodeDataSource {
+  /// Generate BuildContext extension file
+  Future<void> generateBuildContextExtension(
     String outputDir,
     String className,
   ) async {

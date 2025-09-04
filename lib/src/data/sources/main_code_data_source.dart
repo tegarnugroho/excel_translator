@@ -1,14 +1,14 @@
-// Main localizations class generator
+// Code generation data source for main localization class
 import 'dart:io';
 import 'package:path/path.dart' as path;
-import '../../data/models/models.dart';
+import '../../domain/entities/entities.dart';
 import '../../core/string_utils.dart';
-import '../../data/repositories_impl/language_validation_repository_impl.dart';
+import '../repositories_impl/language_validation_repository_impl.dart';
 
-/// Generator for main localizations class
-class MainClassGenerator {
-  /// Generate main localizations class
-  static Future<void> generate(
+/// Data source for generating main localization class
+class MainCodeDataSource {
+  /// Generate main localization class file
+  Future<void> generateMainClass(
     List<LocalizationSheet> sheets,
     String outputDir,
     String className,
@@ -97,7 +97,7 @@ class MainClassGenerator {
       buffer.writeln('  }');
       buffer.writeln();
 
-      // Add getSystemLanguage method
+      // Get system language with fallback
       buffer.writeln('  /// Get system language with fallback');
       buffer.writeln('  static String getSystemLanguage() {');
       buffer.writeln('    try {');
@@ -106,17 +106,14 @@ class MainClassGenerator {
       buffer.writeln(
           '      final locales = PlatformDispatcher.instance.locales;');
       buffer.writeln('      if (locales.isNotEmpty) {');
-      buffer.writeln('        final primaryLocale = locales.first;');
-      buffer
-          .writeln('        final languageCode = primaryLocale.languageCode;');
-      buffer
-          .writeln('        if (supportedLanguages.contains(languageCode)) {');
-      buffer.writeln('          return languageCode;');
+      buffer.writeln(
+          '        final locale = locales.first.languageCode.toLowerCase();');
+      buffer.writeln('        if (supportedLanguages.contains(locale)) {');
+      buffer.writeln('          return locale;');
       buffer.writeln('        }');
       buffer.writeln('      }');
       buffer.writeln('    } catch (e) {');
-      buffer.writeln(
-          '      // PlatformDispatcher might not be available in some environments');
+      buffer.writeln('      // Fall back to other methods if PlatformDispatcher fails');
       buffer.writeln('    }');
       buffer.writeln();
       buffer.writeln('    // Final fallback to English');

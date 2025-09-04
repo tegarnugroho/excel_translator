@@ -1,13 +1,13 @@
-// Individual sheet class generator
+// Code generation data source for individual sheet classes
 import 'dart:io';
 import 'package:path/path.dart' as path;
-import '../../data/models/models.dart';
+import '../../domain/entities/entities.dart';
 import '../../core/string_utils.dart';
 
-/// Generator for individual sheet localizations classes
-class SheetClassGenerator {
-  /// Generate individual sheet class
-  static Future<void> generate(
+/// Data source for generating individual sheet localization classes
+class SheetCodeDataSource {
+  /// Generate individual sheet class file
+  Future<void> generateSheetClass(
     LocalizationSheet sheet,
     String outputDir,
   ) async {
@@ -26,31 +26,31 @@ class SheetClassGenerator {
     buffer.writeln('  const $className(this._languageCode);');
     buffer.writeln();
 
-    // Generate methods for each key
-    for (final entry in sheet.entries) {
-      final methodName = StringUtils.sanitizeMethodName(entry.key);
+    // Generate methods for each translation
+    for (final translation in sheet.translations) {
+      final methodName = StringUtils.sanitizeMethodName(translation.key);
 
       // Add comment for the translation key
-      buffer.writeln('  /// Translation for key: ${entry.key}');
+      buffer.writeln('  /// Translation for key: ${translation.key}');
 
-      // Check if the entry has interpolation
-      final hasInterpolation = entry.translations.values.any(
+      // Check if the translation has interpolation
+      final hasInterpolation = translation.values.values.any(
         (value) => StringUtils.hasInterpolation(value),
       );
 
       if (hasInterpolation) {
         // Generate method with parameters
         final params =
-            StringUtils.extractInterpolationParams(entry.translations.values.first);
+            StringUtils.extractInterpolationParams(translation.values.values.first);
         final paramList = params.map((p) => 'dynamic $p').join(', ');
 
         buffer.writeln('  String $methodName({$paramList}) {');
         buffer.writeln('    switch (_languageCode) {');
 
         for (final languageCode in sheet.languageCodes) {
-          final translation = entry.translations[languageCode] ?? '';
+          final translatedValue = translation.values[languageCode] ?? '';
           buffer.writeln("      case '$languageCode':");
-          buffer.writeln("        return '''$translation'''");
+          buffer.writeln("        return '''$translatedValue'''");
 
           // Add interpolation replacements
           for (final param in params) {
@@ -61,7 +61,7 @@ class SheetClassGenerator {
         }
 
         buffer.writeln("      default:");
-        final defaultTranslation = entry.translations.values.first;
+        final defaultTranslation = translation.values.values.first;
         buffer.writeln("        return '''$defaultTranslation'''");
         for (final param in params) {
           buffer.writeln(
@@ -76,13 +76,13 @@ class SheetClassGenerator {
         buffer.writeln('    switch (_languageCode) {');
 
         for (final languageCode in sheet.languageCodes) {
-          final translation = entry.translations[languageCode] ?? '';
+          final translatedValue = translation.values[languageCode] ?? '';
           buffer.writeln("      case '$languageCode':");
-          buffer.writeln("        return '''$translation''';");
+          buffer.writeln("        return '''$translatedValue''';");
         }
 
         buffer.writeln("      default:");
-        final defaultTranslation = entry.translations.values.first;
+        final defaultTranslation = translation.values.values.first;
         buffer.writeln("        return '''$defaultTranslation''';");
         buffer.writeln('    }');
         buffer.writeln('  }');
