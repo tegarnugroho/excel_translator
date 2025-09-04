@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.2] - 2025-09-04
+
+### Style
+
+- **Code Formatting**: Applied `dart format` to all source files
+- Fixed formatting issues reported by pub.dev static analysis
+- Ensures compliance with official Dart style guidelines
+
 ## [1.0.1] - 2025-09-04
 
 ### Fixed
