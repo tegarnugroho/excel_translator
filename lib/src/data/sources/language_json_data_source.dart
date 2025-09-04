@@ -16,7 +16,16 @@ class LanguageJsonDataSource {
       final jsonString = jsonFile.readAsStringSync();
       final data = json.decode(jsonString);
 
-      return data as Map<String, dynamic>?;
+      // Handle both formats: direct array or wrapped in object
+      if (data is List) {
+        // Direct array format like: [{"languageCode": "en", ...}, ...]
+        return {'lang': data};
+      } else if (data is Map<String, dynamic>) {
+        // Object format like: {"lang": [...]}
+        return data;
+      }
+
+      return null;
     } catch (e) {
       return null;
     }
@@ -35,7 +44,13 @@ class LanguageJsonDataSource {
     final currentFile = File(path.fromUri(Uri.parse(Platform.script.toString())));
     final packageRoot = _findPackageRoot(currentFile.parent);
     
-    // Look in assets folder first (new location)
+    // Look in lib/assets folder (new location)
+    final libAssetsJsonFile = File(path.join(packageRoot.path, 'lib', 'assets', 'lang.json'));
+    if (libAssetsJsonFile.existsSync()) {
+      return libAssetsJsonFile;
+    }
+    
+    // Look in assets folder (alternative location)
     final assetsJsonFile = File(path.join(packageRoot.path, 'assets', 'lang.json'));
     if (assetsJsonFile.existsSync()) {
       return assetsJsonFile;

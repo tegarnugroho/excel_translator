@@ -65,14 +65,12 @@ class LanguageRepositoryImpl implements ILanguageRepository {
   }
 
   void _parseJsonData(Map<String, dynamic> data) {
-    // Parse JSON data - direct array of language objects or wrapped in 'lang' property
     List<dynamic> langArray;
     
     if (data.containsKey('lang')) {
-      // Format: {"lang": [...]}
+      // Format: {"lang": [...]} (normalized by data source)
       langArray = data['lang'] as List;
     } else {
-      // Assume the data itself contains language info, convert to list
       throw Exception('Invalid language data format - expected "lang" property with array');
     }
 
@@ -87,11 +85,11 @@ class LanguageRepositoryImpl implements ILanguageRepository {
       String name;
 
       if (langMap.containsKey('languageCode')) {
-        // New format
+        // New format with languageCode field
         code = langMap['languageCode'] as String;
         name = langMap['language'] as String;
       } else {
-        // Old format compatibility
+        // Old format compatibility with code field
         code = langMap['code'] as String;
         name = langMap['name'] as String;
       }
