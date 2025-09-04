@@ -1,6 +1,5 @@
 import 'dart:io';
-import '../lib/src/generator.dart' as excel_gen;
-import '../lib/src/config/excel_translator_config.dart';
+import 'package:excel_translator/cli.dart' as excel_cli;
 
 /// Main entry point for CLI usage
 void main(List<String> arguments) async {
@@ -11,7 +10,7 @@ void main(List<String> arguments) async {
   }
   
   // Load configuration from pubspec.yaml
-  final pubspecConfig = ExcelTranslatorConfig.fromPubspec();
+  final pubspecConfig = excel_cli.ExcelTranslatorConfig.fromPubspec();
   
   // Parse CLI arguments
   final cliConfig = _parseCliArguments(arguments);
@@ -30,7 +29,7 @@ void main(List<String> arguments) async {
   }
   
   // Merge configurations with CLI taking precedence
-  final finalConfig = (pubspecConfig ?? ExcelTranslatorConfig()).mergeWith(
+  final finalConfig = (pubspecConfig ?? excel_cli.ExcelTranslatorConfig()).mergeWith(
     excelFilePath: cliConfig['excelFilePath'],
     outputDir: cliConfig['outputDir'],
     className: cliConfig['className'],
@@ -62,7 +61,7 @@ void main(List<String> arguments) async {
   print('');
 
   try {
-    await excel_gen.ExcelLocalizationsGenerator.generateFromExcel(
+    await excel_cli.ExcelLocalizationsGenerator.generateFromExcel(
       excelFilePath: excelFilePath,
       outputDir: outputDir,
       className: className,
