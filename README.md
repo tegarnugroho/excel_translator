@@ -119,8 +119,12 @@ AppLocalizations.updateGlobalLanguage('id'); // Switch to Indonesian
 
 ```dart
 MaterialApp(
-  localizationsDelegates: AppLocalizations.delegates,
-  supportedLocales: AppLocalizations.supportedLocales,
+  localizationsDelegates: const [
+    ...AppLocalizations.delegates,
+  ],
+  supportedLocales: AppLocalizations.supportedLanguages
+      .map((language) => Locale(language))
+      .toList(),
   // ...
 )
 ```
