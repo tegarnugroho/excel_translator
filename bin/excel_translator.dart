@@ -8,17 +8,18 @@ void main(List<String> arguments) async {
     _printUsage();
     exit(0);
   }
-  
+
   // Load configuration from pubspec.yaml
   final pubspecConfig = excel_cli.ExcelTranslatorConfig.fromPubspec();
-  
+
   // Parse CLI arguments
   final cliConfig = _parseCliArguments(arguments);
-  
+
   // Check if we have configuration from either source
   final hasCliConfig = cliConfig['excelFilePath'] != null;
-  final hasPubspecConfig = pubspecConfig != null && pubspecConfig.excelFilePath != null;
-  
+  final hasPubspecConfig =
+      pubspecConfig != null && pubspecConfig.excelFilePath != null;
+
   if (!hasCliConfig && !hasPubspecConfig) {
     print('❌ No configuration found!');
     print('');
@@ -27,9 +28,10 @@ void main(List<String> arguments) async {
     _printUsage();
     exit(1);
   }
-  
+
   // Merge configurations with CLI taking precedence
-  final finalConfig = (pubspecConfig ?? excel_cli.ExcelTranslatorConfig()).mergeWith(
+  final finalConfig =
+      (pubspecConfig ?? excel_cli.ExcelTranslatorConfig()).mergeWith(
     excelFilePath: cliConfig['excelFilePath'],
     outputDir: cliConfig['outputDir'],
     className: cliConfig['className'],
@@ -77,8 +79,9 @@ void main(List<String> arguments) async {
 /// Parse CLI arguments
 Map<String, String?> _parseCliArguments(List<String> arguments) {
   // Filter out help flags for argument parsing
-  final filteredArgs = arguments.where((arg) => arg != '-h' && arg != '--help').toList();
-  
+  final filteredArgs =
+      arguments.where((arg) => arg != '-h' && arg != '--help').toList();
+
   if (filteredArgs.length > 3) {
     print('❌ Too many arguments provided');
     _printUsage();
@@ -103,14 +106,20 @@ void _printUsage() {
   print('  -h, --help    Show this help message');
   print('');
   print('ARGUMENTS:');
-  print('  excel_translator                                           # Use pubspec.yaml config');
-  print('  excel_translator <excel_file> [output_dir] [class_name]   # Use CLI arguments');
+  print(
+      '  excel_translator                                           # Use pubspec.yaml config');
+  print(
+      '  excel_translator <excel_file> [output_dir] [class_name]   # Use CLI arguments');
   print('');
   print('EXAMPLES:');
-  print('  excel_translator                                           # Read config from pubspec.yaml');
-  print('  excel_translator assets/localizations.xlsx                # Use defaults for output_dir and class_name');
-  print('  excel_translator assets/localizations.xlsx lib/generated  # Use default class_name');
-  print('  excel_translator assets/localizations.xlsx lib/generated AppLocalizations');
+  print(
+      '  excel_translator                                           # Read config from pubspec.yaml');
+  print(
+      '  excel_translator assets/localizations.xlsx                # Use defaults for output_dir and class_name');
+  print(
+      '  excel_translator assets/localizations.xlsx lib/generated  # Use default class_name');
+  print(
+      '  excel_translator assets/localizations.xlsx lib/generated AppLocalizations');
   print('');
   print('📄 CONFIGURATION via pubspec.yaml:');
   print('');

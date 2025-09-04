@@ -1,5 +1,3 @@
-
-
 import 'localization_entry.dart';
 
 class LocalizationSheet {

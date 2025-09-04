@@ -28,8 +28,10 @@ class AppLocalizations {
 
   /// Get english instance
   static AppLocalizations get en => AppLocalizations('en');
+
   /// Get spanish instance
   static AppLocalizations get es => AppLocalizations('es');
+
   /// Get indonesian instance
   static AppLocalizations get id => AppLocalizations('id');
 
@@ -75,7 +77,6 @@ class AppLocalizations {
     GlobalWidgetsLocalizations.delegate,
     GlobalCupertinoLocalizations.delegate,
   ];
-
 }
 
 class AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

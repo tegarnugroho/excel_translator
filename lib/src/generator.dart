@@ -27,10 +27,12 @@ class LanguageData {
   static void _loadLanguageData() {
     try {
       // Get the current file directory
-      final currentFile = File(path.fromUri(Uri.parse(Platform.script.toString())));
+      final currentFile =
+          File(path.fromUri(Uri.parse(Platform.script.toString())));
       final packageRoot = _findPackageRoot(currentFile.parent);
-      final jsonFile = File(path.join(packageRoot.path, 'lib', 'src', 'lang' , 'lang.json'));
-      
+      final jsonFile =
+          File(path.join(packageRoot.path, 'lib', 'src', 'lang', 'lang.json'));
+
       if (!jsonFile.existsSync()) {
         print('Warning: lang.json not found, using fallback data');
         _useFallbackData();
@@ -39,7 +41,7 @@ class LanguageData {
 
       final jsonString = jsonFile.readAsStringSync();
       final data = json.decode(jsonString);
-      
+
       // Parse new JSON format - direct array of language objects
       List<dynamic> langArray;
       if (data is List) {
@@ -51,17 +53,17 @@ class LanguageData {
       } else {
         throw Exception('Invalid language data format');
       }
-      
+
       _validLanguageCodes = <String>{};
       _languageNames = <String, String>{};
-      
+
       for (final langItem in langArray) {
         final langMap = langItem as Map<String, dynamic>;
-        
+
         // Support both old and new formats
         String code;
         String name;
-        
+
         if (langMap.containsKey('languageCode')) {
           // New format
           code = langMap['languageCode'] as String;
@@ -71,7 +73,7 @@ class LanguageData {
           code = langMap['code'] as String;
           name = langMap['name'] as String;
         }
-        
+
         _validLanguageCodes!.add(code);
         _languageNames![code] = name.toLowerCase();
       }
@@ -94,18 +96,49 @@ class LanguageData {
 
   static void _useFallbackData() {
     _validLanguageCodes = {
-      'en', 'id', 'es', 'fr', 'de', 'pt', 'zh', 'ja', 'ko', 'ar', 'hi', 'ru',
-      'it', 'nl', 'pl', 'tr', 'sv', 'da', 'no', 'fi', 'he', 'th', 'vi', 'uk'
+      'en',
+      'id',
+      'es',
+      'fr',
+      'de',
+      'pt',
+      'zh',
+      'ja',
+      'ko',
+      'ar',
+      'hi',
+      'ru',
+      'it',
+      'nl',
+      'pl',
+      'tr',
+      'sv',
+      'da',
+      'no',
+      'fi',
+      'he',
+      'th',
+      'vi',
+      'uk'
     };
     _languageNames = {
-      'en': 'english', 'id': 'indonesian', 'es': 'spanish', 'fr': 'french',
-      'de': 'german', 'pt': 'portuguese', 'zh': 'chinese', 'ja': 'japanese',
-      'ko': 'korean', 'ar': 'arabic', 'hi': 'hindi', 'ru': 'russian'
+      'en': 'english',
+      'id': 'indonesian',
+      'es': 'spanish',
+      'fr': 'french',
+      'de': 'german',
+      'pt': 'portuguese',
+      'zh': 'chinese',
+      'ja': 'japanese',
+      'ko': 'korean',
+      'ar': 'arabic',
+      'hi': 'hindi',
+      'ru': 'russian'
     };
   }
 }
 
-/// Main class for generating localizations from Excel files  
+/// Main class for generating localizations from Excel files
 class ExcelLocalizationsGenerator {
   /// Generate localizations from an Excel file
   static Future<void> generateFromExcel({
@@ -132,13 +165,13 @@ class ExcelLocalizationsGenerator {
 
         final entries = <LocalizationEntry>[];
         final rows = sheet.rows;
-        
+
         if (rows.isEmpty) continue;
 
         // First row should contain language codes
         final languageCodes = <String>[];
         final headerRow = rows[0];
-        
+
         for (int i = 1; i < headerRow.length; i++) {
           final cell = headerRow[i];
           if (cell?.value != null) {
@@ -179,8 +212,9 @@ class ExcelLocalizationsGenerator {
         ));
       }
 
-      await _generateDartFiles(sheets, outputDir, className, includeFlutterDelegates);
-      
+      await _generateDartFiles(
+          sheets, outputDir, className, includeFlutterDelegates);
+
       print('✅ Localizations generated successfully!');
       print('📁 Output directory: $outputDir');
       print('📊 Generated ${sheets.length} sheet(s)');
@@ -201,43 +235,46 @@ class ExcelLocalizationsGenerator {
   /// Validates if a string is a valid language code
   static bool _isValidLanguageCode(String code) {
     final normalizedCode = code.toLowerCase().trim();
-    
+
     // Check exact match with ISO 639-1 codes
     if (LanguageData.validLanguageCodes.contains(normalizedCode)) {
       return true;
     }
-    
+
     // Check if it's a locale format like 'en_US', 'pt_BR' (underscore format)
     if (normalizedCode.contains('_')) {
       final parts = normalizedCode.split('_');
-      if (parts.length == 2 && LanguageData.validLanguageCodes.contains(parts[0])) {
+      if (parts.length == 2 &&
+          LanguageData.validLanguageCodes.contains(parts[0])) {
         return true;
       }
     }
-    
+
     // Check if it's a locale format like 'en-US', 'pt-BR' (dash format - backward compatibility)
     if (normalizedCode.contains('-')) {
       final parts = normalizedCode.split('-');
-      if (parts.length == 2 && LanguageData.validLanguageCodes.contains(parts[0])) {
+      if (parts.length == 2 &&
+          LanguageData.validLanguageCodes.contains(parts[0])) {
         return true;
       }
     }
-    
+
     return false;
   }
 
   /// Validates language codes in header and throws exception if invalid codes found (exposed for testing)
-  static void validateLanguageCodes(List<String> languageCodes, String sheetName) {
+  static void validateLanguageCodes(
+      List<String> languageCodes, String sheetName) {
     _validateLanguageCodes(languageCodes, sheetName);
   }
 
   /// Validates language codes in header and throws exception if invalid codes found
-  static void _validateLanguageCodes(List<String> languageCodes, String sheetName) {
+  static void _validateLanguageCodes(
+      List<String> languageCodes, String sheetName) {
     if (languageCodes.isEmpty) {
       throw Exception(
-        'Sheet "$sheetName": No language codes found in header row.\n'
-        'Please ensure the first row contains valid language codes (e.g., en, id, es).'
-      );
+          'Sheet "$sheetName": No language codes found in header row.\n'
+          'Please ensure the first row contains valid language codes (e.g., en, id, es).');
     }
 
     final invalidCodes = <String>[];
@@ -249,13 +286,13 @@ class ExcelLocalizationsGenerator {
 
     if (invalidCodes.isNotEmpty) {
       throw Exception(
-        'Sheet "$sheetName": Invalid language codes found in header: ${invalidCodes.join(', ')}\n'
-        'Valid language codes are ISO 639-1 codes like: en, id, es, fr, de, pt, etc.\n'
-        'You can also use locale formats like: en_US, pt_BR, zh_CN (preferred) or en-US, pt-BR, zh-CN'
-      );
+          'Sheet "$sheetName": Invalid language codes found in header: ${invalidCodes.join(', ')}\n'
+          'Valid language codes are ISO 639-1 codes like: en, id, es, fr, de, pt, etc.\n'
+          'You can also use locale formats like: en_US, pt_BR, zh_CN (preferred) or en-US, pt-BR, zh-CN');
     }
 
-    print('✅ Sheet "$sheetName": Valid language codes found: ${languageCodes.join(', ')}');
+    print(
+        '✅ Sheet "$sheetName": Valid language codes found: ${languageCodes.join(', ')}');
   }
 
   // Helper methods (some exposed for testing)
@@ -282,7 +319,8 @@ class ExcelLocalizationsGenerator {
     }
 
     // Generate main localizations class
-    await _generateMainLocalizationsClass(sheets, outputDir, className, includeFlutterDelegates);
+    await _generateMainLocalizationsClass(
+        sheets, outputDir, className, includeFlutterDelegates);
 
     // Generate individual sheet classes
     for (final sheet in sheets) {
@@ -300,7 +338,7 @@ class ExcelLocalizationsGenerator {
     bool includeFlutterDelegates,
   ) async {
     final buffer = StringBuffer();
-    
+
     // Add generation comment
     buffer.writeln('// GENERATED CODE - DO NOT MODIFY BY HAND');
     buffer.writeln('// Generated by Excel Translator');
@@ -311,10 +349,11 @@ class ExcelLocalizationsGenerator {
     if (includeFlutterDelegates) {
       buffer.writeln("import 'package:flutter/material.dart';");
       buffer.writeln("import 'package:flutter/cupertino.dart';");
-      buffer.writeln("import 'package:excel_translator/excel_translator.dart';");
+      buffer
+          .writeln("import 'package:excel_translator/excel_translator.dart';");
       buffer.writeln("import 'dart:ui' show PlatformDispatcher;");
     }
-    
+
     // Add sheet imports
     for (final sheet in sheets) {
       buffer.writeln("import '${sheet.name}_localizations.dart';");
@@ -325,21 +364,21 @@ class ExcelLocalizationsGenerator {
     buffer.writeln('class $className {');
     buffer.writeln('  final String languageCode;');
     buffer.writeln();
-    
+
     // Add supported languages list
     final allLanguageCodes = <String>{};
     for (final sheet in sheets) {
       allLanguageCodes.addAll(sheet.languageCodes);
     }
     final sortedLanguages = allLanguageCodes.toList()..sort();
-    
+
     buffer.writeln('  static const List<String> supportedLanguages = [');
     for (final lang in sortedLanguages) {
       buffer.writeln("    '$lang',");
     }
     buffer.writeln('  ];');
     buffer.writeln();
-    
+
     // Add sheet properties
     for (final sheet in sheets) {
       final sheetClassName = '${_capitalize(sheet.name)}Localizations';
@@ -368,7 +407,8 @@ class ExcelLocalizationsGenerator {
       // Add convenience static getters with full names
       for (final lang in sortedLanguages.take(5)) {
         final fullName = _getLanguageName(lang);
-        buffer.writeln("  static $className get $fullName => $className('$lang');");
+        buffer.writeln(
+            "  static $className get $fullName => $className('$lang');");
       }
       buffer.writeln();
 
@@ -378,40 +418,49 @@ class ExcelLocalizationsGenerator {
       buffer.writeln('    return $className(locale.languageCode);');
       buffer.writeln('  }');
       buffer.writeln();
-      
+
       // Add getSystemLanguage method
       buffer.writeln('  /// Get system language with fallback');
       buffer.writeln('  static String getSystemLanguage() {');
       buffer.writeln('    try {');
-      buffer.writeln('      // Try to get from Flutter${String.fromCharCode(39)}s PlatformDispatcher first');
-      buffer.writeln('      final locales = PlatformDispatcher.instance.locales;');
+      buffer.writeln(
+          '      // Try to get from Flutter${String.fromCharCode(39)}s PlatformDispatcher first');
+      buffer.writeln(
+          '      final locales = PlatformDispatcher.instance.locales;');
       buffer.writeln('      if (locales.isNotEmpty) {');
       buffer.writeln('        final primaryLocale = locales.first;');
-      buffer.writeln('        final languageCode = primaryLocale.languageCode;');
-      buffer.writeln('        if (supportedLanguages.contains(languageCode)) {');
+      buffer
+          .writeln('        final languageCode = primaryLocale.languageCode;');
+      buffer
+          .writeln('        if (supportedLanguages.contains(languageCode)) {');
       buffer.writeln('          return languageCode;');
       buffer.writeln('        }');
       buffer.writeln('      }');
       buffer.writeln('    } catch (e) {');
-      buffer.writeln('      // PlatformDispatcher might not be available in some environments');
+      buffer.writeln(
+          '      // PlatformDispatcher might not be available in some environments');
       buffer.writeln('    }');
       buffer.writeln();
       buffer.writeln('    // Final fallback to English');
       buffer.writeln("    return 'en';");
       buffer.writeln('  }');
       buffer.writeln();
-      
+
       // Add current getter
       buffer.writeln('  /// Get current localization based on system language');
-      buffer.writeln('  static $className get current => $className(getSystemLanguage());');
+      buffer.writeln(
+          '  static $className get current => $className(getSystemLanguage());');
       buffer.writeln();
-      
+
       // Add Flutter delegates
       buffer.writeln('  /// Delegate for localizations');
-      buffer.writeln('  static const ${className}Delegate delegate = ${className}Delegate();');
+      buffer.writeln(
+          '  static const ${className}Delegate delegate = ${className}Delegate();');
       buffer.writeln();
-      buffer.writeln('  /// All localization delegates including Flutter${String.fromCharCode(39)}s built-in delegates');
-      buffer.writeln('  static const List<LocalizationsDelegate<dynamic>> delegates = [');
+      buffer.writeln(
+          '  /// All localization delegates including Flutter${String.fromCharCode(39)}s built-in delegates');
+      buffer.writeln(
+          '  static const List<LocalizationsDelegate<dynamic>> delegates = [');
       buffer.writeln('    delegate, // Custom localizations');
       buffer.writeln('    GlobalMaterialLocalizations.delegate,');
       buffer.writeln('    GlobalWidgetsLocalizations.delegate,');
@@ -421,16 +470,18 @@ class ExcelLocalizationsGenerator {
     }
 
     buffer.writeln('}');
-    
+
     // Add delegate class if Flutter delegates are enabled
     if (includeFlutterDelegates) {
       buffer.writeln();
-      buffer.writeln('class ${className}Delegate extends LocalizationsDelegate<$className> {');
+      buffer.writeln(
+          'class ${className}Delegate extends LocalizationsDelegate<$className> {');
       buffer.writeln('  const ${className}Delegate();');
       buffer.writeln();
       buffer.writeln('  @override');
       buffer.writeln('  bool isSupported(Locale locale) {');
-      buffer.writeln('    return $className.supportedLanguages.contains(locale.languageCode);');
+      buffer.writeln(
+          '    return $className.supportedLanguages.contains(locale.languageCode);');
       buffer.writeln('  }');
       buffer.writeln();
       buffer.writeln('  @override');
@@ -453,13 +504,13 @@ class ExcelLocalizationsGenerator {
   ) async {
     final buffer = StringBuffer();
     final className = '${_capitalize(sheet.name)}Localizations';
-    
+
     // Add generation comment
     buffer.writeln('// GENERATED CODE - DO NOT MODIFY BY HAND');
     buffer.writeln('// Generated by Excel Translator');
     buffer.writeln('// ${DateTime.now()}');
     buffer.writeln();
-    
+
     buffer.writeln('class $className {');
     buffer.writeln('  final String _languageCode;');
     buffer.writeln();
@@ -469,10 +520,10 @@ class ExcelLocalizationsGenerator {
     // Generate methods for each key
     for (final entry in sheet.entries) {
       final methodName = _sanitizeMethodName(entry.key);
-      
+
       // Add comment for the translation key
       buffer.writeln('  /// Translation for key: ${entry.key}');
-      
+
       // Check if the entry has interpolation
       final hasInterpolation = entry.translations.values.any(
         (value) => value.contains(RegExp(r'\{[^}]+\}')),
@@ -480,29 +531,32 @@ class ExcelLocalizationsGenerator {
 
       if (hasInterpolation) {
         // Generate method with parameters
-        final params = _extractInterpolationParams(entry.translations.values.first);
+        final params =
+            _extractInterpolationParams(entry.translations.values.first);
         final paramList = params.map((p) => 'dynamic $p').join(', ');
-        
+
         buffer.writeln('  String $methodName({$paramList}) {');
         buffer.writeln('    switch (_languageCode) {');
-        
+
         for (final languageCode in sheet.languageCodes) {
           final translation = entry.translations[languageCode] ?? '';
           buffer.writeln("      case '$languageCode':");
           buffer.writeln("        return '''$translation'''");
-          
+
           // Add interpolation replacements
           for (final param in params) {
-            buffer.writeln("            .replaceAll('{$param}', $param.toString())");
+            buffer.writeln(
+                "            .replaceAll('{$param}', $param.toString())");
           }
           buffer.writeln("            ;");
         }
-        
+
         buffer.writeln("      default:");
         final defaultTranslation = entry.translations.values.first;
         buffer.writeln("        return '''$defaultTranslation'''");
         for (final param in params) {
-          buffer.writeln("            .replaceAll('{$param}', $param.toString())");
+          buffer.writeln(
+              "            .replaceAll('{$param}', $param.toString())");
         }
         buffer.writeln("            ;");
         buffer.writeln('    }');
@@ -511,13 +565,13 @@ class ExcelLocalizationsGenerator {
         // Generate simple getter
         buffer.writeln('  String get $methodName {');
         buffer.writeln('    switch (_languageCode) {');
-        
+
         for (final languageCode in sheet.languageCodes) {
           final translation = entry.translations[languageCode] ?? '';
           buffer.writeln("      case '$languageCode':");
           buffer.writeln("        return '''$translation''';");
         }
-        
+
         buffer.writeln("      default:");
         final defaultTranslation = entry.translations.values.first;
         buffer.writeln("        return '''$defaultTranslation''';");
@@ -539,14 +593,16 @@ class ExcelLocalizationsGenerator {
     String className,
   ) async {
     final buffer = StringBuffer();
-    
+
     // Add generation comment
     buffer.writeln('// GENERATED CODE - DO NOT MODIFY BY HAND');
     buffer.writeln('// Generated by Excel Translator');
     buffer.writeln('// ${DateTime.now()}');
     buffer.writeln();
-    buffer.writeln('// Uncomment the lines below to enable BuildContext extension');
-    buffer.writeln('// This provides easy access like: context.loc.localizations.hello');
+    buffer.writeln(
+        '// Uncomment the lines below to enable BuildContext extension');
+    buffer.writeln(
+        '// This provides easy access like: context.loc.localizations.hello');
     buffer.writeln('//');
     buffer.writeln("// import 'package:flutter/material.dart';");
     buffer.writeln("// import 'generated_localizations.dart';");
@@ -578,11 +634,14 @@ class ExcelLocalizationsGenerator {
     if (parts.length <= 1) {
       return key.toLowerCase().replaceAll(RegExp(r'[^a-zA-Z0-9]'), '');
     }
-    
-    final camelCase = parts.first + parts.skip(1).map((part) => 
-      part.isEmpty ? '' : part[0].toUpperCase() + part.substring(1)
-    ).join('');
-    
+
+    final camelCase = parts.first +
+        parts
+            .skip(1)
+            .map((part) =>
+                part.isEmpty ? '' : part[0].toUpperCase() + part.substring(1))
+            .join('');
+
     return camelCase
         .replaceAll(RegExp(r'[^a-zA-Z0-9]'), '')
         .replaceAll(RegExp(r'^[0-9]'), 'key\$0');

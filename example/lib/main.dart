@@ -187,8 +187,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      currentLocalizations.login
-                          .welcomeMessage(name: 'User'),
+                      currentLocalizations.login.welcomeMessage(name: 'User'),
                       style: const TextStyle(fontSize: 18),
                     ),
                     const SizedBox(height: 8),
@@ -234,20 +233,19 @@ class _MyHomePageState extends State<MyHomePage> {
                         showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                            title: Text(
-                                currentLocalizations.login.appTitle),
+                            title: Text(currentLocalizations.login.appTitle),
                             content: Text(
                                 'Language: ${currentLocalizations.languageCode.toUpperCase()}'),
                             actions: [
                               TextButton(
                                 onPressed: () => Navigator.of(context).pop(),
-                                child: Text(currentLocalizations
-                                    .login.cancelButton),
+                                child: Text(
+                                    currentLocalizations.login.cancelButton),
                               ),
                               TextButton(
                                 onPressed: () => Navigator.of(context).pop(),
-                                child: Text(currentLocalizations
-                                    .login.saveButton),
+                                child:
+                                    Text(currentLocalizations.login.saveButton),
                               ),
                             ],
                           ),
@@ -260,8 +258,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       onPressed: () {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text(
-                                currentLocalizations.login.goodbye),
+                            content: Text(currentLocalizations.login.goodbye),
                             duration: const Duration(seconds: 1),
                           ),
                         );

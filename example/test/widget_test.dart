@@ -17,7 +17,8 @@ void main() {
       );
     }
 
-    testWidgets('App launches and displays correctly', (WidgetTester tester) async {
+    testWidgets('App launches and displays correctly',
+        (WidgetTester tester) async {
       // Build the app and trigger a frame
       await tester.pumpWidget(createTestApp());
       await tester.pumpAndSettle();
@@ -28,13 +29,14 @@ void main() {
       expect(find.byType(AppBar), findsOneWidget);
     });
 
-    testWidgets('Language mode toggle works correctly', (WidgetTester tester) async {
+    testWidgets('Language mode toggle works correctly',
+        (WidgetTester tester) async {
       await tester.pumpWidget(createTestApp());
       await tester.pumpAndSettle();
 
       // Find the toggle buttons
       expect(find.byType(ToggleButtons), findsOneWidget);
-      
+
       // Look for the toggle button texts
       expect(find.text('Auto (System)'), findsOneWidget);
       expect(find.text('Manual'), findsOneWidget);
@@ -59,7 +61,7 @@ void main() {
       // Find and tap the dropdown
       final dropdown = find.byType(DropdownButton<String>);
       expect(dropdown, findsOneWidget);
-      
+
       await tester.tap(dropdown);
       await tester.pumpAndSettle();
 
@@ -69,19 +71,21 @@ void main() {
       }
     });
 
-    testWidgets('Localized content displays correctly', (WidgetTester tester) async {
+    testWidgets('Localized content displays correctly',
+        (WidgetTester tester) async {
       await tester.pumpWidget(createTestApp());
       await tester.pumpAndSettle();
 
       // Check if localized content is displayed somewhere in the widget tree
       // Look for any text widget that might contain localized content
       expect(find.byType(Text), findsWidgets);
-      
+
       // Since content might be scrolled, just verify structure exists
       expect(find.byType(Card), findsWidgets);
     });
 
-    testWidgets('Interactive buttons work correctly', (WidgetTester tester) async {
+    testWidgets('Interactive buttons work correctly',
+        (WidgetTester tester) async {
       await tester.pumpWidget(createTestApp());
       await tester.pumpAndSettle();
 
@@ -91,7 +95,8 @@ void main() {
       expect(find.byType(TextButton), findsWidgets);
 
       // Try to scroll to make buttons visible
-      await tester.drag(find.byType(SingleChildScrollView), const Offset(0, -300));
+      await tester.drag(
+          find.byType(SingleChildScrollView), const Offset(0, -300));
       await tester.pumpAndSettle();
 
       // Tap submit button if visible
@@ -99,18 +104,20 @@ void main() {
       if (tester.any(submitButton)) {
         await tester.tap(submitButton, warnIfMissed: false);
         await tester.pumpAndSettle();
-        
+
         // Check if snackbar appears (might not be visible due to scrolling)
         // Just verify the tap didn't cause errors
       }
     });
 
-    testWidgets('System language detection info displays', (WidgetTester tester) async {
+    testWidgets('System language detection info displays',
+        (WidgetTester tester) async {
       await tester.pumpWidget(createTestApp());
       await tester.pumpAndSettle();
 
       // Scroll to find system language info
-      await tester.drag(find.byType(SingleChildScrollView), const Offset(0, -200));
+      await tester.drag(
+          find.byType(SingleChildScrollView), const Offset(0, -200));
       await tester.pumpAndSettle();
 
       // Look for any text that might contain system language info
@@ -118,24 +125,28 @@ void main() {
       expect(find.byType(Card), findsWidgets);
     });
 
-    testWidgets('All available translations section displays', (WidgetTester tester) async {
+    testWidgets('All available translations section displays',
+        (WidgetTester tester) async {
       await tester.pumpWidget(createTestApp());
       await tester.pumpAndSettle();
 
       // Scroll down to find translations section
-      await tester.drag(find.byType(SingleChildScrollView), const Offset(0, -600));
+      await tester.drag(
+          find.byType(SingleChildScrollView), const Offset(0, -600));
       await tester.pumpAndSettle();
 
       // Check if language codes are displayed somewhere
       expect(find.byType(Text), findsWidgets);
     });
 
-    testWidgets('Technical information displays correctly', (WidgetTester tester) async {
+    testWidgets('Technical information displays correctly',
+        (WidgetTester tester) async {
       await tester.pumpWidget(createTestApp());
       await tester.pumpAndSettle();
 
       // Scroll to bottom to find technical info
-      await tester.drag(find.byType(SingleChildScrollView), const Offset(0, -800));
+      await tester.drag(
+          find.byType(SingleChildScrollView), const Offset(0, -800));
       await tester.pumpAndSettle();
 
       // Just verify structure exists
@@ -143,7 +154,8 @@ void main() {
       expect(find.byType(Text), findsWidgets);
     });
 
-    testWidgets('Language switching affects content', (WidgetTester tester) async {
+    testWidgets('Language switching affects content',
+        (WidgetTester tester) async {
       await tester.pumpWidget(createTestApp());
       await tester.pumpAndSettle();
 
@@ -163,7 +175,7 @@ void main() {
         // Select a different language if available
         final secondLanguage = AppLocalizations.supportedLanguages[1];
         final languageOption = find.text(secondLanguage.toUpperCase()).last;
-        
+
         if (tester.any(languageOption)) {
           await tester.tap(languageOption);
           await tester.pumpAndSettle();
@@ -176,7 +188,8 @@ void main() {
       await tester.pumpAndSettle();
 
       // Scroll to find the goodbye button
-      await tester.drag(find.byType(SingleChildScrollView), const Offset(0, -400));
+      await tester.drag(
+          find.byType(SingleChildScrollView), const Offset(0, -400));
       await tester.pumpAndSettle();
 
       // Look for text buttons
@@ -189,7 +202,8 @@ void main() {
     });
 
     group('Accessibility Tests', () {
-      testWidgets('App is accessible with semantic labels', (WidgetTester tester) async {
+      testWidgets('App is accessible with semantic labels',
+          (WidgetTester tester) async {
         await tester.pumpWidget(createTestApp());
         await tester.pumpAndSettle();
 
@@ -197,7 +211,7 @@ void main() {
         expect(find.byType(ElevatedButton), findsOneWidget);
         expect(find.byType(OutlinedButton), findsOneWidget);
         expect(find.byType(TextButton), findsWidgets);
-        
+
         // Check if toggle buttons are accessible
         expect(find.byType(ToggleButtons), findsOneWidget);
       });
@@ -212,7 +226,8 @@ void main() {
         expect(find.byType(SingleChildScrollView), findsOneWidget);
 
         // Try scrolling
-        await tester.fling(find.byType(SingleChildScrollView), const Offset(0, -300), 1000);
+        await tester.fling(
+            find.byType(SingleChildScrollView), const Offset(0, -300), 1000);
         await tester.pumpAndSettle();
 
         // App should still be functional after scrolling

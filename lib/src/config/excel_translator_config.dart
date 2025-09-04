@@ -27,7 +27,7 @@ class ExcelTranslatorConfig {
       // Parse YAML
       final content = pubspecFile.readAsStringSync();
       final yaml = loadYaml(content) as Map<dynamic, dynamic>?;
-      
+
       if (yaml == null) return null;
 
       // Check for excel_translator configuration
@@ -38,7 +38,8 @@ class ExcelTranslatorConfig {
         excelFilePath: config['excel_file'] as String?,
         outputDir: config['output_dir'] as String?,
         className: config['class_name'] as String?,
-        includeFlutterDelegates: config['include_flutter_delegates'] as bool? ?? true,
+        includeFlutterDelegates:
+            config['include_flutter_delegates'] as bool? ?? true,
       );
     } catch (e) {
       print('⚠️  Warning: Could not read configuration from pubspec.yaml: $e');
@@ -48,9 +49,8 @@ class ExcelTranslatorConfig {
 
   /// Find pubspec.yaml file starting from current directory and going up
   static File? _findPubspecFile([String? startPath]) {
-    Directory current = startPath != null 
-        ? Directory(startPath)
-        : Directory.current;
+    Directory current =
+        startPath != null ? Directory(startPath) : Directory.current;
 
     while (current.parent.path != current.path) {
       final pubspecFile = File(path.join(current.path, 'pubspec.yaml'));
@@ -73,7 +73,8 @@ class ExcelTranslatorConfig {
       excelFilePath: excelFilePath ?? this.excelFilePath,
       outputDir: outputDir ?? this.outputDir,
       className: className ?? this.className,
-      includeFlutterDelegates: includeFlutterDelegates ?? this.includeFlutterDelegates,
+      includeFlutterDelegates:
+          includeFlutterDelegates ?? this.includeFlutterDelegates,
     );
   }
 
