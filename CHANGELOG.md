@@ -2,6 +2,36 @@
 
 ## [1.0.2] - 2025-09-04
 
+### Added
+
+- **Multi-Format File Support**: Added CSV (.csv) and ODS (.ods) format support
+- **ODS Format Support**: Full OpenDocument Spreadsheet (.ods) support using spreadsheet_decoder
+- Added `spreadsheet_decoder` package dependency for ODS parsing
+- Added `csv` package dependency for CSV parsing
+- ODS files now support multiple sheets (same as Excel)
+- Enhanced `FileFormat` enum with modern Dart enhanced enum features
+- Comprehensive multi-format support: Excel (.xlsx), CSV (.csv), and ODS (.ods)
+
+### Enhanced
+
+- **CLI Help**: Updated help text to reflect full multi-format support
+- **Documentation**: Added CSV and ODS examples and usage instructions
+- **File Parser**: Modernized enum implementation using Dart 2.17+ enhanced enum features
+- **Example Files**: Added CSV and ODS example files in `example/assets/`
+- **Format Detection**: Improved file format detection with better error messages
+- **Unified API**: Refactored to use `generateFromFile` with backward compatibility
+
+### Technical
+
+- Created FileParserFactory for handling different file formats
+- Implemented CsvFileParser with proper line ending handling
+- Implemented OdsFileParser with comprehensive error handling
+- Refactored `FileFormat` enum to use enhanced enum with extension values
+- Simplified format detection logic by eliminating manual switch statements
+- Added comprehensive format comparison documentation
+- All three formats now have feature parity where applicable
+- Maintained legacy `generateFromExcel` method for backward compatibility
+
 ### Style
 
 - **Code Formatting**: Applied `dart format` to all source files

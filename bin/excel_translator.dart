@@ -114,7 +114,7 @@ void _printUsage() {
   print('📁 SUPPORTED FILE FORMATS:');
   print('  • Excel (.xlsx) - Multi-sheet support');
   print('  • CSV (.csv) - Single sheet as filename');
-  print('  • ODS (.ods) - Planned for future release');
+  print('  • ODS (.ods) - OpenDocument Spreadsheet with multi-sheet support');
   print('');
   print('EXAMPLES:');
   print(
@@ -124,6 +124,8 @@ void _printUsage() {
   print(
       '  excel_translator assets/localizations.csv                 # CSV with defaults');
   print(
+      '  excel_translator assets/localizations.ods                 # ODS with defaults');
+  print(
       '  excel_translator assets/localizations.xlsx lib/generated  # Specify output dir');
   print(
       '  excel_translator assets/localizations.csv lib/generated AppLocalizations');
@@ -131,7 +133,7 @@ void _printUsage() {
   print('📄 CONFIGURATION via pubspec.yaml:');
   print('');
   print('excel_translator:');
-  print('  excel_file: assets/localizations.xlsx  # or .csv');
+  print('  excel_file: assets/localizations.xlsx  # or .csv, .ods');
   print('  output_directory: lib/generated');
   print('  class_name: AppLocalizations');
   print('  include_flutter_delegates: true');
@@ -140,5 +142,6 @@ void _printUsage() {
   print('  • CLI arguments take precedence over pubspec.yaml configuration');
   print('  • CSV format: first column = keys, other columns = language codes');
   print('  • Excel format: supports multiple sheets for organization');
+  print('  • ODS format: OpenDocument Spreadsheet with multi-sheet support');
   print('  • Use -h or --help to show this message');
 }
