@@ -1,6 +1,6 @@
-# 📋 Example Project - Excel Localizations Generator
+# 📋 Example Project - Excel Translator
 
-Project ini mendemonstrasikan penggunaan **Excel Localizations Generator** dengan assets lokal dan testing lengkap.
+Project ini mendemonstrasikan penggunaan **Excel Translator** dengan assets lokal dan testing lengkap.
 
 ## 📁 Struktur Folder
 
@@ -204,4 +204,4 @@ Ketika menjalankan `dart demo.dart`, Anda akan melihat:
 4. **Performance**: Generated classes sangat ringan dan cepat
 5. **Type Safety**: Semua translations adalah type-safe dengan autocomplete
 
-Selamat menggunakan Excel Localizations Generator! 🌟
+Selamat menggunakan Excel Translator! 🌟

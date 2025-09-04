@@ -3,7 +3,7 @@
 ## [1.0.0] - 2024-12-19
 
 ### Added
-- Initial release of Excel Localizations Generator
+- Initial release of Excel Translator
 - Multi-sheet Excel file support
 - Type-safe localization generation
 - BuildContext extension for easy access

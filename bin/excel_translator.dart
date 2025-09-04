@@ -95,7 +95,7 @@ Map<String, String?> _parseCliArguments(List<String> arguments) {
 
 /// Print usage information
 void _printUsage() {
-  print('🚀 Excel Localizations Generator');
+  print('🚀 Excel Translator');
   print('');
   print('USAGE:');
   print('  excel_translator [OPTIONS] [ARGUMENTS]');

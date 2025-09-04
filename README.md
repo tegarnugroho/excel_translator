@@ -1,4 +1,4 @@
-# Excel Localizations Generator
+# Excel Translator
 
 Generate type-safe Flutter/Dart localizations from Excel files with automatic language validation and modern Dart conventions.
 
@@ -16,8 +16,7 @@ Generate type-safe Flutter/Dart localizations from Excel files with automatic la
 
 ```yaml
 dependencies:
-  excel_translator:
-    git: https://github.com/your/repo.git
+  excel_translator: ^1.0.0
 ```
 
 ## Quick Start
