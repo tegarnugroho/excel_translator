@@ -1,4 +1,4 @@
-# Excel Translator
+# Excel Translator - Multi-Format Localizations
 
 Generate type-safe Flutter/Dart localizations from multiple file formats (Excel, CSV, ODS) with automatic language validation and modern Dart conventions.
 
