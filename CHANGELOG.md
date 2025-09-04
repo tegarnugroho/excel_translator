@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.0.1] - 2025-09-04
+
+### Fixed
+- **WASM Compatibility**: Removed `dart:io` dependency from generated code
+- Generated localizations now work in WASM environments
+- System language detection uses only `PlatformDispatcher` (WASM compatible)
+- Separated runtime exports from build-time dependencies
+
+### Changed
+- Improved language detection fallback mechanism
+- Better error handling for environments without platform access
+
 ## [1.0.0] - 2024-12-19
 
 ### Added
