@@ -7,6 +7,9 @@
 - Generated localizations now work in WASM environments
 - System language detection uses only `PlatformDispatcher` (WASM compatible)
 - Separated runtime exports from build-time dependencies
+- **Static Analysis**: Fixed CLI import issues for pub.dev scoring
+- Resolved relative import warnings in `bin/excel_translator.dart`
+- Created dedicated CLI export file (`lib/cli.dart`) for build-time dependencies
 
 ### Changed
 - Improved language detection fallback mechanism
