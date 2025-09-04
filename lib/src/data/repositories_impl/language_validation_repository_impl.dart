@@ -1,15 +1,20 @@
 // Implementation of language validation repository
 import '../../domain/repositories/repositories.dart';
-import '../lang/language_data.dart';
+import 'language_repository_impl.dart';
 
 /// Implementation of language validation repository
 class LanguageValidationRepositoryImpl implements ILanguageValidationRepository {
+  final ILanguageRepository _languageRepository;
+
+  LanguageValidationRepositoryImpl({
+    ILanguageRepository? languageRepository,
+  }) : _languageRepository = languageRepository ?? LanguageRepositoryImpl();
   @override
   bool isValidLanguageCode(String code) {
     final normalizedCode = code.toLowerCase().trim();
 
     // Check exact match with ISO 639-1 codes
-    if (LanguageData.validLanguageCodes.contains(normalizedCode)) {
+    if (_languageRepository.getValidLanguageCodes().contains(normalizedCode)) {
       return true;
     }
 
@@ -17,7 +22,7 @@ class LanguageValidationRepositoryImpl implements ILanguageValidationRepository 
     if (normalizedCode.contains('_')) {
       final parts = normalizedCode.split('_');
       if (parts.length == 2 &&
-          LanguageData.validLanguageCodes.contains(parts[0])) {
+          _languageRepository.getValidLanguageCodes().contains(parts[0])) {
         return true;
       }
     }
@@ -26,7 +31,7 @@ class LanguageValidationRepositoryImpl implements ILanguageValidationRepository 
     if (normalizedCode.contains('-')) {
       final parts = normalizedCode.split('-');
       if (parts.length == 2 &&
-          LanguageData.validLanguageCodes.contains(parts[0])) {
+          _languageRepository.getValidLanguageCodes().contains(parts[0])) {
         return true;
       }
     }
@@ -62,12 +67,12 @@ class LanguageValidationRepositoryImpl implements ILanguageValidationRepository 
 
   @override
   String getLanguageName(String code) {
-    return LanguageData.languageNames[code.toLowerCase()] ?? code.toLowerCase();
+    return _languageRepository.getLanguageName(code);
   }
 
   @override
-  Set<String> get validLanguageCodes => LanguageData.validLanguageCodes;
+  Set<String> get validLanguageCodes => _languageRepository.getValidLanguageCodes();
 
   @override
-  Map<String, String> get languageNames => LanguageData.languageNames;
+  Map<String, String> get languageNames => _languageRepository.getLanguageNames();
 }

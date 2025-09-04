@@ -2,16 +2,17 @@ import 'dart:io';
 import 'package:test/test.dart';
 import 'package:path/path.dart' as path;
 import '../lib/src/core/localization_generator.dart';
-import '../lib/src/data/lang/language_data.dart';
+import '../lib/src/data/repositories_impl/language_repository_impl.dart';
 import '../lib/src/core/string_utils.dart';
 import '../lib/src/data/repositories_impl/language_validation_repository_impl.dart';
 
 void main() {
   final languageRepo = LanguageValidationRepositoryImpl();
+  final languageDataRepo = LanguageRepositoryImpl();
   
-  group('LanguageData Tests', () {
+  group('LanguageRepository Tests', () {
     test('should load valid language codes', () {
-      final codes = LanguageData.validLanguageCodes;
+      final codes = languageDataRepo.getValidLanguageCodes();
 
       expect(codes, isNotEmpty);
       expect(codes, contains('en'));
@@ -21,7 +22,7 @@ void main() {
     });
 
     test('should load language names', () {
-      final names = LanguageData.languageNames;
+      final names = languageDataRepo.getLanguageNames();
 
       expect(names, isNotEmpty);
       expect(names['en'], equals('english'));
@@ -32,8 +33,8 @@ void main() {
 
     test('should handle missing language data gracefully', () {
       // This tests the fallback mechanism
-      expect(() => LanguageData.validLanguageCodes, returnsNormally);
-      expect(() => LanguageData.languageNames, returnsNormally);
+      expect(() => languageDataRepo.getValidLanguageCodes(), returnsNormally);
+      expect(() => languageDataRepo.getLanguageNames(), returnsNormally);
     });
   });
 
@@ -180,24 +181,24 @@ void main() {
   group('Language Name Resolution Tests', () {
     test('should resolve known language names', () {
       expect(
-          LanguageData.getLanguageName('en'), equals('english'));
-      expect(LanguageData.getLanguageName('id'),
+          languageDataRepo.getLanguageName('en'), equals('english'));
+      expect(languageDataRepo.getLanguageName('id'),
           equals('indonesian'));
       expect(
-          LanguageData.getLanguageName('es'), equals('spanish'));
+          languageDataRepo.getLanguageName('es'), equals('spanish'));
     });
 
     test('should handle case insensitive lookup', () {
       expect(
-          LanguageData.getLanguageName('EN'), equals('english'));
-      expect(LanguageData.getLanguageName('Id'),
+          languageDataRepo.getLanguageName('EN'), equals('english'));
+      expect(languageDataRepo.getLanguageName('Id'),
           equals('indonesian'));
     });
 
     test('should fallback to code for unknown languages', () {
-      expect(LanguageData.getLanguageName('unknown'),
+      expect(languageDataRepo.getLanguageName('unknown'),
           equals('unknown'));
-      expect(LanguageData.getLanguageName('xyz'), equals('xyz'));
+      expect(languageDataRepo.getLanguageName('xyz'), equals('xyz'));
     });
   });
 
