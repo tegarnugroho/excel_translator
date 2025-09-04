@@ -1,5 +1,5 @@
 // Language validation for Excel Translator
-import '../lang/language_data.dart';
+import '../../data/lang/language_data.dart';
 
 /// Language code validation utilities
 class LanguageValidator {

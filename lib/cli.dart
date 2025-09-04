@@ -1,3 +1,3 @@
 // CLI exports - includes build-time dependencies
-export 'src/generator.dart';
-export 'src/config/excel_translator_config.dart';
+export 'src/core/generator.dart';
+export 'src/data/config/excel_translator_config.dart';

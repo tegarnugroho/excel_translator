@@ -1,2 +1,2 @@
 // Runtime exports - WASM compatible
-export '../models/models.dart';
+export '../data/models/models.dart';

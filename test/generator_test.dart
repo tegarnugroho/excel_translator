@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'package:test/test.dart';
 import 'package:path/path.dart' as path;
-import '../lib/src/generator.dart';
-import '../lib/src/lang/language_data.dart';
-import '../lib/src/utils/string_utils.dart';
-import '../lib/src/validators/language_validator.dart';
+import '../lib/src/core/generator.dart';
+import '../lib/src/data/lang/language_data.dart';
+import '../lib/src/infrastructure/utils/string_utils.dart';
+import '../lib/src/infrastructure/validators/language_validator.dart';
 
 void main() {
   group('LanguageData Tests', () {

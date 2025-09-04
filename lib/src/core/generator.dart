@@ -1,11 +1,11 @@
 // Main generator for Excel Translator
 import 'dart:io';
-import 'models/models.dart';
-import 'parsers/file_parser.dart';
-import 'validators/language_validator.dart';
-import 'code_generators/main_class_generator.dart';
-import 'code_generators/sheet_class_generator.dart';
-import 'code_generators/extension_generator.dart';
+import '../data/models/models.dart';
+import '../infrastructure/parsers/file_parser_factory.dart';
+import '../infrastructure/validators/language_validator.dart';
+import '../generators/implementations/main_class_generator.dart';
+import '../generators/implementations/sheet_class_generator.dart';
+import '../generators/implementations/extension_generator.dart';
 
 /// Main class for generating localizations from various file formats
 class LocalizationsGenerator {

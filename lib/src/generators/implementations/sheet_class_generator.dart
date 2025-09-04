@@ -1,8 +1,8 @@
 // Individual sheet class generator
 import 'dart:io';
 import 'package:path/path.dart' as path;
-import '../models/models.dart';
-import '../utils/string_utils.dart';
+import '../../data/models/models.dart';
+import '../../infrastructure/utils/string_utils.dart';
 
 /// Generator for individual sheet localizations classes
 class SheetClassGenerator {

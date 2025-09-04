@@ -2,7 +2,7 @@
 library excel_translator;
 
 // Export only WASM-compatible runtime parts for library users
-export 'src/models/models.dart';
+export 'src/data/models/models.dart';
 
 // Re-export flutter_localizations so users don't need to add it manually
 export 'package:flutter_localizations/flutter_localizations.dart';

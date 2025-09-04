@@ -1,7 +1,7 @@
 // BuildContext extension generator
 import 'dart:io';
 import 'package:path/path.dart' as path;
-import '../models/models.dart';
+import '../../data/models/models.dart';
 
 /// Generator for BuildContext extension
 class ExtensionGenerator {
