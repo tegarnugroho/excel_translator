@@ -84,12 +84,14 @@ void main() {
       expect(result, isNull);
     });
 
-    test('should return null when file does not exist and no fallback found', () {
+    test('should fallback to project lang.json when specified file does not exist', () {
       final result = dataSource.loadLanguageData('/absolutely/non/existent/path/file.json');
 
-      // During test execution, the package discovery might not work,
-      // so this should return null
-      expect(result, isNull);
+      // When specified file doesn't exist, it should fallback to project's lang.json
+      // which exists in lib/assets/lang.json
+      expect(result, isNotNull);
+      expect(result!['lang'], isA<List>());
+      expect(result['lang'], isNotEmpty);
     });
 
     test('should return null for unsupported JSON structure', () async {
