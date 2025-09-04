@@ -1,2 +1,2 @@
 // CLI exports - includes build-time dependencies
-export 'src/src.dart';
+export 'src/presentation/cli.dart';
