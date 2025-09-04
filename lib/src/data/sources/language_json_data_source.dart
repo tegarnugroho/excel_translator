@@ -49,18 +49,6 @@ class LanguageJsonDataSource {
     if (libAssetsJsonFile.existsSync()) {
       return libAssetsJsonFile;
     }
-    
-    // Look in assets folder (alternative location)
-    final assetsJsonFile = File(path.join(packageRoot.path, 'assets', 'lang.json'));
-    if (assetsJsonFile.existsSync()) {
-      return assetsJsonFile;
-    }
-    
-    // Fallback to old location for backward compatibility
-    final legacyJsonFile = File(path.join(packageRoot.path, 'lib', 'src', 'data', 'lang', 'lang.json'));
-    if (legacyJsonFile.existsSync()) {
-      return legacyJsonFile;
-    }
 
     return null;
   }
