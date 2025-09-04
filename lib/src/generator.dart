@@ -314,7 +314,6 @@ class ExcelLocalizationsGenerator {
       buffer.writeln("import 'package:excel_translator/excel_translator.dart';");
       buffer.writeln("import 'dart:ui' show PlatformDispatcher;");
     }
-    buffer.writeln("import 'dart:io' show Platform;");
     
     // Add sheet imports
     for (final sheet in sheets) {
@@ -394,18 +393,7 @@ class ExcelLocalizationsGenerator {
       buffer.writeln('        }');
       buffer.writeln('      }');
       buffer.writeln('    } catch (e) {');
-      buffer.writeln('      // PlatformDispatcher might not be available');
-      buffer.writeln('    }');
-      buffer.writeln();
-      buffer.writeln('    try {');
-      buffer.writeln('      // Fallback to Platform.localeName');
-      buffer.writeln('      final platformLocale = Platform.localeName;');
-      buffer.writeln("      final languageCode = platformLocale.split('_').first.toLowerCase();");
-      buffer.writeln('      if (supportedLanguages.contains(languageCode)) {');
-      buffer.writeln('        return languageCode;');
-      buffer.writeln('      }');
-      buffer.writeln('    } catch (e) {');
-      buffer.writeln('      // Platform.localeName might not be available');
+      buffer.writeln('      // PlatformDispatcher might not be available in some environments');
       buffer.writeln('    }');
       buffer.writeln();
       buffer.writeln('    // Final fallback to English');

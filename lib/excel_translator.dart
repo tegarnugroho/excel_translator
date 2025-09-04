@@ -1,8 +1,8 @@
 // Excel Translator - Generate localizations from Excel files
 library excel_translator;
 
-// Export the main generator class and models for library users
-export 'src/src.dart';
+// Export only WASM-compatible runtime parts for library users
+export 'src/models/models.dart';
 
 // Re-export flutter_localizations so users don't need to add it manually
 export 'package:flutter_localizations/flutter_localizations.dart';
