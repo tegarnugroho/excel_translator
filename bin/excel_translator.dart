@@ -63,8 +63,8 @@ void main(List<String> arguments) async {
   print('');
 
   try {
-    await excel_cli.ExcelLocalizationsGenerator.generateFromExcel(
-      excelFilePath: excelFilePath,
+    await excel_cli.ExcelLocalizationsGenerator.generateFromFile(
+      filePath: excelFilePath,
       outputDir: outputDir,
       className: className,
       includeFlutterDelegates: includeFlutterDelegates,
@@ -107,30 +107,38 @@ void _printUsage() {
   print('');
   print('ARGUMENTS:');
   print(
-      '  excel_translator                                           # Use pubspec.yaml config');
+      '  excel_translator                                     # Use pubspec.yaml config');
   print(
-      '  excel_translator <excel_file> [output_dir] [class_name]   # Use CLI arguments');
+      '  excel_translator <file> [output_dir] [class_name]   # Use CLI arguments');
+  print('');
+  print('📁 SUPPORTED FILE FORMATS:');
+  print('  • Excel (.xlsx) - Multi-sheet support');
+  print('  • CSV (.csv) - Single sheet as filename');
+  print('  • ODS (.ods) - Planned for future release');
   print('');
   print('EXAMPLES:');
   print(
       '  excel_translator                                           # Read config from pubspec.yaml');
   print(
-      '  excel_translator assets/localizations.xlsx                # Use defaults for output_dir and class_name');
+      '  excel_translator assets/localizations.xlsx                # Excel with defaults');
   print(
-      '  excel_translator assets/localizations.xlsx lib/generated  # Use default class_name');
+      '  excel_translator assets/localizations.csv                 # CSV with defaults');
   print(
-      '  excel_translator assets/localizations.xlsx lib/generated AppLocalizations');
+      '  excel_translator assets/localizations.xlsx lib/generated  # Specify output dir');
+  print(
+      '  excel_translator assets/localizations.csv lib/generated AppLocalizations');
   print('');
   print('📄 CONFIGURATION via pubspec.yaml:');
   print('');
   print('excel_translator:');
-  print('  excel_file: assets/localizations.xlsx');
+  print('  excel_file: assets/localizations.xlsx  # or .csv');
   print('  output_directory: lib/generated');
   print('  class_name: AppLocalizations');
   print('  include_flutter_delegates: true');
   print('');
   print('💡 TIPS:');
   print('  • CLI arguments take precedence over pubspec.yaml configuration');
-  print('  • If no pubspec.yaml config exists, CLI arguments are required');
+  print('  • CSV format: first column = keys, other columns = language codes');
+  print('  • Excel format: supports multiple sheets for organization');
   print('  • Use -h or --help to show this message');
 }

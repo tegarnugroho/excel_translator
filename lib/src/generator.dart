@@ -1,9 +1,9 @@
 // Main generator for Excel Translator
 import 'dart:io';
 import 'dart:convert';
-import 'package:excel/excel.dart';
 import 'package:path/path.dart' as path;
 import 'models/models.dart';
+import 'parsers/file_parser.dart';
 
 /// Language data loaded from JSON file
 class LanguageData {
@@ -138,78 +138,28 @@ class LanguageData {
   }
 }
 
-/// Main class for generating localizations from Excel files
+/// Main class for generating localizations from various file formats
 class ExcelLocalizationsGenerator {
-  /// Generate localizations from an Excel file
-  static Future<void> generateFromExcel({
-    required String excelFilePath,
+  /// Generate localizations from a file (Excel .xlsx, CSV .csv, or ODS .ods)
+  static Future<void> generateFromFile({
+    required String filePath,
     required String outputDir,
     String className = 'AppLocalizations',
     bool includeFlutterDelegates = true,
   }) async {
     try {
-      final file = File(excelFilePath);
+      final file = File(filePath);
       if (!file.existsSync()) {
-        throw Exception('Excel file not found: $excelFilePath');
+        throw Exception('File not found: $filePath');
       }
 
-      final bytes = await file.readAsBytes();
-      final excel = Excel.decodeBytes(bytes);
+      // Use the file parser factory to handle different formats
+      final parser = FileParserFactory.createParser(filePath);
+      final sheets = parser.parseFile(filePath);
 
-      final sheets = <LocalizationSheet>[];
-
-      // Process each sheet
-      for (final sheetName in excel.tables.keys) {
-        final sheet = excel.tables[sheetName];
-        if (sheet == null) continue;
-
-        final entries = <LocalizationEntry>[];
-        final rows = sheet.rows;
-
-        if (rows.isEmpty) continue;
-
-        // First row should contain language codes
-        final languageCodes = <String>[];
-        final headerRow = rows[0];
-
-        for (int i = 1; i < headerRow.length; i++) {
-          final cell = headerRow[i];
-          if (cell?.value != null) {
-            languageCodes.add(cell!.value.toString());
-          }
-        }
-
-        // Validate that header contains valid language codes
-        _validateLanguageCodes(languageCodes, sheetName);
-
-        // Process data rows
-        for (int i = 1; i < rows.length; i++) {
-          final row = rows[i];
-          if (row.isEmpty) continue;
-
-          final keyCell = row[0];
-          if (keyCell?.value == null) continue;
-
-          final key = keyCell!.value.toString();
-          final translations = <String, String>{};
-
-          for (int j = 1; j < row.length && j - 1 < languageCodes.length; j++) {
-            final cell = row[j];
-            final languageCode = languageCodes[j - 1];
-            translations[languageCode] = cell?.value?.toString() ?? '';
-          }
-
-          entries.add(LocalizationEntry(
-            key: key,
-            translations: translations,
-          ));
-        }
-
-        sheets.add(LocalizationSheet(
-          name: _sanitizeSheetName(sheetName),
-          entries: entries,
-          languageCodes: languageCodes,
-        ));
+      // Validate language codes for all sheets
+      for (final sheet in sheets) {
+        _validateLanguageCodes(sheet.languageCodes, sheet.name);
       }
 
       await _generateDartFiles(
@@ -223,8 +173,26 @@ class ExcelLocalizationsGenerator {
       }
     } catch (e) {
       print('❌ Error generating localizations: $e');
+      print('❌ Generation failed: $e');
       rethrow;
     }
+  }
+
+  /// Legacy method for backward compatibility
+  /// Use [generateFromFile] instead
+  @Deprecated('Use generateFromFile instead')
+  static Future<void> generateFromExcel({
+    required String excelFilePath,
+    required String outputDir,
+    String className = 'AppLocalizations',
+    bool includeFlutterDelegates = true,
+  }) async {
+    return generateFromFile(
+      filePath: excelFilePath,
+      outputDir: outputDir,
+      className: className,
+      includeFlutterDelegates: includeFlutterDelegates,
+    );
   }
 
   /// Validates if a string is a valid language code (exposed for testing)

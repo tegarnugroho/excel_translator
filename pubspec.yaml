@@ -21,6 +21,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   excel: ^4.0.3
+  csv: ^6.0.0
   path: ^1.8.3
   yaml: ^3.1.2
 
