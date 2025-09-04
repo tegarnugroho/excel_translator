@@ -7,13 +7,9 @@ issue_tracker: https://github.com/tegarnugroho/excel_translator/issues
 documentation: https://github.com/tegarnugroho/excel_translator#readme
 
 topics:
-  - flutter
   - localization
   - i18n
   - excel
-  - code-generation
-  - multi-language
-  - internationalization
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
