@@ -44,12 +44,28 @@ excel_translator:
 
 ### 3. Generate
 
+#### Option A: Project-level (recommended)
 ```bash
 # Simple - uses pubspec.yaml config
 dart run excel_translator
 
 # Or specify parameters
 dart run excel_translator assets/localizations.xlsx lib/generated
+```
+
+#### Option B: Global installation (run anywhere)
+```bash
+# Install globally from pub.dev
+dart pub global activate excel_translator
+
+# Now you can run directly without "dart run"
+excel_translator
+
+# Use with parameters
+excel_translator assets/localizations.xlsx lib/generated
+
+# To uninstall globally
+dart pub global deactivate excel_translator
 ```
 
 ### 4. Use Generated Code
@@ -214,13 +230,32 @@ Supports 184+ ISO 639-1 language codes including:
 
 ## CLI Options
 
+### Project-level usage
 ```bash
 # Zero-config (uses pubspec.yaml)
 dart run excel_translator
 
 # Full command
 dart run excel_translator [excel_file] [output_dir] [options]
+```
 
+### Global installation
+```bash
+# Install globally
+dart pub global activate excel_translator
+
+# Use anywhere without "dart run"
+excel_translator
+
+# With parameters
+excel_translator [excel_file] [output_dir] [options]
+
+# Uninstall
+dart pub global deactivate excel_translator
+```
+
+### Options
+```bash
 Options:
   -c, --class-name=<name>     Generated class name (default: AppLocalizations)
   -d, --delegates             Include Flutter delegates (default: true)
