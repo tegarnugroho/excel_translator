@@ -1,14 +1,11 @@
 // Main generator for Excel Translator
-import 'dart:io';
-import '../data/models/models.dart';
-import '../infrastructure/parsers/file_parser_factory.dart';
-import '../infrastructure/validators/language_validator.dart';
-import '../generators/implementations/main_class_generator.dart';
-import '../generators/implementations/sheet_class_generator.dart';
-import '../generators/implementations/extension_generator.dart';
+import '../application/translator_service.dart';
 
 /// Main class for generating localizations from various file formats
+/// This is a legacy wrapper that delegates to the new TranslatorService
 class LocalizationsGenerator {
+  static final _service = TranslatorService.create();
+
   /// Generate localizations from a file (Excel .xlsx, CSV .csv, or ODS .ods)
   static Future<void> generateFromFile({
     required String filePath,
@@ -16,35 +13,12 @@ class LocalizationsGenerator {
     String className = 'AppLocalizations',
     bool includeFlutterDelegates = true,
   }) async {
-    try {
-      final file = File(filePath);
-      if (!file.existsSync()) {
-        throw Exception('File not found: $filePath');
-      }
-
-      // Use the file parser factory to handle different formats
-      final parser = FileParserFactory.createParser(filePath);
-      final sheets = parser.parseFile(filePath);
-
-      // Validate language codes for all sheets
-      for (final sheet in sheets) {
-        LanguageValidator.validateLanguageCodes(sheet.languageCodes, sheet.name);
-      }
-
-      await _generateDartFiles(
-          sheets, outputDir, className, includeFlutterDelegates);
-
-      print('✅ Localizations generated successfully!');
-      print('📁 Output directory: $outputDir');
-      print('📊 Generated ${sheets.length} sheet(s)');
-      for (final sheet in sheets) {
-        print('  - ${sheet.name}: ${sheet.entries.length} keys');
-      }
-    } catch (e) {
-      print('❌ Error generating localizations: $e');
-      print('❌ Generation failed: $e');
-      rethrow;
-    }
+    await _service.generateFromFile(
+      filePath: filePath,
+      outputDir: outputDir,
+      className: className,
+      includeFlutterDelegates: includeFlutterDelegates,
+    );
   }
 
   /// Legacy method for backward compatibility
@@ -64,38 +38,18 @@ class LocalizationsGenerator {
     );
   }
 
-  // Private helper method
-  static Future<void> _generateDartFiles(
-    List<LocalizationSheet> sheets,
-    String outputDir,
-    String className,
-    bool includeFlutterDelegates,
-  ) async {
-    final outputDirectory = Directory(outputDir);
-    if (!outputDirectory.existsSync()) {
-      outputDirectory.createSync(recursive: true);
-    }
-
-    // Generate main localizations class
-    await MainClassGenerator.generate(
-        sheets, outputDir, className, includeFlutterDelegates);
-
-    // Generate individual sheet classes
-    for (final sheet in sheets) {
-      await SheetClassGenerator.generate(sheet, outputDir);
-    }
-
-    // Generate BuildContext extension
-    await ExtensionGenerator.generate(sheets, outputDir, className);
-  }
-
-  // Public methods for testing and backward compatibility
+  /// Validate if a language code is valid
   static bool isValidLanguageCode(String code) {
-    return LanguageValidator.isValidLanguageCode(code);
+    return _service.isValidLanguageCode(code);
   }
 
-  static void validateLanguageCodes(
-      List<String> languageCodes, String sheetName) {
-    LanguageValidator.validateLanguageCodes(languageCodes, sheetName);
+  /// Validate language codes and throw exception if invalid
+  static void validateLanguageCodes(List<String> languageCodes, String sheetName) {
+    // This will be handled by the use case internally
+    for (final code in languageCodes) {
+      if (!_service.isValidLanguageCode(code)) {
+        throw Exception('Invalid language code: $code in sheet: $sheetName');
+      }
+    }
   }
 }

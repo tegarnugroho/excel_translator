@@ -3,10 +3,12 @@ import 'package:test/test.dart';
 import 'package:path/path.dart' as path;
 import '../lib/src/core/localization_generator.dart';
 import '../lib/src/data/lang/language_data.dart';
-import '../lib/src/infrastructure/utils/string_utils.dart';
-import '../lib/src/infrastructure/validators/language_validator.dart';
+import '../lib/src/core/string_utils.dart';
+import '../lib/src/data/repositories_impl/language_validation_repository_impl.dart';
 
 void main() {
+  final languageRepo = LanguageValidationRepositoryImpl();
+  
   group('LanguageData Tests', () {
     test('should load valid language codes', () {
       final codes = LanguageData.validLanguageCodes;
@@ -37,43 +39,43 @@ void main() {
 
   group('Language Code Validation Tests', () {
     test('should validate standard ISO 639-1 codes', () {
-      expect(LanguageValidator.isValidLanguageCode('en'), isTrue);
-      expect(LanguageValidator.isValidLanguageCode('id'), isTrue);
-      expect(LanguageValidator.isValidLanguageCode('es'), isTrue);
-      expect(LanguageValidator.isValidLanguageCode('fr'), isTrue);
+      expect(languageRepo.isValidLanguageCode('en'), isTrue);
+      expect(languageRepo.isValidLanguageCode('id'), isTrue);
+      expect(languageRepo.isValidLanguageCode('es'), isTrue);
+      expect(languageRepo.isValidLanguageCode('fr'), isTrue);
     });
 
     test('should validate locale formats with underscore', () {
-      expect(LanguageValidator.isValidLanguageCode('en_US'), isTrue);
-      expect(LanguageValidator.isValidLanguageCode('pt_BR'), isTrue);
-      expect(LanguageValidator.isValidLanguageCode('zh_CN'), isTrue);
+      expect(languageRepo.isValidLanguageCode('en_US'), isTrue);
+      expect(languageRepo.isValidLanguageCode('pt_BR'), isTrue);
+      expect(languageRepo.isValidLanguageCode('zh_CN'), isTrue);
     });
 
     test('should validate locale formats with dash (backward compatibility)',
         () {
-      expect(LanguageValidator.isValidLanguageCode('en-US'), isTrue);
-      expect(LanguageValidator.isValidLanguageCode('pt-BR'), isTrue);
-      expect(LanguageValidator.isValidLanguageCode('zh-CN'), isTrue);
+      expect(languageRepo.isValidLanguageCode('en-US'), isTrue);
+      expect(languageRepo.isValidLanguageCode('pt-BR'), isTrue);
+      expect(languageRepo.isValidLanguageCode('zh-CN'), isTrue);
     });
 
     test('should handle case insensitive validation', () {
-      expect(LanguageValidator.isValidLanguageCode('EN'), isTrue);
-      expect(LanguageValidator.isValidLanguageCode('Id'), isTrue);
-      expect(LanguageValidator.isValidLanguageCode('ES'), isTrue);
-      expect(LanguageValidator.isValidLanguageCode('EN_US'), isTrue);
+      expect(languageRepo.isValidLanguageCode('EN'), isTrue);
+      expect(languageRepo.isValidLanguageCode('Id'), isTrue);
+      expect(languageRepo.isValidLanguageCode('ES'), isTrue);
+      expect(languageRepo.isValidLanguageCode('EN_US'), isTrue);
     });
 
     test('should reject invalid language codes', () {
-      expect(LanguageValidator.isValidLanguageCode('xyz'), isFalse);
+      expect(languageRepo.isValidLanguageCode('xyz'), isFalse);
       expect(
-          LanguageValidator.isValidLanguageCode('invalid'), isFalse);
-      expect(LanguageValidator.isValidLanguageCode('123'), isFalse);
-      expect(LanguageValidator.isValidLanguageCode(''), isFalse);
+          languageRepo.isValidLanguageCode('invalid'), isFalse);
+      expect(languageRepo.isValidLanguageCode('123'), isFalse);
+      expect(languageRepo.isValidLanguageCode(''), isFalse);
     });
 
     test('should handle whitespace in language codes', () {
-      expect(LanguageValidator.isValidLanguageCode(' en '), isTrue);
-      expect(LanguageValidator.isValidLanguageCode('  id  '), isTrue);
+      expect(languageRepo.isValidLanguageCode(' en '), isTrue);
+      expect(languageRepo.isValidLanguageCode('  id  '), isTrue);
     });
   });
 
@@ -251,15 +253,15 @@ void main() {
 
   group('Language Code Validation Edge Cases', () {
     test('should handle null and empty strings', () {
-      expect(LanguageValidator.isValidLanguageCode(''), isFalse);
+      expect(languageRepo.isValidLanguageCode(''), isFalse);
     });
 
     test('should validate complex locale formats', () {
-      expect(LanguageValidator.isValidLanguageCode('en_US_POSIX'),
+      expect(languageRepo.isValidLanguageCode('en_US_POSIX'),
           isFalse); // Too complex for current implementation
-      expect(LanguageValidator.isValidLanguageCode('en_'),
+      expect(languageRepo.isValidLanguageCode('en_'),
           isTrue); // Current implementation accepts this
-      expect(LanguageValidator.isValidLanguageCode('_US'),
+      expect(languageRepo.isValidLanguageCode('_US'),
           isFalse); // No language code before underscore
     });
   });
@@ -268,7 +270,7 @@ void main() {
     test('should handle invalid sheet data gracefully', () {
       expect(
         () =>
-            LanguageValidator.validateLanguageCodes([], 'TestSheet'),
+            languageRepo.validateLanguageCodes([], 'TestSheet'),
         throwsA(isA<Exception>()),
       );
     });
@@ -276,7 +278,7 @@ void main() {
     test('should provide helpful error messages for invalid language codes',
         () {
       expect(
-        () => LanguageValidator.validateLanguageCodes(
+        () => languageRepo.validateLanguageCodes(
             ['invalid', 'xyz'], 'TestSheet'),
         throwsA(
             predicate((e) => e.toString().contains('Invalid language codes'))),

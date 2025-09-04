@@ -2,8 +2,8 @@
 import 'dart:io';
 import 'package:path/path.dart' as path;
 import '../../data/models/models.dart';
-import '../../infrastructure/utils/string_utils.dart';
-import '../../infrastructure/validators/language_validator.dart';
+import '../../core/string_utils.dart';
+import '../../data/repositories_impl/language_validation_repository_impl.dart';
 
 /// Generator for main localizations class
 class MainClassGenerator {
@@ -74,8 +74,9 @@ class MainClassGenerator {
 
     if (includeFlutterDelegates) {
       // Add static helper methods for common languages
+      final languageRepo = LanguageValidationRepositoryImpl();
       for (final lang in sortedLanguages.take(5)) {
-        final capitalizedLang = LanguageValidator.getLanguageName(lang);
+        final capitalizedLang = languageRepo.getLanguageName(lang);
         buffer.writeln('  /// Get $capitalizedLang instance');
         buffer.writeln("  static $className get $lang => $className('$lang');");
       }
@@ -83,7 +84,7 @@ class MainClassGenerator {
 
       // Add convenience static getters with full names
       for (final lang in sortedLanguages.take(5)) {
-        final fullName = LanguageValidator.getLanguageName(lang);
+        final fullName = languageRepo.getLanguageName(lang);
         buffer.writeln(
             "  static $className get $fullName => $className('$lang');");
       }

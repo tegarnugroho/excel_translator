@@ -66,4 +66,17 @@ class StringUtils {
         .replaceAllMapped(RegExp(r'[A-Z]'), (match) => '_${match.group(0)!.toLowerCase()}')
         .replaceFirst(RegExp(r'^_'), '');
   }
+
+  /// Extract interpolation parameters from text
+  /// Example: "Welcome {name}!" -> ["name"]
+  static List<String> extractInterpolationParams(String text) {
+    final regex = RegExp(r'\{([^}]+)\}');
+    final matches = regex.allMatches(text);
+    return matches.map((match) => match.group(1)!).toSet().toList();
+  }
+
+  /// Check if text contains interpolation parameters
+  static bool hasInterpolation(String text) {
+    return text.contains(RegExp(r'\{[^}]+\}'));
+  }
 }
