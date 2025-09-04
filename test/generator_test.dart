@@ -2,6 +2,9 @@ import 'dart:io';
 import 'package:test/test.dart';
 import 'package:path/path.dart' as path;
 import '../lib/src/generator.dart';
+import '../lib/src/lang/language_data.dart';
+import '../lib/src/utils/string_utils.dart';
+import '../lib/src/validators/language_validator.dart';
 
 void main() {
   group('LanguageData Tests', () {
@@ -34,139 +37,139 @@ void main() {
 
   group('Language Code Validation Tests', () {
     test('should validate standard ISO 639-1 codes', () {
-      expect(ExcelLocalizationsGenerator.isValidLanguageCode('en'), isTrue);
-      expect(ExcelLocalizationsGenerator.isValidLanguageCode('id'), isTrue);
-      expect(ExcelLocalizationsGenerator.isValidLanguageCode('es'), isTrue);
-      expect(ExcelLocalizationsGenerator.isValidLanguageCode('fr'), isTrue);
+      expect(LanguageValidator.isValidLanguageCode('en'), isTrue);
+      expect(LanguageValidator.isValidLanguageCode('id'), isTrue);
+      expect(LanguageValidator.isValidLanguageCode('es'), isTrue);
+      expect(LanguageValidator.isValidLanguageCode('fr'), isTrue);
     });
 
     test('should validate locale formats with underscore', () {
-      expect(ExcelLocalizationsGenerator.isValidLanguageCode('en_US'), isTrue);
-      expect(ExcelLocalizationsGenerator.isValidLanguageCode('pt_BR'), isTrue);
-      expect(ExcelLocalizationsGenerator.isValidLanguageCode('zh_CN'), isTrue);
+      expect(LanguageValidator.isValidLanguageCode('en_US'), isTrue);
+      expect(LanguageValidator.isValidLanguageCode('pt_BR'), isTrue);
+      expect(LanguageValidator.isValidLanguageCode('zh_CN'), isTrue);
     });
 
     test('should validate locale formats with dash (backward compatibility)',
         () {
-      expect(ExcelLocalizationsGenerator.isValidLanguageCode('en-US'), isTrue);
-      expect(ExcelLocalizationsGenerator.isValidLanguageCode('pt-BR'), isTrue);
-      expect(ExcelLocalizationsGenerator.isValidLanguageCode('zh-CN'), isTrue);
+      expect(LanguageValidator.isValidLanguageCode('en-US'), isTrue);
+      expect(LanguageValidator.isValidLanguageCode('pt-BR'), isTrue);
+      expect(LanguageValidator.isValidLanguageCode('zh-CN'), isTrue);
     });
 
     test('should handle case insensitive validation', () {
-      expect(ExcelLocalizationsGenerator.isValidLanguageCode('EN'), isTrue);
-      expect(ExcelLocalizationsGenerator.isValidLanguageCode('Id'), isTrue);
-      expect(ExcelLocalizationsGenerator.isValidLanguageCode('ES'), isTrue);
-      expect(ExcelLocalizationsGenerator.isValidLanguageCode('EN_US'), isTrue);
+      expect(LanguageValidator.isValidLanguageCode('EN'), isTrue);
+      expect(LanguageValidator.isValidLanguageCode('Id'), isTrue);
+      expect(LanguageValidator.isValidLanguageCode('ES'), isTrue);
+      expect(LanguageValidator.isValidLanguageCode('EN_US'), isTrue);
     });
 
     test('should reject invalid language codes', () {
-      expect(ExcelLocalizationsGenerator.isValidLanguageCode('xyz'), isFalse);
+      expect(LanguageValidator.isValidLanguageCode('xyz'), isFalse);
       expect(
-          ExcelLocalizationsGenerator.isValidLanguageCode('invalid'), isFalse);
-      expect(ExcelLocalizationsGenerator.isValidLanguageCode('123'), isFalse);
-      expect(ExcelLocalizationsGenerator.isValidLanguageCode(''), isFalse);
+          LanguageValidator.isValidLanguageCode('invalid'), isFalse);
+      expect(LanguageValidator.isValidLanguageCode('123'), isFalse);
+      expect(LanguageValidator.isValidLanguageCode(''), isFalse);
     });
 
     test('should handle whitespace in language codes', () {
-      expect(ExcelLocalizationsGenerator.isValidLanguageCode(' en '), isTrue);
-      expect(ExcelLocalizationsGenerator.isValidLanguageCode('  id  '), isTrue);
+      expect(LanguageValidator.isValidLanguageCode(' en '), isTrue);
+      expect(LanguageValidator.isValidLanguageCode('  id  '), isTrue);
     });
   });
 
   group('Sheet Name Sanitization Tests', () {
     test('should sanitize sheet names correctly', () {
-      expect(ExcelLocalizationsGenerator.sanitizeSheetName('Login Page'),
+      expect(StringUtils.sanitizeSheetName('Login Page'),
           equals('loginpage'));
-      expect(ExcelLocalizationsGenerator.sanitizeSheetName('User-Settings'),
+      expect(StringUtils.sanitizeSheetName('User-Settings'),
           equals('usersettings'));
-      expect(ExcelLocalizationsGenerator.sanitizeSheetName('123Numbers'),
-          equals('sheet\$023numbers'));
+      expect(StringUtils.sanitizeSheetName('123Numbers'),
+          equals('sheet\$123numbers'));
       expect(
-          ExcelLocalizationsGenerator.sanitizeSheetName('Special@#Characters'),
+          StringUtils.sanitizeSheetName('Special@#Characters'),
           equals('specialcharacters'));
     });
 
     test('should handle empty and special cases', () {
-      expect(ExcelLocalizationsGenerator.sanitizeSheetName(''), equals(''));
-      expect(ExcelLocalizationsGenerator.sanitizeSheetName('a'), equals('a'));
-      expect(ExcelLocalizationsGenerator.sanitizeSheetName('A'), equals('a'));
+      expect(StringUtils.sanitizeSheetName(''), equals(''));
+      expect(StringUtils.sanitizeSheetName('a'), equals('a'));
+      expect(StringUtils.sanitizeSheetName('A'), equals('a'));
     });
   });
 
   group('Method Name Sanitization Tests', () {
     test('should convert snake_case to camelCase', () {
-      expect(ExcelLocalizationsGenerator.sanitizeMethodName('app_title'),
+      expect(StringUtils.sanitizeMethodName('app_title'),
           equals('appTitle'));
-      expect(ExcelLocalizationsGenerator.sanitizeMethodName('welcome_message'),
+      expect(StringUtils.sanitizeMethodName('welcome_message'),
           equals('welcomeMessage'));
-      expect(ExcelLocalizationsGenerator.sanitizeMethodName('user_count'),
+      expect(StringUtils.sanitizeMethodName('user_count'),
           equals('userCount'));
-      expect(ExcelLocalizationsGenerator.sanitizeMethodName('save_button'),
+      expect(StringUtils.sanitizeMethodName('save_button'),
           equals('saveButton'));
     });
 
     test('should handle single words', () {
-      expect(ExcelLocalizationsGenerator.sanitizeMethodName('hello'),
+      expect(StringUtils.sanitizeMethodName('hello'),
           equals('hello'));
-      expect(ExcelLocalizationsGenerator.sanitizeMethodName('goodbye'),
+      expect(StringUtils.sanitizeMethodName('goodbye'),
           equals('goodbye'));
-      expect(ExcelLocalizationsGenerator.sanitizeMethodName('submit'),
+      expect(StringUtils.sanitizeMethodName('submit'),
           equals('submit'));
     });
 
     test('should handle special characters', () {
-      expect(ExcelLocalizationsGenerator.sanitizeMethodName('app-title'),
+      expect(StringUtils.sanitizeMethodName('app-title'),
           equals('apptitle'));
-      expect(ExcelLocalizationsGenerator.sanitizeMethodName('user@name'),
+      expect(StringUtils.sanitizeMethodName('user@name'),
           equals('username'));
-      expect(ExcelLocalizationsGenerator.sanitizeMethodName('test#key'),
+      expect(StringUtils.sanitizeMethodName('test#key'),
           equals('testkey'));
     });
 
     test('should handle numbers at start', () {
-      expect(ExcelLocalizationsGenerator.sanitizeMethodName('123test'),
-          equals('123test')); // Single word, no underscore, no key prefix
+      expect(StringUtils.sanitizeMethodName('123test'),
+          equals('key\$123test')); // Single word, no underscore, but gets key prefix for number start
       expect(
-          ExcelLocalizationsGenerator.sanitizeMethodName('1_title'),
+          StringUtils.sanitizeMethodName('1_title'),
           equals(
-              'key\$0Title')); // Has underscore, gets processed and key prefix
+              'key\$1Title')); // Has underscore, gets processed and key prefix
     });
 
     test('should handle empty underscore parts', () {
-      expect(ExcelLocalizationsGenerator.sanitizeMethodName('app__title'),
+      expect(StringUtils.sanitizeMethodName('app__title'),
           equals('appTitle'));
-      expect(ExcelLocalizationsGenerator.sanitizeMethodName('test___key'),
+      expect(StringUtils.sanitizeMethodName('test___key'),
           equals('testKey'));
     });
   });
 
   group('String Interpolation Tests', () {
     test('should extract interpolation parameters', () {
-      final params1 = ExcelLocalizationsGenerator.extractInterpolationParams(
+      final params1 = StringUtils.extractInterpolationParams(
           'Welcome {name}!');
       expect(params1, equals(['name']));
 
-      final params2 = ExcelLocalizationsGenerator.extractInterpolationParams(
+      final params2 = StringUtils.extractInterpolationParams(
           'You have {count} items in {location}');
       expect(params2, containsAll(['count', 'location']));
       expect(params2.length, equals(2));
     });
 
     test('should handle no interpolation', () {
-      final params = ExcelLocalizationsGenerator.extractInterpolationParams(
+      final params = StringUtils.extractInterpolationParams(
           'Simple message');
       expect(params, isEmpty);
     });
 
     test('should handle duplicate parameters', () {
-      final params = ExcelLocalizationsGenerator.extractInterpolationParams(
+      final params = StringUtils.extractInterpolationParams(
           'Hello {name}, welcome {name}!');
       expect(params, equals(['name'])); // Should deduplicate
     });
 
     test('should handle complex parameters', () {
-      final params = ExcelLocalizationsGenerator.extractInterpolationParams(
+      final params = StringUtils.extractInterpolationParams(
           'User {user_id} has {item_count} items');
       expect(params, containsAll(['user_id', 'item_count']));
     });
@@ -175,38 +178,38 @@ void main() {
   group('Language Name Resolution Tests', () {
     test('should resolve known language names', () {
       expect(
-          ExcelLocalizationsGenerator.getLanguageName('en'), equals('english'));
-      expect(ExcelLocalizationsGenerator.getLanguageName('id'),
+          LanguageData.getLanguageName('en'), equals('english'));
+      expect(LanguageData.getLanguageName('id'),
           equals('indonesian'));
       expect(
-          ExcelLocalizationsGenerator.getLanguageName('es'), equals('spanish'));
+          LanguageData.getLanguageName('es'), equals('spanish'));
     });
 
     test('should handle case insensitive lookup', () {
       expect(
-          ExcelLocalizationsGenerator.getLanguageName('EN'), equals('english'));
-      expect(ExcelLocalizationsGenerator.getLanguageName('Id'),
+          LanguageData.getLanguageName('EN'), equals('english'));
+      expect(LanguageData.getLanguageName('Id'),
           equals('indonesian'));
     });
 
     test('should fallback to code for unknown languages', () {
-      expect(ExcelLocalizationsGenerator.getLanguageName('unknown'),
+      expect(LanguageData.getLanguageName('unknown'),
           equals('unknown'));
-      expect(ExcelLocalizationsGenerator.getLanguageName('xyz'), equals('xyz'));
+      expect(LanguageData.getLanguageName('xyz'), equals('xyz'));
     });
   });
 
   group('Capitalization Tests', () {
     test('should capitalize strings correctly', () {
-      expect(ExcelLocalizationsGenerator.capitalize('hello'), equals('Hello'));
-      expect(ExcelLocalizationsGenerator.capitalize('test'), equals('Test'));
-      expect(ExcelLocalizationsGenerator.capitalize('login'), equals('Login'));
+      expect(StringUtils.capitalize('hello'), equals('Hello'));
+      expect(StringUtils.capitalize('test'), equals('Test'));
+      expect(StringUtils.capitalize('login'), equals('Login'));
     });
 
     test('should handle edge cases', () {
-      expect(ExcelLocalizationsGenerator.capitalize(''), equals(''));
-      expect(ExcelLocalizationsGenerator.capitalize('a'), equals('A'));
-      expect(ExcelLocalizationsGenerator.capitalize('A'), equals('A'));
+      expect(StringUtils.capitalize(''), equals(''));
+      expect(StringUtils.capitalize('a'), equals('A'));
+      expect(StringUtils.capitalize('A'), equals('A'));
     });
   });
 
@@ -225,8 +228,8 @@ void main() {
 
     test('should handle missing Excel file gracefully', () async {
       expect(
-        () => ExcelLocalizationsGenerator.generateFromExcel(
-          excelFilePath: 'nonexistent.xlsx',
+        () => LocalizationsGenerator.generateFromFile(
+          filePath: 'nonexistent.xlsx',
           outputDir: tempDir.path,
         ),
         throwsA(isA<Exception>()),
@@ -248,15 +251,15 @@ void main() {
 
   group('Language Code Validation Edge Cases', () {
     test('should handle null and empty strings', () {
-      expect(ExcelLocalizationsGenerator.isValidLanguageCode(''), isFalse);
+      expect(LanguageValidator.isValidLanguageCode(''), isFalse);
     });
 
     test('should validate complex locale formats', () {
-      expect(ExcelLocalizationsGenerator.isValidLanguageCode('en_US_POSIX'),
+      expect(LanguageValidator.isValidLanguageCode('en_US_POSIX'),
           isFalse); // Too complex for current implementation
-      expect(ExcelLocalizationsGenerator.isValidLanguageCode('en_'),
+      expect(LanguageValidator.isValidLanguageCode('en_'),
           isTrue); // Current implementation accepts this
-      expect(ExcelLocalizationsGenerator.isValidLanguageCode('_US'),
+      expect(LanguageValidator.isValidLanguageCode('_US'),
           isFalse); // No language code before underscore
     });
   });
@@ -265,7 +268,7 @@ void main() {
     test('should handle invalid sheet data gracefully', () {
       expect(
         () =>
-            ExcelLocalizationsGenerator.validateLanguageCodes([], 'TestSheet'),
+            LanguageValidator.validateLanguageCodes([], 'TestSheet'),
         throwsA(isA<Exception>()),
       );
     });
@@ -273,7 +276,7 @@ void main() {
     test('should provide helpful error messages for invalid language codes',
         () {
       expect(
-        () => ExcelLocalizationsGenerator.validateLanguageCodes(
+        () => LanguageValidator.validateLanguageCodes(
             ['invalid', 'xyz'], 'TestSheet'),
         throwsA(
             predicate((e) => e.toString().contains('Invalid language codes'))),

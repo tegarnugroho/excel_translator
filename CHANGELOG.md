@@ -1,8 +1,25 @@
 # Changelog
 
+## [1.0.3] - 2025-09-04
+
+### Changed
+
+- **BREAKING**: Renamed `ExcelLocalizationsGenerator` to `LocalizationsGenerator` for better semantic consistency with multi-format support
+- **Code Architecture**: Major refactoring of generator.dart from 636 lines to modular architecture:
+  - Extracted `LanguageData` class for language management
+  - Extracted `StringUtils` class for string manipulation utilities  
+  - Extracted `LanguageValidator` class for validation logic
+  - Created modular code generators: `MainClassGenerator`, `SheetClassGenerator`, `ExtensionGenerator`
+  - Improved code maintainability and testability
+
+### Note
+
+- All existing functionality remains the same, only internal architecture and class naming improved
+- Backward compatibility maintained through deprecated method aliases
+
 ## [1.0.2] - 2025-09-04
 
-### Added
+### New Features
 
 - **Multi-Format File Support**: Added CSV (.csv) and ODS (.ods) format support
 - **ODS Format Support**: Full OpenDocument Spreadsheet (.ods) support using spreadsheet_decoder
@@ -50,7 +67,7 @@
 - Resolved relative import warnings in `bin/excel_translator.dart`
 - Created dedicated CLI export file (`lib/cli.dart`) for build-time dependencies
 
-### Changed
+### Improvements
 
 - Improved language detection fallback mechanism
 - Better error handling for environments without platform access

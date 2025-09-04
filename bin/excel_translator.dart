@@ -63,7 +63,7 @@ void main(List<String> arguments) async {
   print('');
 
   try {
-    await excel_cli.ExcelLocalizationsGenerator.generateFromFile(
+    await excel_cli.LocalizationsGenerator.generateFromFile(
       filePath: excelFilePath,
       outputDir: outputDir,
       className: className,
