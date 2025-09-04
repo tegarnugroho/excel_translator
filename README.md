@@ -1,11 +1,6 @@
 # Excel Translator
 
-Gener## Installation
-
-```yaml
-dependencies:
-  excel_translator: ^1.0.2
-```pe-safe Flutter/Dart localizations from multiple file formats (Excel, CSV, ODS) with automatic language validation and modern Dart conventions.
+Generate type-safe Flutter/Dart localizations from multiple file formats (Excel, CSV, ODS) with automatic language validation and modern Dart conventions.
 
 ## Features
 
