@@ -37,6 +37,7 @@ dependencies:
 Choose your preferred format and create a file with language codes in the header row:
 
 #### Excel (.xlsx) - Best for complex projects
+
 | key | en | id | es |
 |-----|----|----|-----|
 | hello | Hello | Halo | Hola |
@@ -44,6 +45,7 @@ Choose your preferred format and create a file with language codes in the header
 | welcome_message | Welcome {name}! | Selamat datang {name}! | ¡Bienvenido {name}! |
 
 #### CSV (.csv) - Best for simple projects
+
 ```csv
 key,en,id,es
 hello,Hello,Halo,Hola
@@ -52,6 +54,7 @@ welcome_message,Welcome {name}!,Selamat datang {name}!,¡Bienvenido {name}!
 ```
 
 #### ODS (.ods) - Best for open-source projects
+
 OpenDocument Spreadsheet format (LibreOffice Calc) with the same structure as Excel.
 
 ### 2. Configure (Optional)
@@ -260,6 +263,7 @@ Supports 184+ ISO 639-1 language codes including:
 ## CLI Options
 
 ### Project-level usage
+
 ```bash
 # Zero-config (uses pubspec.yaml)
 dart run excel_translator
@@ -269,6 +273,7 @@ dart run excel_translator [excel_file] [output_dir] [options]
 ```
 
 ### Global installation
+
 ```bash
 # Install globally
 dart pub global activate excel_translator
@@ -284,6 +289,7 @@ dart pub global deactivate excel_translator
 ```
 
 ### Options
+
 ```bash
 Options:
   -c, --class-name=<name>     Generated class name (default: AppLocalizations)
