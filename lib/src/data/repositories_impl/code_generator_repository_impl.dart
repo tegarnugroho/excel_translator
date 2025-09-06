@@ -2,7 +2,9 @@
 import 'dart:io';
 import '../../domain/entities/entities.dart';
 import '../../domain/repositories/repositories.dart';
-import '../sources/sources.dart';
+import '../sources/main_code_data_source.dart';
+import '../sources/sheet_code_data_source.dart';
+import '../sources/extension_code_data_source.dart';
 
 /// Implementation of code generator repository using data sources
 class CodeGeneratorRepositoryImpl implements ICodeGeneratorRepository {
@@ -16,7 +18,8 @@ class CodeGeneratorRepositoryImpl implements ICodeGeneratorRepository {
     ExtensionCodeDataSource? extensionCodeDataSource,
   })  : _mainCodeDataSource = mainCodeDataSource ?? MainCodeDataSource(),
         _sheetCodeDataSource = sheetCodeDataSource ?? SheetCodeDataSource(),
-        _extensionCodeDataSource = extensionCodeDataSource ?? ExtensionCodeDataSource();
+        _extensionCodeDataSource =
+            extensionCodeDataSource ?? ExtensionCodeDataSource();
   @override
   Future<void> generateLocalizationClasses({
     required List<LocalizationSheet> sheets,
@@ -43,9 +46,9 @@ class CodeGeneratorRepositoryImpl implements ICodeGeneratorRepository {
         className,
       ),
       ...sheets.map((sheet) => _sheetCodeDataSource.generateSheetClass(
-        sheet,
-        outputDir,
-      )),
+            sheet,
+            outputDir,
+          )),
     ]);
   }
 

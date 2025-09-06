@@ -40,8 +40,8 @@ class SheetCodeDataSource {
 
       if (hasInterpolation) {
         // Generate method with parameters
-        final params =
-            StringUtils.extractInterpolationParams(translation.values.values.first);
+        final params = StringUtils.extractInterpolationParams(
+            translation.values.values.first);
         final paramList = params.map((p) => 'dynamic $p').join(', ');
 
         buffer.writeln('  String $methodName({$paramList}) {');

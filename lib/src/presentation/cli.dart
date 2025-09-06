@@ -57,24 +57,31 @@ class ExcelTranslatorCLI {
 
   /// Print usage information
   void _printUsage() {
-    print('Excel Translator - Generate Flutter localization files from Excel/CSV/ODS');
+    print(
+        'Excel Translator - Generate Flutter localization files from Excel/CSV/ODS');
     print('');
     print('Usage:');
-    print('  dart run excel_translator <input_file> <output_directory> [options]');
+    print(
+        '  dart run excel_translator <input_file> <output_directory> [options]');
     print('');
     print('Arguments:');
-    print('  input_file       Path to the Excel (.xlsx), CSV (.csv), or ODS (.ods) file');
+    print(
+        '  input_file       Path to the Excel (.xlsx), CSV (.csv), or ODS (.ods) file');
     print('  output_directory Directory where generated files will be saved');
     print('');
     print('Options:');
-    print('  --class-name=<name>        Name of the main localization class (default: AppLocalizations)');
+    print(
+        '  --class-name=<name>        Name of the main localization class (default: AppLocalizations)');
     print('  --no-flutter-delegates     Skip generating Flutter delegates');
     print('  --help, -h                 Show this help message');
     print('');
     print('Examples:');
-    print('  dart run excel_translator assets/localizations.xlsx lib/generated');
-    print('  dart run excel_translator data.csv output --class-name=MyLocalizations');
-    print('  dart run excel_translator file.ods lib/l10n --no-flutter-delegates');
+    print(
+        '  dart run excel_translator assets/localizations.xlsx lib/generated');
+    print(
+        '  dart run excel_translator data.csv output --class-name=MyLocalizations');
+    print(
+        '  dart run excel_translator file.ods lib/l10n --no-flutter-delegates');
     print('');
     print('Supported file formats:');
     print('  - Excel (.xlsx)');

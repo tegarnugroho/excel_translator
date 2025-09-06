@@ -20,7 +20,8 @@ class ConfigRepositoryImpl implements IConfigRepository {
       excelFilePath: configData['excel_file_path'] as String?,
       outputDir: configData['output_dir'] as String?,
       className: configData['class_name'] as String?,
-      includeFlutterDelegates: configData['include_flutter_delegates'] as bool? ?? true,
+      includeFlutterDelegates:
+          configData['include_flutter_delegates'] as bool? ?? true,
     );
   }
 
@@ -38,18 +39,18 @@ class ConfigRepositoryImpl implements IConfigRepository {
     ExcelTranslatorConfig? pubspec,
   }) {
     final defaultConfig = getDefault();
-    
+
     // Priority: provided > pubspec > default
     var result = defaultConfig;
-    
+
     if (pubspec != null) {
       result = result.mergeWith(pubspec);
     }
-    
+
     if (provided != null) {
       result = result.mergeWith(provided);
     }
-    
+
     return result;
   }
 }

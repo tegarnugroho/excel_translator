@@ -6,7 +6,7 @@ import '../../../../lib/src/domain/usecases/load_configuration_use_case.dart';
 class MockConfigRepository implements IConfigRepository {
   ExcelTranslatorConfig? _mockPubspecConfig;
   String? _lastPubspecPath;
-  
+
   void setMockPubspecConfig(ExcelTranslatorConfig? config) {
     _mockPubspecConfig = config;
   }
@@ -33,18 +33,18 @@ class MockConfigRepository implements IConfigRepository {
     ExcelTranslatorConfig? pubspec,
   }) {
     final defaultConfig = getDefault();
-    
+
     // Priority: provided > pubspec > default
     var result = defaultConfig;
-    
+
     if (pubspec != null) {
       result = result.mergeWith(pubspec);
     }
-    
+
     if (provided != null) {
       result = result.mergeWith(provided);
     }
-    
+
     return result;
   }
 }
@@ -84,7 +84,8 @@ void main() {
       expect(mockRepository.lastPubspecPath, equals('/custom/pubspec.yaml'));
     });
 
-    test('should merge with pubspec config when some parameters not provided', () {
+    test('should merge with pubspec config when some parameters not provided',
+        () {
       // Arrange
       const pubspecConfig = ExcelTranslatorConfig(
         excelFilePath: 'pubspec.xlsx',
@@ -103,10 +104,12 @@ void main() {
       expect(result.excelFilePath, equals('pubspec.xlsx')); // from pubspec
       expect(result.outputDir, equals('lib/pubspec_generated')); // from pubspec
       expect(result.className, equals('CustomLocalizations')); // from provided
-      expect(result.includeFlutterDelegates, isTrue); // from provided (default true when creating provided config)
+      expect(result.includeFlutterDelegates,
+          isTrue); // from provided (default true when creating provided config)
     });
 
-    test('should use default config when no parameters provided and no pubspec', () {
+    test('should use default config when no parameters provided and no pubspec',
+        () {
       // Arrange
       mockRepository.setMockPubspecConfig(null);
 
@@ -140,7 +143,8 @@ void main() {
       expect(result.excelFilePath, equals('override.xlsx')); // from provided
       expect(result.outputDir, equals('lib/pubspec_generated')); // from pubspec
       expect(result.className, equals('PubspecLocalizations')); // from pubspec
-      expect(result.includeFlutterDelegates, isTrue); // from provided (default true when creating provided config)
+      expect(result.includeFlutterDelegates,
+          isTrue); // from provided (default true when creating provided config)
     });
 
     test('should pass pubspec path to repository', () {
@@ -151,7 +155,8 @@ void main() {
       useCase.execute(pubspecPath: '/specific/path/pubspec.yaml');
 
       // Assert
-      expect(mockRepository.lastPubspecPath, equals('/specific/path/pubspec.yaml'));
+      expect(mockRepository.lastPubspecPath,
+          equals('/specific/path/pubspec.yaml'));
     });
 
     test('should handle null pubspec path', () {
@@ -178,7 +183,9 @@ void main() {
       expect(result.includeFlutterDelegates, isFalse); // from provided
     });
 
-    test('should use true as default for includeFlutterDelegates when creating provided config', () {
+    test(
+        'should use true as default for includeFlutterDelegates when creating provided config',
+        () {
       // Arrange
       mockRepository.setMockPubspecConfig(null);
 
@@ -189,7 +196,8 @@ void main() {
       );
 
       // Assert
-      expect(result.includeFlutterDelegates, isTrue); // default value when creating provided config
+      expect(result.includeFlutterDelegates,
+          isTrue); // default value when creating provided config
     });
 
     test('should not create provided config when no parameters are given', () {

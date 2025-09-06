@@ -22,26 +22,26 @@ class Validators {
   /// Validate class name format
   static bool isValidClassName(String className) {
     if (className.isEmpty) return false;
-    
+
     // Must start with letter or underscore
     if (!RegExp(r'^[a-zA-Z_]').hasMatch(className)) return false;
-    
+
     // Can only contain letters, numbers, and underscores
     if (!RegExp(r'^[a-zA-Z_][a-zA-Z0-9_]*$').hasMatch(className)) return false;
-    
+
     return true;
   }
 
   /// Validate method name format
   static bool isValidMethodName(String methodName) {
     if (methodName.isEmpty) return false;
-    
+
     // Must start with letter or underscore
     if (!RegExp(r'^[a-zA-Z_]').hasMatch(methodName)) return false;
-    
+
     // Can only contain letters, numbers, and underscores
     if (!RegExp(r'^[a-zA-Z_][a-zA-Z0-9_]*$').hasMatch(methodName)) return false;
-    
+
     return true;
   }
 
@@ -53,7 +53,7 @@ class Validators {
   /// Validate language code format (basic validation)
   static bool isValidLanguageCodeFormat(String code) {
     if (code.isEmpty) return false;
-    
+
     // Basic format: 2-3 letters, optionally followed by underscore/dash and 2 letters
     return RegExp(r'^[a-zA-Z]{2,3}([_-][a-zA-Z]{2})?$').hasMatch(code);
   }

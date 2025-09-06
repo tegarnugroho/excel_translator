@@ -3,7 +3,8 @@ import '../../domain/repositories/repositories.dart';
 import 'language_repository_impl.dart';
 
 /// Implementation of language validation repository
-class LanguageValidationRepositoryImpl implements ILanguageValidationRepository {
+class LanguageValidationRepositoryImpl
+    implements ILanguageValidationRepository {
   final ILanguageRepository _languageRepository;
 
   LanguageValidationRepositoryImpl({
@@ -71,8 +72,10 @@ class LanguageValidationRepositoryImpl implements ILanguageValidationRepository 
   }
 
   @override
-  Set<String> get validLanguageCodes => _languageRepository.getValidLanguageCodes();
+  Set<String> get validLanguageCodes =>
+      _languageRepository.getValidLanguageCodes();
 
   @override
-  Map<String, String> get languageNames => _languageRepository.getLanguageNames();
+  Map<String, String> get languageNames =>
+      _languageRepository.getLanguageNames();
 }

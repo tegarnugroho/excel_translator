@@ -18,7 +18,7 @@ class OdsFileDataSource implements IFileDataSource {
   Future<List<LocalizationSheet>> parseFile(String filePath) async {
     final file = File(filePath);
     final bytes = file.readAsBytesSync();
-    
+
     try {
       final decoder = TableParser.decodeBytes(bytes);
       List<LocalizationSheet> sheets = [];
@@ -47,7 +47,7 @@ class OdsFileDataSource implements IFileDataSource {
           final normalizedCode = code.toLowerCase().trim();
           String languageCode;
           String? region;
-          
+
           if (normalizedCode.contains('_')) {
             final parts = normalizedCode.split('_');
             languageCode = parts[0];

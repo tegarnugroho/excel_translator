@@ -23,10 +23,10 @@ class CsvFileDataSource implements IFileDataSource {
 
     try {
       var csvContent = file.readAsStringSync();
-      
+
       // Normalize line endings
       csvContent = csvContent.replaceAll('\r\n', '\n').replaceAll('\r', '\n');
-      
+
       final decoder = TableParser.decodeCsv(csvContent);
       final table = decoder.tables['Sheet1']!;
       final rows = table.rows;
@@ -50,7 +50,7 @@ class CsvFileDataSource implements IFileDataSource {
         final normalizedCode = code.toLowerCase().trim();
         String languageCode;
         String? region;
-        
+
         if (normalizedCode.contains('_')) {
           final parts = normalizedCode.split('_');
           languageCode = parts[0];

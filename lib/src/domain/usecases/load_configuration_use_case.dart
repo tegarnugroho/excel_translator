@@ -18,10 +18,13 @@ class LoadConfigurationUseCase {
   }) {
     // Load configuration from pubspec.yaml
     final pubspecConfig = _configRepository.loadFromPubspec(pubspecPath);
-    
+
     // Create provided configuration from parameters
     ExcelTranslatorConfig? providedConfig;
-    if (excelFilePath != null || outputDir != null || className != null || includeFlutterDelegates != null) {
+    if (excelFilePath != null ||
+        outputDir != null ||
+        className != null ||
+        includeFlutterDelegates != null) {
       providedConfig = ExcelTranslatorConfig(
         excelFilePath: excelFilePath,
         outputDir: outputDir,
@@ -29,7 +32,7 @@ class LoadConfigurationUseCase {
         includeFlutterDelegates: includeFlutterDelegates ?? true,
       );
     }
-    
+
     // Merge configurations with proper priority
     return _configRepository.mergeConfigurations(
       provided: providedConfig,

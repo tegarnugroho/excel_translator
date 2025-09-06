@@ -44,7 +44,8 @@ class LocalizationsGenerator {
   }
 
   /// Validate language codes and throw exception if invalid
-  static void validateLanguageCodes(List<String> languageCodes, String sheetName) {
+  static void validateLanguageCodes(
+      List<String> languageCodes, String sheetName) {
     // This will be handled by the use case internally
     for (final code in languageCodes) {
       if (!_service.isValidLanguageCode(code)) {

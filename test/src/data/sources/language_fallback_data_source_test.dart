@@ -33,14 +33,14 @@ void main() {
 
       // Every code should have a corresponding name
       for (final code in codes) {
-        expect(names.containsKey(code), isTrue, 
-          reason: 'Language code "$code" should have a corresponding name');
+        expect(names.containsKey(code), isTrue,
+            reason: 'Language code "$code" should have a corresponding name');
       }
 
       // Every name key should be in the codes set
       for (final code in names.keys) {
-        expect(codes.contains(code), isTrue, 
-          reason: 'Name key "$code" should be in the language codes set');
+        expect(codes.contains(code), isTrue,
+            reason: 'Name key "$code" should be in the language codes set');
       }
     });
 
@@ -48,8 +48,8 @@ void main() {
       final names = LanguageFallbackDataSource.getFallbackLanguageNames();
 
       for (final entry in names.entries) {
-        expect(entry.value, isNotEmpty, 
-          reason: 'Language name for "${entry.key}" should not be empty');
+        expect(entry.value, isNotEmpty,
+            reason: 'Language name for "${entry.key}" should not be empty');
       }
     });
 
@@ -58,13 +58,24 @@ void main() {
       final names = LanguageFallbackDataSource.getFallbackLanguageNames();
 
       // Test for some common languages
-      final commonLanguages = ['en', 'es', 'fr', 'de', 'it', 'pt', 'zh', 'ja', 'ko', 'ru'];
-      
+      final commonLanguages = [
+        'en',
+        'es',
+        'fr',
+        'de',
+        'it',
+        'pt',
+        'zh',
+        'ja',
+        'ko',
+        'ru'
+      ];
+
       for (final lang in commonLanguages) {
-        expect(codes.contains(lang), isTrue, 
-          reason: 'Should contain common language code: $lang');
-        expect(names.containsKey(lang), isTrue, 
-          reason: 'Should contain name for common language: $lang');
+        expect(codes.contains(lang), isTrue,
+            reason: 'Should contain common language code: $lang');
+        expect(names.containsKey(lang), isTrue,
+            reason: 'Should contain name for common language: $lang');
       }
     });
 

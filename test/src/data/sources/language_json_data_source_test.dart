@@ -85,7 +85,8 @@ void main() {
     });
 
     test('should handle fallback when specified file does not exist', () {
-      final result = dataSource.loadLanguageData('/absolutely/non/existent/path/file.json');
+      final result = dataSource
+          .loadLanguageData('/absolutely/non/existent/path/file.json');
 
       // During test execution, the package discovery may or may not work
       // depending on the test environment, so we accept both outcomes

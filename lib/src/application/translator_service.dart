@@ -29,8 +29,10 @@ class TranslatorService {
 
     return TranslatorService(
       parseUseCase: ParseLocalizationFileUseCase(fileParserRepository),
-      validateUseCase: ValidateLanguageCodesUseCase(languageValidationRepository),
-      generateUseCase: GenerateLocalizationClassesUseCase(codeGeneratorRepository),
+      validateUseCase:
+          ValidateLanguageCodesUseCase(languageValidationRepository),
+      generateUseCase:
+          GenerateLocalizationClassesUseCase(codeGeneratorRepository),
       loadConfigUseCase: LoadConfigurationUseCase(configRepository),
     );
   }
@@ -60,10 +62,10 @@ class TranslatorService {
       }
 
       print('📖 Parsing file: $filePath');
-      
+
       // Parse the file
       final sheets = await _parseUseCase.execute(filePath);
-      
+
       if (sheets.isEmpty) {
         throw Exception('No valid sheets found in file: $filePath');
       }
@@ -87,7 +89,7 @@ class TranslatorService {
 
       final finalOutputDir = config.outputDir ?? outputDir;
       print('🎉 Successfully generated localization files in: $finalOutputDir');
-      
+
       // List generated files
       final outputDirectory = Directory(finalOutputDir);
       if (outputDirectory.existsSync()) {
@@ -96,7 +98,7 @@ class TranslatorService {
             .where((file) => file.path.endsWith('.dart'))
             .map((file) => file.path.split('/').last)
             .toList();
-        
+
         if (generatedFiles.isNotEmpty) {
           print('📄 Generated files:');
           for (final fileName in generatedFiles) {
@@ -104,7 +106,6 @@ class TranslatorService {
           }
         }
       }
-
     } catch (e) {
       print('❌ Error: $e');
       rethrow;

@@ -62,5 +62,4 @@ class ButtonsLocalizations {
         return '''Refresh''';
     }
   }
-
 }

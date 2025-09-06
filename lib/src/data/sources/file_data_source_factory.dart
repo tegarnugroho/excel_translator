@@ -24,12 +24,12 @@ class FileDataSourceFactory {
     }
     return dataSource;
   }
-  
+
   /// Get all available data sources
   static List<IFileDataSource> getAllDataSources() {
     return _dataSources.values.toList();
   }
-  
+
   /// Check if file format is supported
   static bool isSupportedFormat(String filePath) {
     try {

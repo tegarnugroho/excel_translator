@@ -41,11 +41,13 @@ class LanguageJsonDataSource {
     }
 
     // Try to find relative to current package
-    final currentFile = File(path.fromUri(Uri.parse(Platform.script.toString())));
+    final currentFile =
+        File(path.fromUri(Uri.parse(Platform.script.toString())));
     final packageRoot = _findPackageRoot(currentFile.parent);
-    
+
     // Look in lib/assets folder (new location)
-    final libAssetsJsonFile = File(path.join(packageRoot.path, 'lib', 'assets', 'lang.json'));
+    final libAssetsJsonFile =
+        File(path.join(packageRoot.path, 'lib', 'assets', 'lang.json'));
     if (libAssetsJsonFile.existsSync()) {
       return libAssetsJsonFile;
     }

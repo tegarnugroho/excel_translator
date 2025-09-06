@@ -8,7 +8,7 @@ class MockTranslatorService implements TranslatorService {
   String? lastClassName;
   bool? lastIncludeFlutterDelegates;
   String? lastPubspecPath;
-  
+
   bool shouldThrowError = false;
   String errorMessage = 'Test error';
 
@@ -132,7 +132,8 @@ void main() {
       expect(mockService.lastIncludeFlutterDelegates, isFalse);
     });
 
-    test('should call service with correct parameters even when error occurs', () {
+    test('should call service with correct parameters even when error occurs',
+        () {
       // Arrange
       mockService.shouldThrowError = true;
 
@@ -149,8 +150,8 @@ void main() {
     test('should process arguments in correct order', () async {
       // Arrange
       final arguments = [
-        'input.xlsx',        // position 0: filePath
-        'output/directory',  // position 1: outputDir
+        'input.xlsx', // position 0: filePath
+        'output/directory', // position 1: outputDir
         '--class-name=TestLocalizations',
         '--no-flutter-delegates'
       ];

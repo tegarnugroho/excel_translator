@@ -27,10 +27,10 @@ enum FileFormat {
 abstract class IFileDataSource {
   /// Parse a file and return list of localization sheets
   Future<List<LocalizationSheet>> parseFile(String filePath);
-  
+
   /// Get supported file format
   FileFormat get supportedFormat;
-  
+
   /// Validate file before parsing
   bool isValidFile(String filePath) {
     return filePath.toLowerCase().endsWith('.${supportedFormat.extension}');

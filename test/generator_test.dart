@@ -9,7 +9,7 @@ import '../lib/src/data/repositories_impl/language_validation_repository_impl.da
 void main() {
   final languageRepo = LanguageValidationRepositoryImpl();
   final languageDataRepo = LanguageRepositoryImpl();
-  
+
   group('LanguageRepository Tests', () {
     test('should load valid language codes', () {
       final codes = languageDataRepo.getValidLanguageCodes();
@@ -68,8 +68,7 @@ void main() {
 
     test('should reject invalid language codes', () {
       expect(languageRepo.isValidLanguageCode('xyz'), isFalse);
-      expect(
-          languageRepo.isValidLanguageCode('invalid'), isFalse);
+      expect(languageRepo.isValidLanguageCode('invalid'), isFalse);
       expect(languageRepo.isValidLanguageCode('123'), isFalse);
       expect(languageRepo.isValidLanguageCode(''), isFalse);
     });
@@ -82,14 +81,12 @@ void main() {
 
   group('Sheet Name Sanitization Tests', () {
     test('should sanitize sheet names correctly', () {
-      expect(StringUtils.sanitizeSheetName('Login Page'),
-          equals('loginpage'));
+      expect(StringUtils.sanitizeSheetName('Login Page'), equals('loginpage'));
       expect(StringUtils.sanitizeSheetName('User-Settings'),
           equals('usersettings'));
       expect(StringUtils.sanitizeSheetName('123Numbers'),
           equals('sheet\$123numbers'));
-      expect(
-          StringUtils.sanitizeSheetName('Special@#Characters'),
+      expect(StringUtils.sanitizeSheetName('Special@#Characters'),
           equals('specialcharacters'));
     });
 
@@ -102,37 +99,31 @@ void main() {
 
   group('Method Name Sanitization Tests', () {
     test('should convert snake_case to camelCase', () {
-      expect(StringUtils.sanitizeMethodName('app_title'),
-          equals('appTitle'));
+      expect(StringUtils.sanitizeMethodName('app_title'), equals('appTitle'));
       expect(StringUtils.sanitizeMethodName('welcome_message'),
           equals('welcomeMessage'));
-      expect(StringUtils.sanitizeMethodName('user_count'),
-          equals('userCount'));
-      expect(StringUtils.sanitizeMethodName('save_button'),
-          equals('saveButton'));
+      expect(StringUtils.sanitizeMethodName('user_count'), equals('userCount'));
+      expect(
+          StringUtils.sanitizeMethodName('save_button'), equals('saveButton'));
     });
 
     test('should handle single words', () {
-      expect(StringUtils.sanitizeMethodName('hello'),
-          equals('hello'));
-      expect(StringUtils.sanitizeMethodName('goodbye'),
-          equals('goodbye'));
-      expect(StringUtils.sanitizeMethodName('submit'),
-          equals('submit'));
+      expect(StringUtils.sanitizeMethodName('hello'), equals('hello'));
+      expect(StringUtils.sanitizeMethodName('goodbye'), equals('goodbye'));
+      expect(StringUtils.sanitizeMethodName('submit'), equals('submit'));
     });
 
     test('should handle special characters', () {
-      expect(StringUtils.sanitizeMethodName('app-title'),
-          equals('apptitle'));
-      expect(StringUtils.sanitizeMethodName('user@name'),
-          equals('username'));
-      expect(StringUtils.sanitizeMethodName('test#key'),
-          equals('testkey'));
+      expect(StringUtils.sanitizeMethodName('app-title'), equals('apptitle'));
+      expect(StringUtils.sanitizeMethodName('user@name'), equals('username'));
+      expect(StringUtils.sanitizeMethodName('test#key'), equals('testkey'));
     });
 
     test('should handle numbers at start', () {
-      expect(StringUtils.sanitizeMethodName('123test'),
-          equals('key\$123test')); // Single word, no underscore, but gets key prefix for number start
+      expect(
+          StringUtils.sanitizeMethodName('123test'),
+          equals(
+              'key\$123test')); // Single word, no underscore, but gets key prefix for number start
       expect(
           StringUtils.sanitizeMethodName('1_title'),
           equals(
@@ -140,17 +131,14 @@ void main() {
     });
 
     test('should handle empty underscore parts', () {
-      expect(StringUtils.sanitizeMethodName('app__title'),
-          equals('appTitle'));
-      expect(StringUtils.sanitizeMethodName('test___key'),
-          equals('testKey'));
+      expect(StringUtils.sanitizeMethodName('app__title'), equals('appTitle'));
+      expect(StringUtils.sanitizeMethodName('test___key'), equals('testKey'));
     });
   });
 
   group('String Interpolation Tests', () {
     test('should extract interpolation parameters', () {
-      final params1 = StringUtils.extractInterpolationParams(
-          'Welcome {name}!');
+      final params1 = StringUtils.extractInterpolationParams('Welcome {name}!');
       expect(params1, equals(['name']));
 
       final params2 = StringUtils.extractInterpolationParams(
@@ -160,8 +148,7 @@ void main() {
     });
 
     test('should handle no interpolation', () {
-      final params = StringUtils.extractInterpolationParams(
-          'Simple message');
+      final params = StringUtils.extractInterpolationParams('Simple message');
       expect(params, isEmpty);
     });
 
@@ -180,24 +167,18 @@ void main() {
 
   group('Language Name Resolution Tests', () {
     test('should resolve known language names', () {
-      expect(
-          languageDataRepo.getLanguageName('en'), equals('english'));
-      expect(languageDataRepo.getLanguageName('id'),
-          equals('indonesian'));
-      expect(
-          languageDataRepo.getLanguageName('es'), equals('spanish'));
+      expect(languageDataRepo.getLanguageName('en'), equals('english'));
+      expect(languageDataRepo.getLanguageName('id'), equals('indonesian'));
+      expect(languageDataRepo.getLanguageName('es'), equals('spanish'));
     });
 
     test('should handle case insensitive lookup', () {
-      expect(
-          languageDataRepo.getLanguageName('EN'), equals('english'));
-      expect(languageDataRepo.getLanguageName('Id'),
-          equals('indonesian'));
+      expect(languageDataRepo.getLanguageName('EN'), equals('english'));
+      expect(languageDataRepo.getLanguageName('Id'), equals('indonesian'));
     });
 
     test('should fallback to code for unknown languages', () {
-      expect(languageDataRepo.getLanguageName('unknown'),
-          equals('unknown'));
+      expect(languageDataRepo.getLanguageName('unknown'), equals('unknown'));
       expect(languageDataRepo.getLanguageName('xyz'), equals('xyz'));
     });
   });
@@ -270,8 +251,7 @@ void main() {
   group('Error Handling Tests', () {
     test('should handle invalid sheet data gracefully', () {
       expect(
-        () =>
-            languageRepo.validateLanguageCodes([], 'TestSheet'),
+        () => languageRepo.validateLanguageCodes([], 'TestSheet'),
         throwsA(isA<Exception>()),
       );
     });
@@ -279,8 +259,8 @@ void main() {
     test('should provide helpful error messages for invalid language codes',
         () {
       expect(
-        () => languageRepo.validateLanguageCodes(
-            ['invalid', 'xyz'], 'TestSheet'),
+        () =>
+            languageRepo.validateLanguageCodes(['invalid', 'xyz'], 'TestSheet'),
         throwsA(
             predicate((e) => e.toString().contains('Invalid language codes'))),
       );

@@ -70,7 +70,7 @@ class LocalizationSheet {
   }
 
   @override
-  int get hashCode => 
+  int get hashCode =>
       name.hashCode ^ translations.hashCode ^ supportedLanguages.hashCode;
 
   bool _listEquals<T>(List<T> list1, List<T> list2) {

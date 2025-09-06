@@ -5,7 +5,8 @@ import '../models/models.dart' as oldModel;
 /// Mapper untuk konversi antara domain dan old models
 class EntityModelMapper {
   /// Convert domain LocalizationSheet to old model
-  static oldModel.LocalizationSheet toOldModel(domain.LocalizationSheet domainSheet) {
+  static oldModel.LocalizationSheet toOldModel(
+      domain.LocalizationSheet domainSheet) {
     final entries = domainSheet.translations.map((translation) {
       return oldModel.LocalizationEntry(
         key: translation.key,
@@ -21,7 +22,8 @@ class EntityModelMapper {
   }
 
   /// Convert old model LocalizationSheet to domain
-  static domain.LocalizationSheet toDomainModel(oldModel.LocalizationSheet oldSheet) {
+  static domain.LocalizationSheet toDomainModel(
+      oldModel.LocalizationSheet oldSheet) {
     final translations = oldSheet.entries.map((entry) {
       return domain.Translation(
         key: entry.key,
@@ -33,7 +35,7 @@ class EntityModelMapper {
       final normalizedCode = code.toLowerCase().trim();
       String languageCode;
       String? region;
-      
+
       if (normalizedCode.contains('_')) {
         final parts = normalizedCode.split('_');
         languageCode = parts[0];
@@ -62,12 +64,14 @@ class EntityModelMapper {
   }
 
   /// Convert list of domain sheets to old models
-  static List<oldModel.LocalizationSheet> toOldModels(List<domain.LocalizationSheet> domainSheets) {
+  static List<oldModel.LocalizationSheet> toOldModels(
+      List<domain.LocalizationSheet> domainSheets) {
     return domainSheets.map(toOldModel).toList();
   }
 
   /// Convert list of old models to domain sheets
-  static List<domain.LocalizationSheet> toDomainModels(List<oldModel.LocalizationSheet> oldSheets) {
+  static List<domain.LocalizationSheet> toDomainModels(
+      List<oldModel.LocalizationSheet> oldSheets) {
     return oldSheets.map(toDomainModel).toList();
   }
 }

@@ -23,14 +23,15 @@ class ExcelTranslatorConfig {
       excelFilePath: excelFilePath ?? this.excelFilePath,
       outputDir: outputDir ?? this.outputDir,
       className: className ?? this.className,
-      includeFlutterDelegates: includeFlutterDelegates ?? this.includeFlutterDelegates,
+      includeFlutterDelegates:
+          includeFlutterDelegates ?? this.includeFlutterDelegates,
     );
   }
 
   /// Merge this config with another, giving priority to the other
   ExcelTranslatorConfig mergeWith(ExcelTranslatorConfig? other) {
     if (other == null) return this;
-    
+
     return ExcelTranslatorConfig(
       excelFilePath: other.excelFilePath ?? excelFilePath,
       outputDir: other.outputDir ?? outputDir,

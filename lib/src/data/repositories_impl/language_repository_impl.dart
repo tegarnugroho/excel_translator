@@ -6,7 +6,7 @@ import '../sources/language_fallback_data_source.dart';
 /// Implementation of language repository using data sources
 class LanguageRepositoryImpl implements ILanguageRepository {
   final LanguageJsonDataSource _jsonDataSource;
-  
+
   Set<String>? _validLanguageCodes;
   Map<String, String>? _languageNames;
 
@@ -53,7 +53,7 @@ class LanguageRepositoryImpl implements ILanguageRepository {
   void _loadLanguageData() {
     try {
       final jsonData = _jsonDataSource.loadLanguageData();
-      
+
       if (jsonData != null) {
         _parseJsonData(jsonData);
       } else {
@@ -66,12 +66,13 @@ class LanguageRepositoryImpl implements ILanguageRepository {
 
   void _parseJsonData(Map<String, dynamic> data) {
     List<dynamic> langArray;
-    
+
     if (data.containsKey('lang')) {
       // Format: {"lang": [...]} (normalized by data source)
       langArray = data['lang'] as List;
     } else {
-      throw Exception('Invalid language data format - expected "lang" property with array');
+      throw Exception(
+          'Invalid language data format - expected "lang" property with array');
     }
 
     _validLanguageCodes = <String>{};

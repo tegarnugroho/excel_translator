@@ -44,7 +44,8 @@ excel_translator:
       expect(result['include_flutter_delegates'], isFalse);
     });
 
-    test('should return null when no excel_translator section exists', () async {
+    test('should return null when no excel_translator section exists',
+        () async {
       // Create test pubspec.yaml without excel_translator configuration
       final pubspecContent = '''
 name: test_package

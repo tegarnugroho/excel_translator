@@ -10,10 +10,9 @@ class StringUtils {
 
   /// Sanitize sheet name for class naming
   static String sanitizeSheetName(String sheetName) {
-    String cleaned = sheetName
-        .toLowerCase()
-        .replaceAll(RegExp(r'[^a-zA-Z0-9]'), '');
-    
+    String cleaned =
+        sheetName.toLowerCase().replaceAll(RegExp(r'[^a-zA-Z0-9]'), '');
+
     // If starts with number, add prefix
     if (cleaned.isNotEmpty && RegExp(r'^[0-9]').hasMatch(cleaned)) {
       return 'sheet\$${cleaned}';
@@ -27,7 +26,7 @@ class StringUtils {
     // Convert to camelCase
     final parts = key.toLowerCase().split('_');
     String result;
-    
+
     if (parts.length <= 1) {
       result = key.toLowerCase().replaceAll(RegExp(r'[^a-zA-Z0-9]'), '');
     } else {
@@ -52,7 +51,7 @@ class StringUtils {
   static String toCamelCase(String snakeCase) {
     final parts = snakeCase.toLowerCase().split('_');
     if (parts.length <= 1) return snakeCase.toLowerCase();
-    
+
     return parts.first +
         parts
             .skip(1)
@@ -63,7 +62,8 @@ class StringUtils {
   /// Convert camelCase to snake_case
   static String toSnakeCase(String camelCase) {
     return camelCase
-        .replaceAllMapped(RegExp(r'[A-Z]'), (match) => '_${match.group(0)!.toLowerCase()}')
+        .replaceAllMapped(
+            RegExp(r'[A-Z]'), (match) => '_${match.group(0)!.toLowerCase()}')
         .replaceFirst(RegExp(r'^_'), '');
   }
 

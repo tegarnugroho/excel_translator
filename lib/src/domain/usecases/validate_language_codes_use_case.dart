@@ -13,7 +13,8 @@ class ValidateLanguageCodesUseCase {
 
   /// Execute validation for multiple language codes
   void executeForSheet(List<String> languageCodes, String sheetName) {
-    _languageValidationRepository.validateLanguageCodes(languageCodes, sheetName);
+    _languageValidationRepository.validateLanguageCodes(
+        languageCodes, sheetName);
   }
 
   /// Get language name

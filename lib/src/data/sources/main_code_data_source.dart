@@ -58,7 +58,8 @@ class MainCodeDataSource {
 
     // Add sheet properties
     for (final sheet in sheets) {
-      final sheetClassName = '${StringUtils.capitalize(sheet.name)}Localizations';
+      final sheetClassName =
+          '${StringUtils.capitalize(sheet.name)}Localizations';
       buffer.writeln('  late final $sheetClassName ${sheet.name};');
     }
     buffer.writeln();
@@ -66,7 +67,8 @@ class MainCodeDataSource {
     // Constructor
     buffer.writeln('  $className(this.languageCode) {');
     for (final sheet in sheets) {
-      final sheetClassName = '${StringUtils.capitalize(sheet.name)}Localizations';
+      final sheetClassName =
+          '${StringUtils.capitalize(sheet.name)}Localizations';
       buffer.writeln('    ${sheet.name} = $sheetClassName(languageCode);');
     }
     buffer.writeln('  }');
@@ -113,7 +115,8 @@ class MainCodeDataSource {
       buffer.writeln('        }');
       buffer.writeln('      }');
       buffer.writeln('    } catch (e) {');
-      buffer.writeln('      // Fall back to other methods if PlatformDispatcher fails');
+      buffer.writeln(
+          '      // Fall back to other methods if PlatformDispatcher fails');
       buffer.writeln('    }');
       buffer.writeln();
       buffer.writeln('    // Final fallback to English');

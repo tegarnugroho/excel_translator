@@ -46,7 +46,7 @@ class ExcelFileDataSource implements IFileDataSource {
         final normalizedCode = code.toLowerCase().trim();
         String languageCode;
         String? region;
-        
+
         if (normalizedCode.contains('_')) {
           final parts = normalizedCode.split('_');
           languageCode = parts[0];

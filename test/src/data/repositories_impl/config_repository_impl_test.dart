@@ -31,7 +31,8 @@ void main() {
     });
 
     group('loadFromPubspec', () {
-      test('should return ExcelTranslatorConfig when data source provides data', () {
+      test('should return ExcelTranslatorConfig when data source provides data',
+          () {
         // Arrange
         final mockData = {
           'excel_file_path': 'test.xlsx',
@@ -115,7 +116,8 @@ void main() {
     });
 
     group('mergeConfigurations', () {
-      test('should merge with proper priority: provided > pubspec > default', () {
+      test('should merge with proper priority: provided > pubspec > default',
+          () {
         // Arrange
         const providedConfig = ExcelTranslatorConfig(
           excelFilePath: 'provided.xlsx',
@@ -138,8 +140,10 @@ void main() {
         // Assert
         expect(result.excelFilePath, equals('provided.xlsx')); // from provided
         expect(result.outputDir, equals('lib/pubspec')); // from pubspec
-        expect(result.className, equals('ProvidedLocalizations')); // from provided
-        expect(result.includeFlutterDelegates, isTrue); // from provided (overrides pubspec)
+        expect(
+            result.className, equals('ProvidedLocalizations')); // from provided
+        expect(result.includeFlutterDelegates,
+            isTrue); // from provided (overrides pubspec)
       });
 
       test('should use pubspec when provided is null', () {
@@ -190,7 +194,8 @@ void main() {
         );
 
         // Assert
-        expect(result.excelFilePath, equals('only_provided.xlsx')); // from provided
+        expect(result.excelFilePath,
+            equals('only_provided.xlsx')); // from provided
         expect(result.outputDir, isNull); // from default
         expect(result.className, equals('AppLocalizations')); // from default
         expect(result.includeFlutterDelegates, isFalse); // from provided
