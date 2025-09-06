@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.0.3] - 2025-09-06
+## [1.0.4] - 2025-09-06
 
 ### 🔄 Major Dependency Update
 
@@ -14,6 +14,13 @@
 - Fixed CSV and ODS file parsing issues
 - Resolved missing language data file issues
 - Improved error handling across all file formats
+
+## [1.0.3] - 2025-09-04
+
+### 🐛 Bug Fixes
+
+- Fixed CSV and ODS file parsing issues
+- Resolved missing language data file issues
 
 ## [1.0.2] - 2025-09-04
 

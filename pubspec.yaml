@@ -1,6 +1,6 @@
 name: excel_translator
 description: Generate type-safe Flutter localizations from multiple spreadsheet formats (Excel, CSV, ODS) with multi-sheet support, automatic language validation, and context-free access patterns.
-version: 1.0.3
+version: 1.0.4
 homepage: https://github.com/tegarnugroho/excel_translator
 repository: https://github.com/tegarnugroho/excel_translator
 issue_tracker: https://github.com/tegarnugroho/excel_translator/issues
