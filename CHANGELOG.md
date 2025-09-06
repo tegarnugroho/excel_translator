@@ -1,11 +1,19 @@
 # Changelog
 
-## [1.0.3] - 2025-09-04
+## [1.0.3] - 2025-09-06
+
+### 🔄 Major Dependency Update
+
+- **Unified Parser**: Replaced individual packages (`excel`, `csv`, `spreadsheet_decoder`) with unified `table_parser` package
+- **Enhanced Performance**: Better memory handling and parsing performance for large files
+- **Improved CSV Support**: Enhanced CSV parsing with better quote handling and custom separators
+- **Simplified Dependencies**: Reduced from 3 separate packages to 1 unified solution
 
 ### 🐛 Fixes
 
 - Fixed CSV and ODS file parsing issues
 - Resolved missing language data file issues
+- Improved error handling across all file formats
 
 ## [1.0.2] - 2025-09-04
 

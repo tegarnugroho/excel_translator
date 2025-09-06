@@ -1,6 +1,6 @@
 // CSV (.csv) file data source
 import 'dart:io';
-import 'package:csv/csv.dart';
+import 'package:table_parser/table_parser.dart';
 import '../../domain/entities/entities.dart';
 import 'i_file_data_source.dart';
 
@@ -27,7 +27,9 @@ class CsvFileDataSource implements IFileDataSource {
       // Normalize line endings
       csvContent = csvContent.replaceAll('\r\n', '\n').replaceAll('\r', '\n');
       
-      final rows = const CsvToListConverter().convert(csvContent, eol: '\n');
+      final decoder = TableParser.decodeCsv(csvContent);
+      final table = decoder.tables['Sheet1']!;
+      final rows = table.rows;
 
       if (rows.isEmpty) {
         return [];

@@ -1,10 +1,10 @@
 // ODS file data source
 import 'dart:io';
-import 'package:spreadsheet_decoder/spreadsheet_decoder.dart';
+import 'package:table_parser/table_parser.dart';
 import '../../domain/entities/entities.dart';
 import 'i_file_data_source.dart';
 
-/// ODS file data source using spreadsheet_decoder
+/// ODS file data source using table_parser
 class OdsFileDataSource implements IFileDataSource {
   @override
   FileFormat get supportedFormat => FileFormat.ods;
@@ -20,7 +20,7 @@ class OdsFileDataSource implements IFileDataSource {
     final bytes = file.readAsBytesSync();
     
     try {
-      final decoder = SpreadsheetDecoder.decodeBytes(bytes);
+      final decoder = TableParser.decodeBytes(bytes);
       List<LocalizationSheet> sheets = [];
 
       for (final tableName in decoder.tables.keys) {

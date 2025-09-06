@@ -1,6 +1,6 @@
 // Excel (.xlsx) file data source
 import 'dart:io';
-import 'package:excel/excel.dart';
+import 'package:table_parser/table_parser.dart';
 import '../../domain/entities/entities.dart';
 import 'i_file_data_source.dart';
 
@@ -18,12 +18,12 @@ class ExcelFileDataSource implements IFileDataSource {
   Future<List<LocalizationSheet>> parseFile(String filePath) async {
     final file = File(filePath);
     final bytes = file.readAsBytesSync();
-    final excel = Excel.decodeBytes(bytes);
+    final decoder = TableParser.decodeBytes(bytes);
 
     List<LocalizationSheet> sheets = [];
 
-    for (final tableName in excel.tables.keys) {
-      final table = excel.tables[tableName]!;
+    for (final tableName in decoder.tables.keys) {
+      final table = decoder.tables[tableName]!;
       final rows = table.rows;
 
       if (rows.isEmpty) continue;
@@ -34,8 +34,8 @@ class ExcelFileDataSource implements IFileDataSource {
 
       for (int i = 1; i < headerRow.length; i++) {
         final cell = headerRow[i];
-        if (cell?.value != null) {
-          languageCodes.add(cell!.value.toString());
+        if (cell != null) {
+          languageCodes.add(cell.toString());
         }
       }
 
@@ -74,15 +74,15 @@ class ExcelFileDataSource implements IFileDataSource {
         if (row.isEmpty) continue;
 
         final keyCell = row[0];
-        if (keyCell?.value == null) continue;
+        if (keyCell == null) continue;
 
-        final key = keyCell!.value.toString();
+        final key = keyCell.toString();
         final values = <String, String>{};
 
         for (int i = 0; i < languageCodes.length && i + 1 < row.length; i++) {
           final cell = row[i + 1];
-          if (cell?.value != null) {
-            values[languageCodes[i]] = cell!.value.toString();
+          if (cell != null) {
+            values[languageCodes[i]] = cell.toString();
           }
         }
 
