@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.5] - 2025-09-06
+
+### 🐛 Fixes
+
+- Improved pub.dev analysis score and compliance
+- Fixed Web/WASM compatibility issues
+- Enhanced code formatting and organization
+- Optimized package structure for better performance
+
+### 📚 Documentation
+
+- Updated installation instructions
+- Improved code documentation and comments
+
 ## [1.0.4] - 2025-09-06
 
 ### 🔄 Major Dependency Update
@@ -9,7 +23,7 @@
 - **Improved CSV Support**: Enhanced CSV parsing with better quote handling and custom separators
 - **Simplified Dependencies**: Reduced from 3 separate packages to 1 unified solution
 
-### 🐛 Fixes
+### � Improvements
 
 - Fixed CSV and ODS file parsing issues
 - Resolved missing language data file issues
