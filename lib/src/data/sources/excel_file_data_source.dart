@@ -1,6 +1,7 @@
 // Excel (.xlsx) file data source
 import 'dart:io';
 import 'package:table_parser/table_parser.dart';
+import '../../core/core.dart';
 import '../../domain/entities/entities.dart';
 import 'i_file_data_source.dart';
 
@@ -15,7 +16,7 @@ class ExcelFileDataSource implements IFileDataSource {
   }
 
   @override
-  Future<List<LocalizationSheet>> parseFile(String filePath) async {
+  Future<List<LocalizationSheet>> parseFile(String filePath, {LanguageValidationService? languageValidator}) async {
     final file = File(filePath);
     final bytes = file.readAsBytesSync();
     final decoder = TableParser.decodeBytes(bytes);
@@ -30,19 +31,41 @@ class ExcelFileDataSource implements IFileDataSource {
 
       // Get header row (language codes)
       final headerRow = rows.first;
-      final languageCodes = <String>[];
+      final allLanguageCodes = <String>[];
 
       for (int i = 1; i < headerRow.length; i++) {
         final cell = headerRow[i];
         if (cell != null) {
-          languageCodes.add(cell.toString());
+          allLanguageCodes.add(cell.toString());
         }
       }
 
-      if (languageCodes.isEmpty) continue;
+      if (allLanguageCodes.isEmpty) continue;
 
-      // Create Language entities
-      final languages = languageCodes.map((code) {
+      List<String> validLanguageCodes;
+      Map<String, int> validCodesWithIndices;
+
+      if (languageValidator != null) {
+        // Filter out invalid language codes and get valid ones with their indices
+        validCodesWithIndices = languageValidator.filterValidLanguageCodes(allLanguageCodes, tableName);
+        
+        if (validCodesWithIndices.isEmpty) {
+          print('⚠️  Sheet "$tableName": No valid language codes found. Skipping sheet...');
+          continue;
+        }
+
+        validLanguageCodes = validCodesWithIndices.keys.toList();
+      } else {
+        // No validation - use all language codes
+        validLanguageCodes = allLanguageCodes;
+        validCodesWithIndices = <String, int>{};
+        for (int i = 0; i < allLanguageCodes.length; i++) {
+          validCodesWithIndices[allLanguageCodes[i]] = i;
+        }
+      }
+
+      // Create Language entities only for valid codes
+      final languages = validLanguageCodes.map((code) {
         final normalizedCode = code.toLowerCase().trim();
         String languageCode;
         String? region;
@@ -79,10 +102,16 @@ class ExcelFileDataSource implements IFileDataSource {
         final key = keyCell.toString();
         final values = <String, String>{};
 
-        for (int i = 0; i < languageCodes.length && i + 1 < row.length; i++) {
-          final cell = row[i + 1];
-          if (cell != null) {
-            values[languageCodes[i]] = cell.toString();
+        // Only process columns with valid language codes
+        for (final validCode in validLanguageCodes) {
+          final originalIndex = validCodesWithIndices[validCode]!;
+          final columnIndex = originalIndex + 1; // +1 because originalIndex is 0-based header index, but we need 1-based for data
+          
+          if (columnIndex < row.length) {
+            final cell = row[columnIndex];
+            if (cell != null) {
+              values[validCode] = cell.toString();
+            }
           }
         }
 

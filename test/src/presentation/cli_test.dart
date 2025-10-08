@@ -30,18 +30,6 @@ class MockTranslatorService implements TranslatorService {
       throw Exception(errorMessage);
     }
   }
-
-  @override
-  String getLanguageName(String languageCode) {
-    // Mock implementation
-    return 'Mock Language';
-  }
-
-  @override
-  bool isValidLanguageCode(String languageCode) {
-    // Mock implementation
-    return true;
-  }
 }
 
 void main() {

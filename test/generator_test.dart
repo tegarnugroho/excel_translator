@@ -1,13 +1,11 @@
 import 'dart:io';
 import 'package:test/test.dart';
 import 'package:path/path.dart' as path;
-import '../lib/src/core/localization_generator.dart';
+import '../lib/src/core/core.dart';
 import '../lib/src/data/repositories_impl/language_repository_impl.dart';
-import '../lib/src/core/string_utils.dart';
-import '../lib/src/data/repositories_impl/language_validation_repository_impl.dart';
 
 void main() {
-  final languageRepo = LanguageValidationRepositoryImpl();
+  final languageValidationService = LanguageValidationService();
   final languageDataRepo = LanguageRepositoryImpl();
 
   group('LanguageRepository Tests', () {
@@ -194,6 +192,105 @@ void main() {
       expect(StringUtils.capitalize(''), equals(''));
       expect(StringUtils.capitalize('a'), equals('A'));
       expect(StringUtils.capitalize('A'), equals('A'));
+    });
+  });
+
+  group('Class Name Sanitization Tests', () {
+    test('should sanitize class names with hyphens correctly', () {
+      expect(StringUtils.sanitizeClassName('auth-errors'), equals('AuthErrors'));
+      expect(StringUtils.sanitizeClassName('mobile-errors'), equals('MobileErrors'));
+      expect(StringUtils.sanitizeClassName('websocket-errors'), equals('WebsocketErrors'));
+    });
+
+    test('should handle underscores and spaces', () {
+      expect(StringUtils.sanitizeClassName('user_profile'), equals('UserProfile'));
+      expect(StringUtils.sanitizeClassName('main settings'), equals('MainSettings'));
+      expect(StringUtils.sanitizeClassName('api-data_source'), equals('ApiDataSource'));
+    });
+
+    test('should handle single words', () {
+      expect(StringUtils.sanitizeClassName('login'), equals('Login'));
+      expect(StringUtils.sanitizeClassName('mobile'), equals('Mobile'));
+    });
+
+    test('should handle edge cases', () {
+      expect(StringUtils.sanitizeClassName(''), equals(''));
+      expect(StringUtils.sanitizeClassName('123test'), equals('Class123test'));
+    });
+  });
+
+  group('File Name Sanitization Tests', () {
+    test('should sanitize file names with hyphens correctly', () {
+      expect(StringUtils.sanitizeFileName('auth-errors'), equals('auth_errors'));
+      expect(StringUtils.sanitizeFileName('mobile-errors'), equals('mobile_errors'));
+      expect(StringUtils.sanitizeFileName('websocket-errors'), equals('websocket_errors'));
+    });
+
+    test('should handle underscores and spaces', () {
+      expect(StringUtils.sanitizeFileName('user_profile'), equals('user_profile'));
+      expect(StringUtils.sanitizeFileName('main settings'), equals('main_settings'));
+      expect(StringUtils.sanitizeFileName('api-data_source'), equals('api_data_source'));
+    });
+
+    test('should handle single words', () {
+      expect(StringUtils.sanitizeFileName('login'), equals('login'));
+      expect(StringUtils.sanitizeFileName('mobile'), equals('mobile'));
+    });
+
+    test('should handle edge cases', () {
+      expect(StringUtils.sanitizeFileName(''), equals(''));
+      expect(StringUtils.sanitizeFileName('123test'), equals('file_123test'));
+    });
+  });
+
+  group('Interpolation Parameter Extraction Tests', () {
+    test('should extract curly brace parameters', () {
+      expect(StringUtils.extractInterpolationParams('Hello {name}!'), 
+             equals(['name']));
+      expect(StringUtils.extractInterpolationParams('Welcome {name} to {place}!'), 
+             equals(['name', 'place']));
+    });
+
+    test('should extract printf-style numeric parameters', () {
+      expect(StringUtils.extractInterpolationParams('Value: %1\$s'), 
+             equals(['1']));
+      expect(StringUtils.extractInterpolationParams('Items: %1\$s, %2\$s'), 
+             equals(['1', '2']));
+    });
+
+    test('should extract printf-style named parameters', () {
+      expect(StringUtils.extractInterpolationParams('Missing information: %information\$s'), 
+             equals(['information']));
+      expect(StringUtils.extractInterpolationParams('Hello %name\$s, welcome to %place\$s!'), 
+             equals(['name', 'place']));
+    });
+
+    test('should extract mixed parameter formats', () {
+      expect(StringUtils.extractInterpolationParams('Hello {name} and %user\$s!'), 
+             equals(['name', 'user']));
+    });
+
+    test('should handle no parameters', () {
+      expect(StringUtils.extractInterpolationParams('Simple text'), 
+             equals([]));
+    });
+
+    test('should detect interpolation presence', () {
+      expect(StringUtils.hasInterpolation('Hello {name}!'), isTrue);
+      expect(StringUtils.hasInterpolation('Value: %information\$s'), isTrue);
+      expect(StringUtils.hasInterpolation('Items: %1\$s'), isTrue);
+      expect(StringUtils.hasInterpolation('Simple text'), isFalse);
+    });
+
+    test('should normalize interpolation formats', () {
+      expect(StringUtils.normalizeInterpolation('Missing information: %information\$s'), 
+             equals('Missing information: {information}'));
+      expect(StringUtils.normalizeInterpolation('Hello %name\$s, welcome to %place\$s!'), 
+             equals('Hello {name}, welcome to {place}!'));
+      expect(StringUtils.normalizeInterpolation('Items: %1\$s, %2\$s'), 
+             equals('Items: {1}, {2}'));
+      expect(StringUtils.normalizeInterpolation('Already normalized: {param}'), 
+             equals('Already normalized: {param}'));
     });
   });
 

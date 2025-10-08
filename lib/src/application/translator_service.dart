@@ -1,36 +1,34 @@
 // Main translator service that orchestrates all use cases
 import 'dart:io';
+import '../core/core.dart';
 import '../domain/domain.dart';
-import '../data/data.dart';
+import '../data/data.dart' hide LocalizationSheet;
 
 /// Main translator service that coordinates use cases and repositories
 class TranslatorService {
   final ParseLocalizationFileUseCase _parseUseCase;
-  final ValidateLanguageCodesUseCase _validateUseCase;
   final GenerateLocalizationClassesUseCase _generateUseCase;
   final LoadConfigurationUseCase _loadConfigUseCase;
 
   TranslatorService({
     required ParseLocalizationFileUseCase parseUseCase,
-    required ValidateLanguageCodesUseCase validateUseCase,
     required GenerateLocalizationClassesUseCase generateUseCase,
     required LoadConfigurationUseCase loadConfigUseCase,
   })  : _parseUseCase = parseUseCase,
-        _validateUseCase = validateUseCase,
         _generateUseCase = generateUseCase,
         _loadConfigUseCase = loadConfigUseCase;
 
   /// Factory constructor with default dependencies
   factory TranslatorService.create() {
-    final fileParserRepository = FileParserRepositoryImpl();
-    final languageValidationRepository = LanguageValidationRepositoryImpl();
+    final languageValidationService = LanguageValidationService();
+    final fileParserRepository = FileParserRepositoryImpl(
+      languageValidationService: languageValidationService,
+    );
     final codeGeneratorRepository = CodeGeneratorRepositoryImpl();
     final configRepository = ConfigRepositoryImpl();
 
     return TranslatorService(
       parseUseCase: ParseLocalizationFileUseCase(fileParserRepository),
-      validateUseCase:
-          ValidateLanguageCodesUseCase(languageValidationRepository),
       generateUseCase:
           GenerateLocalizationClassesUseCase(codeGeneratorRepository),
       loadConfigUseCase: LoadConfigurationUseCase(configRepository),
@@ -72,9 +70,9 @@ class TranslatorService {
 
       print('✅ Found ${sheets.length} sheet(s)');
 
-      // Validate language codes for all sheets
-      for (final sheet in sheets) {
-        _validateUseCase.executeForSheet(sheet.languageCodes, sheet.name);
+      // All sheets should now have valid language codes since filtering is done during parsing
+      if (sheets.isEmpty) {
+        throw Exception('No valid sheets with proper language codes found in file: $filePath');
       }
 
       print('🔧 Generating localization classes...');
@@ -110,15 +108,5 @@ class TranslatorService {
       print('❌ Error: $e');
       rethrow;
     }
-  }
-
-  /// Validate if a language code is valid
-  bool isValidLanguageCode(String code) {
-    return _validateUseCase.execute(code);
-  }
-
-  /// Get language name from code
-  String getLanguageName(String code) {
-    return _validateUseCase.getLanguageName(code);
   }
 }
