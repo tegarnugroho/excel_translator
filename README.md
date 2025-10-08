@@ -7,7 +7,7 @@ Generate type-safe Flutter/Dart localizations from multiple file formats (Excel,
 - 📊 **Multi-format support** - Excel (.xlsx), CSV (.csv), and ODS (.ods) files
 - 📋 **Multi-sheet support** - Organize translations by feature/category (Excel & ODS)
 - 🎯 **Type-safe generated code** - Compile-time safety with auto-completion
-- 🔤 **String interpolation** - Dynamic values using `{variable}` syntax
+- 🔤 **String interpolation** - Dynamic values using `{variable}` or `%variable$s` syntax
 - 🌍 **184+ language codes** - Full ISO 639-1 support with country variants
 - 🐪 **CamelCase methods** - Modern naming (app_title → appTitle)
 - ✅ **Automatic validation** - Validates language codes with helpful error messages
@@ -27,7 +27,7 @@ All formats support the same feature set including string interpolation, languag
 
 ```yaml
 dependencies:
-  excel_translator: ^1.0.5
+  excel_translator: ^1.0.6
 ```
 
 ## Quick Start
