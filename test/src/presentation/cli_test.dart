@@ -30,6 +30,15 @@ class MockTranslatorService implements TranslatorService {
       throw Exception(errorMessage);
     }
   }
+
+  @override
+  Future<void> generateFromPubspec(String pubspecPath) async {
+    lastPubspecPath = pubspecPath;
+
+    if (shouldThrowError) {
+      throw Exception(errorMessage);
+    }
+  }
 }
 
 void main() {
