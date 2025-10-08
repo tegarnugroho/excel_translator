@@ -15,7 +15,20 @@ class ExcelTranslatorCLI {
 
   /// Run the CLI with provided arguments
   Future<void> run(List<String> arguments) async {
-    if (arguments.isEmpty || arguments.length < 2) {
+    // If no arguments, try to auto-detect from pubspec.yaml
+    if (arguments.isEmpty) {
+      await _runFromPubspec();
+      return;
+    }
+
+    // Handle help first
+    if (arguments.length == 1 && (arguments[0] == '--help' || arguments[0] == '-h')) {
+      _printUsage();
+      exit(0);
+    }
+
+    // Require at least 2 arguments for manual mode
+    if (arguments.length < 2) {
       _printUsage();
       exit(1);
     }
@@ -55,12 +68,35 @@ class ExcelTranslatorCLI {
     }
   }
 
+  /// Run using configuration from pubspec.yaml
+  Future<void> _runFromPubspec() async {
+    try {
+      print('📖 Loading configuration from pubspec.yaml...');
+      
+      await _translatorService.generateFromPubspec('./pubspec.yaml');
+    } catch (e) {
+      print('❌ Failed to load from pubspec.yaml: $e');
+      print('');
+      print('💡 Make sure you have excel_translator configuration in your pubspec.yaml:');
+      print('');
+      print('excel_translator:');
+      print('  excel_file: assets/localizations.xlsx');
+      print('  output_dir: lib/generated');
+      print('  class_name: AppLocalizations  # optional');
+      print('');
+      print('Or use manual arguments:');
+      _printUsage();
+      exit(1);
+    }
+  }
+
   /// Print usage information
   void _printUsage() {
     print(
         'Excel Translator - Generate Flutter localization files from Excel/CSV/ODS');
     print('');
     print('Usage:');
+    print('  dart run excel_translator                           # Auto-detect from pubspec.yaml');
     print(
         '  dart run excel_translator <input_file> <output_directory> [options]');
     print('');
@@ -75,7 +111,14 @@ class ExcelTranslatorCLI {
     print('  --no-flutter-delegates     Skip generating Flutter delegates');
     print('  --help, -h                 Show this help message');
     print('');
+    print('Auto-detect Configuration (pubspec.yaml):');
+    print('  excel_translator:');
+    print('    excel_file: assets/localizations.xlsx');
+    print('    output_dir: lib/generated');
+    print('    class_name: AppLocalizations  # optional');
+    print('');
     print('Examples:');
+    print('  dart run excel_translator                           # Use pubspec.yaml config');
     print(
         '  dart run excel_translator assets/localizations.xlsx lib/generated');
     print(

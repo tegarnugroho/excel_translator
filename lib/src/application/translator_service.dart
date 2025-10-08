@@ -109,4 +109,32 @@ class TranslatorService {
       rethrow;
     }
   }
+
+  /// Generate localizations from pubspec.yaml configuration
+  Future<void> generateFromPubspec(String pubspecPath) async {
+    try {
+      // Load configuration from pubspec.yaml
+      final config = _loadConfigUseCase.execute(pubspecPath: pubspecPath);
+
+      // Validate required configuration
+      if (config.excelFilePath == null) {
+        throw Exception('excel_file not specified in pubspec.yaml excel_translator configuration');
+      }
+      if (config.outputDir == null) {
+        throw Exception('output_dir not specified in pubspec.yaml excel_translator configuration');
+      }
+
+      // Generate using loaded configuration
+      await generateFromFile(
+        filePath: config.excelFilePath!,
+        outputDir: config.outputDir!,
+        className: config.className,
+        includeFlutterDelegates: config.includeFlutterDelegates,
+        pubspecPath: pubspecPath,
+      );
+    } catch (e) {
+      print('❌ Failed to generate from pubspec configuration: $e');
+      rethrow;
+    }
+  }
 }
