@@ -27,7 +27,7 @@ All formats support the same feature set including string interpolation, languag
 
 ```yaml
 dependencies:
-  excel_translator: ^1.0.6
+  excel_translator: ^1.0.7
 ```
 
 ## Quick Start
@@ -64,7 +64,7 @@ Add to `pubspec.yaml`:
 ```yaml
 excel_translator:
   excel_file: assets/localizations.xlsx  # or .csv, .ods
-  output_directory: lib/generated
+  output_dir: lib/generated
   class_name: AppLocalizations
 ```
 
