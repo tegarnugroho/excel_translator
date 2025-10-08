@@ -1,9 +1,8 @@
 // Code generation data source for main localization class
 import 'dart:io';
 import 'package:path/path.dart' as path;
+import '../../core/core.dart';
 import '../../domain/entities/entities.dart';
-import '../../core/string_utils.dart';
-import '../repositories_impl/language_validation_repository_impl.dart';
 
 /// Data source for generating main localization class
 class MainCodeDataSource {
@@ -33,7 +32,8 @@ class MainCodeDataSource {
 
     // Add sheet imports
     for (final sheet in sheets) {
-      buffer.writeln("import '${sheet.name}_localizations.dart';");
+      final fileName = StringUtils.sanitizeFileName(sheet.name);
+      buffer.writeln("import '${fileName}_localizations.dart';");
     }
     buffer.writeln();
 
@@ -59,8 +59,9 @@ class MainCodeDataSource {
     // Add sheet properties
     for (final sheet in sheets) {
       final sheetClassName =
-          '${StringUtils.capitalize(sheet.name)}Localizations';
-      buffer.writeln('  late final $sheetClassName ${sheet.name};');
+          '${StringUtils.sanitizeClassName(sheet.name)}Localizations';
+      final propertyName = StringUtils.sanitizeFileName(sheet.name);
+      buffer.writeln('  late final $sheetClassName $propertyName;');
     }
     buffer.writeln();
 
@@ -68,27 +69,33 @@ class MainCodeDataSource {
     buffer.writeln('  $className(this.languageCode) {');
     for (final sheet in sheets) {
       final sheetClassName =
-          '${StringUtils.capitalize(sheet.name)}Localizations';
-      buffer.writeln('    ${sheet.name} = $sheetClassName(languageCode);');
+          '${StringUtils.sanitizeClassName(sheet.name)}Localizations';
+      final propertyName = StringUtils.sanitizeFileName(sheet.name);
+      buffer.writeln('    $propertyName = $sheetClassName(languageCode);');
     }
     buffer.writeln('  }');
     buffer.writeln();
 
     if (includeFlutterDelegates) {
       // Add static helper methods for common languages
-      final languageRepo = LanguageValidationRepositoryImpl();
+      final languageValidationService = LanguageValidationService();
+      final addedGetters = <String>{};
+      
       for (final lang in sortedLanguages.take(5)) {
-        final capitalizedLang = languageRepo.getLanguageName(lang);
+        final capitalizedLang = languageValidationService.getLanguageName(lang);
         buffer.writeln('  /// Get $capitalizedLang instance');
         buffer.writeln("  static $className get $lang => $className('$lang');");
+        addedGetters.add(lang);
       }
       buffer.writeln();
 
-      // Add convenience static getters with full names
+      // Add convenience static getters with full names (only if not already added)
       for (final lang in sortedLanguages.take(5)) {
-        final fullName = languageRepo.getLanguageName(lang);
-        buffer.writeln(
-            "  static $className get $fullName => $className('$lang');");
+        final fullName = languageValidationService.getLanguageName(lang);
+        if (!addedGetters.contains(fullName) && fullName != lang) {
+          buffer.writeln(
+              "  static $className get $fullName => $className('$lang');");
+        }
       }
       buffer.writeln();
 

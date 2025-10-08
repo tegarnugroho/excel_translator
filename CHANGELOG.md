@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.6] - 2025-10-08
+
+- Skip invalid columns, not entire sheets
+- Fixed hyphenated names: auth-errors → AuthErrorsLocalizations
+- Fixed interpolation: %param$s → {param}
+
 ## [1.0.5] - 2025-09-06
 
 ### 🐛 Fixes

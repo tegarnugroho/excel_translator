@@ -35,7 +35,7 @@ void main() {
           () {
         // Arrange
         final mockData = {
-          'excel_file_path': 'test.xlsx',
+          'excel_file': 'test.xlsx',
           'output_dir': 'lib/generated',
           'class_name': 'TestLocalizations',
           'include_flutter_delegates': false,
@@ -69,7 +69,7 @@ void main() {
       test('should handle partial configuration data', () {
         // Arrange
         final mockData = {
-          'excel_file_path': 'partial.xlsx',
+          'excel_file': 'partial.xlsx',
           'class_name': 'PartialLocalizations',
           // Missing output_dir and include_flutter_delegates
         };

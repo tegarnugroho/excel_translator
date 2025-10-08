@@ -1,6 +1,7 @@
 // CSV (.csv) file data source
 import 'dart:io';
 import 'package:table_parser/table_parser.dart';
+import '../../core/core.dart';
 import '../../domain/entities/entities.dart';
 import 'i_file_data_source.dart';
 
@@ -15,7 +16,7 @@ class CsvFileDataSource implements IFileDataSource {
   }
 
   @override
-  Future<List<LocalizationSheet>> parseFile(String filePath) async {
+  Future<List<LocalizationSheet>> parseFile(String filePath, {LanguageValidationService? languageValidator}) async {
     final file = File(filePath);
     if (!file.existsSync()) {
       throw FileSystemException('File not found', filePath);
@@ -43,10 +44,32 @@ class CsvFileDataSource implements IFileDataSource {
       }
 
       // Extract language codes (skip first column which is 'key')
-      final languageCodes = headers.skip(1).toList();
+      final allLanguageCodes = headers.skip(1).toList();
 
-      // Create Language entities
-      final languages = languageCodes.map((code) {
+      List<String> validLanguageCodes;
+      Map<String, int> validCodesWithIndices;
+
+      if (languageValidator != null) {
+        // Filter out invalid language codes and get valid ones with their indices
+        validCodesWithIndices = languageValidator.filterValidLanguageCodes(allLanguageCodes, 'default');
+        
+        if (validCodesWithIndices.isEmpty) {
+          print('⚠️  CSV file: No valid language codes found. Skipping...');
+          return [];
+        }
+
+        validLanguageCodes = validCodesWithIndices.keys.toList();
+      } else {
+        // No validation - use all language codes
+        validLanguageCodes = allLanguageCodes;
+        validCodesWithIndices = <String, int>{};
+        for (int i = 0; i < allLanguageCodes.length; i++) {
+          validCodesWithIndices[allLanguageCodes[i]] = i;
+        }
+      }
+
+      // Create Language entities only for valid codes
+      final languages = validLanguageCodes.map((code) {
         final normalizedCode = code.toLowerCase().trim();
         String languageCode;
         String? region;
@@ -81,10 +104,17 @@ class CsvFileDataSource implements IFileDataSource {
         if (key.isEmpty) continue;
 
         final values = <String, String>{};
-        for (int j = 0; j < languageCodes.length && j + 1 < row.length; j++) {
-          final value = row[j + 1]?.toString() ?? '';
-          if (value.isNotEmpty) {
-            values[languageCodes[j]] = value;
+        
+        // Only process columns with valid language codes
+        for (final validCode in validLanguageCodes) {
+          final originalIndex = validCodesWithIndices[validCode]!;
+          final columnIndex = originalIndex + 1; // +1 because originalIndex is header index, but we need data column index
+          
+          if (columnIndex < row.length) {
+            final value = row[columnIndex]?.toString() ?? '';
+            if (value.isNotEmpty) {
+              values[validCode] = value;
+            }
           }
         }
 

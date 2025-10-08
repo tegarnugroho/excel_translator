@@ -1,5 +1,6 @@
 // Main generator for Excel Translator
 import '../application/translator_service.dart';
+import 'services/language_validation_service.dart';
 
 /// Main class for generating localizations from various file formats
 /// This is a legacy wrapper that delegates to the new TranslatorService
@@ -40,17 +41,14 @@ class LocalizationsGenerator {
 
   /// Validate if a language code is valid
   static bool isValidLanguageCode(String code) {
-    return _service.isValidLanguageCode(code);
+    final validator = LanguageValidationService();
+    return validator.isValidLanguageCode(code);
   }
 
   /// Validate language codes and throw exception if invalid
   static void validateLanguageCodes(
       List<String> languageCodes, String sheetName) {
-    // This will be handled by the use case internally
-    for (final code in languageCodes) {
-      if (!_service.isValidLanguageCode(code)) {
-        throw Exception('Invalid language code: $code in sheet: $sheetName');
-      }
-    }
+    final validator = LanguageValidationService();
+    validator.validateLanguageCodes(languageCodes, sheetName);
   }
 }

@@ -10,6 +10,7 @@ class ConfigDataSource {
     try {
       // Find pubspec.yaml file
       final pubspecFile = _findPubspecFile(pubspecPath);
+      
       if (pubspecFile == null || !pubspecFile.existsSync()) {
         return null;
       }
@@ -22,10 +23,12 @@ class ConfigDataSource {
 
       // Look for excel_translator configuration
       final configSection = yaml['excel_translator'] as Map<dynamic, dynamic>?;
+      
       if (configSection == null) return null;
 
       // Convert to String keys
-      return Map<String, dynamic>.from(configSection);
+      final result = Map<String, dynamic>.from(configSection);
+      return result;
     } catch (e) {
       // Silently ignore errors and return null
       return null;
@@ -36,21 +39,29 @@ class ConfigDataSource {
   File? _findPubspecFile([String? startPath]) {
     Directory current;
     if (startPath != null) {
-      current = Directory(startPath);
-      if (!current.existsSync()) {
-        current = File(startPath).parent;
+      // If it's a file path, get its directory
+      if (startPath.endsWith('.yaml') || startPath.endsWith('.yml')) {
+        current = File(startPath).parent.absolute;
+      } else {
+        current = Directory(startPath).absolute;
+        if (!current.existsSync()) {
+          current = File(startPath).parent.absolute;
+        }
       }
     } else {
-      current = Directory.current;
+      current = Directory.current.absolute;
     }
 
     // Search upward for pubspec.yaml
-    while (current.parent.path != current.path) {
+    int searchCount = 0;
+    while (current.parent.path != current.path && searchCount < 10) {
       final pubspecFile = File(path.join(current.path, 'pubspec.yaml'));
+      
       if (pubspecFile.existsSync()) {
         return pubspecFile;
       }
       current = current.parent;
+      searchCount++;
     }
 
     return null;
