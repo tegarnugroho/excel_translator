@@ -32,15 +32,12 @@ class MockTranslatorService implements TranslatorService {
   }
 
   @override
-  String getLanguageName(String languageCode) {
-    // Mock implementation
-    return 'Mock Language';
-  }
+  Future<void> generateFromPubspec(String pubspecPath) async {
+    lastPubspecPath = pubspecPath;
 
-  @override
-  bool isValidLanguageCode(String languageCode) {
-    // Mock implementation
-    return true;
+    if (shouldThrowError) {
+      throw Exception(errorMessage);
+    }
   }
 }
 

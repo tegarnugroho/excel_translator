@@ -1,4 +1,5 @@
 // Data source contract for file parsing
+import '../../core/core.dart';
 import '../../domain/entities/entities.dart';
 
 /// Supported file formats
@@ -26,7 +27,7 @@ enum FileFormat {
 /// Base interface for file data sources
 abstract class IFileDataSource {
   /// Parse a file and return list of localization sheets
-  Future<List<LocalizationSheet>> parseFile(String filePath);
+  Future<List<LocalizationSheet>> parseFile(String filePath, {LanguageValidationService? languageValidator});
 
   /// Get supported file format
   FileFormat get supportedFormat;

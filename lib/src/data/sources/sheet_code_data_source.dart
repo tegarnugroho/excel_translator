@@ -12,7 +12,7 @@ class SheetCodeDataSource {
     String outputDir,
   ) async {
     final buffer = StringBuffer();
-    final className = '${StringUtils.capitalize(sheet.name)}Localizations';
+    final className = '${StringUtils.sanitizeClassName(sheet.name)}Localizations';
 
     // Add generation comment
     buffer.writeln('// GENERATED CODE - DO NOT MODIFY BY HAND');
@@ -49,8 +49,9 @@ class SheetCodeDataSource {
 
         for (final languageCode in sheet.languageCodes) {
           final translatedValue = translation.values[languageCode] ?? '';
+          final normalizedValue = StringUtils.normalizeInterpolation(translatedValue);
           buffer.writeln("      case '$languageCode':");
-          buffer.writeln("        return '''$translatedValue'''");
+          buffer.writeln("        return '''$normalizedValue'''");
 
           // Add interpolation replacements
           for (final param in params) {
@@ -62,7 +63,8 @@ class SheetCodeDataSource {
 
         buffer.writeln("      default:");
         final defaultTranslation = translation.values.values.first;
-        buffer.writeln("        return '''$defaultTranslation'''");
+        final normalizedDefault = StringUtils.normalizeInterpolation(defaultTranslation);
+        buffer.writeln("        return '''$normalizedDefault'''");
         for (final param in params) {
           buffer.writeln(
               "            .replaceAll('{$param}', $param.toString())");
@@ -92,7 +94,8 @@ class SheetCodeDataSource {
 
     buffer.writeln('}');
 
-    final file = File(path.join(outputDir, '${sheet.name}_localizations.dart'));
+    final fileName = '${StringUtils.sanitizeFileName(sheet.name)}_localizations.dart';
+    final file = File(path.join(outputDir, fileName));
     await file.writeAsString(buffer.toString());
   }
 }

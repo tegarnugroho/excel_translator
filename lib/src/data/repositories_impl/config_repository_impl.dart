@@ -17,7 +17,7 @@ class ConfigRepositoryImpl implements IConfigRepository {
     if (configData == null) return null;
 
     return ExcelTranslatorConfig(
-      excelFilePath: configData['excel_file_path'] as String?,
+      excelFilePath: configData['excel_file'] as String?,
       outputDir: configData['output_dir'] as String?,
       className: configData['class_name'] as String?,
       includeFlutterDelegates:

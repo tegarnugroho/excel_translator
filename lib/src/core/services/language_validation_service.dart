@@ -1,16 +1,15 @@
-// Implementation of language validation repository
 import '../../domain/repositories/repositories.dart';
-import 'language_repository_impl.dart';
+import '../../data/repositories_impl/language_repository_impl.dart';
 
-/// Implementation of language validation repository
-class LanguageValidationRepositoryImpl
-    implements ILanguageValidationRepository {
+/// Service for language code validation
+class LanguageValidationService {
   final ILanguageRepository _languageRepository;
 
-  LanguageValidationRepositoryImpl({
+  LanguageValidationService({
     ILanguageRepository? languageRepository,
   }) : _languageRepository = languageRepository ?? LanguageRepositoryImpl();
-  @override
+
+  /// Check if language code is valid
   bool isValidLanguageCode(String code) {
     final normalizedCode = code.toLowerCase().trim();
 
@@ -40,7 +39,7 @@ class LanguageValidationRepositoryImpl
     return false;
   }
 
-  @override
+  /// Validate list of language codes (throws exception if invalid)
   void validateLanguageCodes(List<String> languageCodes, String sheetName) {
     if (languageCodes.isEmpty) {
       throw Exception(
@@ -66,16 +65,44 @@ class LanguageValidationRepositoryImpl
         '✅ Sheet "$sheetName": Valid language codes found: ${languageCodes.join(', ')}');
   }
 
-  @override
+  /// Filter out invalid language codes and return only valid ones with their indices
+  /// Returns a map of valid language codes with their original column indices
+  Map<String, int> filterValidLanguageCodes(List<String> languageCodes, String sheetName) {
+    final validCodesWithIndices = <String, int>{};
+    final invalidCodes = <String>[];
+
+    for (int i = 0; i < languageCodes.length; i++) {
+      final code = languageCodes[i];
+      if (isValidLanguageCode(code)) {
+        validCodesWithIndices[code] = i;
+      } else {
+        invalidCodes.add(code);
+      }
+    }
+
+    if (invalidCodes.isNotEmpty) {
+      print('⚠️  Sheet "$sheetName": Skipping invalid language code columns: ${invalidCodes.join(', ')}');
+      print('   Valid language codes are ISO 639-1 codes like: en, id, es, fr, de, pt, etc.');
+      print('   You can also use locale formats like: en_US, pt_BR, zh_CN (preferred) or en-US, pt-BR, zh-CN');
+    }
+
+    if (validCodesWithIndices.isNotEmpty) {
+      print('✅ Sheet "$sheetName": Processing valid language codes: ${validCodesWithIndices.keys.join(', ')}');
+    }
+
+    return validCodesWithIndices;
+  }
+
+  /// Get language name from code
   String getLanguageName(String code) {
     return _languageRepository.getLanguageName(code);
   }
 
-  @override
+  /// Get all valid language codes
   Set<String> get validLanguageCodes =>
       _languageRepository.getValidLanguageCodes();
 
-  @override
+  /// Get language names mapping
   Map<String, String> get languageNames =>
       _languageRepository.getLanguageNames();
 }
