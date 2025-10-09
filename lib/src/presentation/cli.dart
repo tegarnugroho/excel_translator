@@ -1,6 +1,7 @@
 // Command line interface for Excel Translator
 import 'dart:io';
 import '../application/translator_service.dart';
+import '../data/sources/config_data_source.dart';
 
 /// Command line interface for Excel Translator
 class ExcelTranslatorCLI {
@@ -21,10 +22,15 @@ class ExcelTranslatorCLI {
       return;
     }
 
-    // Handle help first
-    if (arguments.length == 1 && (arguments[0] == '--help' || arguments[0] == '-h')) {
-      _printUsage();
-      exit(0);
+    // Handle special commands first
+    if (arguments.length == 1) {
+      if (arguments[0] == '--help' || arguments[0] == '-h') {
+        _printUsage();
+        exit(0);
+      } else if (arguments[0] == 'log') {
+        await _printConfig();
+        exit(0);
+      }
     }
 
     // Require at least 2 arguments for manual mode
@@ -90,6 +96,71 @@ class ExcelTranslatorCLI {
     }
   }
 
+  /// Print current configuration from pubspec.yaml
+  Future<void> _printConfig() async {
+    try {
+      final configDataSource = ConfigDataSource();
+      final config = configDataSource.loadConfigFromPubspec();
+
+      if (config == null) {
+        print('❌ No excel_translator configuration found in pubspec.yaml');
+        print('');
+        print('💡 Add configuration to your pubspec.yaml:');
+        print('');
+        print('excel_translator:');
+        print('  excel_file: assets/localizations.xlsx');
+        print('  output_dir: lib/generated');
+        print('  class_name: AppLocalizations  # optional');
+        return;
+      }
+
+      print('📋 Excel Translator Configuration:');
+      print('═══════════════════════════════════════');
+      
+      final excelFile = config['excel_file'] as String?;
+      final outputDir = config['output_dir'] as String?;
+      final className = config['class_name'] as String?;
+
+      if (excelFile != null) {
+        print('📁 Excel File: $excelFile');
+      }
+      
+      if (outputDir != null) {
+        print('📂 Output Directory: $outputDir');
+      }
+      
+      if (className != null) {
+        print('🏷️  Class Name: $className');
+      } else {
+        print('🏷️  Class Name: AppLocalizations (default)');
+      }
+
+      // Check if files exist
+      print('');
+      print('📊 File Status:');
+      if (excelFile != null) {
+        final file = File(excelFile);
+        if (file.existsSync()) {
+          print('✅ Excel file exists: $excelFile');
+        } else {
+          print('❌ Excel file not found: $excelFile');
+        }
+      }
+
+      if (outputDir != null) {
+        final dir = Directory(outputDir);
+        if (dir.existsSync()) {
+          print('✅ Output directory exists: $outputDir');
+        } else {
+          print('⚠️  Output directory will be created: $outputDir');
+        }
+      }
+
+    } catch (e) {
+      print('❌ Error reading configuration: $e');
+    }
+  }
+
   /// Print usage information
   void _printUsage() {
     print(
@@ -97,8 +168,12 @@ class ExcelTranslatorCLI {
     print('');
     print('Usage:');
     print('  dart run excel_translator                           # Auto-detect from pubspec.yaml');
+    print('  dart run excel_translator log                       # Show current configuration');
     print(
         '  dart run excel_translator <input_file> <output_directory> [options]');
+    print('');
+    print('Commands:');
+    print('  log                      Show current configuration from pubspec.yaml');
     print('');
     print('Arguments:');
     print(
@@ -119,6 +194,7 @@ class ExcelTranslatorCLI {
     print('');
     print('Examples:');
     print('  dart run excel_translator                           # Use pubspec.yaml config');
+    print('  dart run excel_translator log                       # Show configuration');
     print(
         '  dart run excel_translator assets/localizations.xlsx lib/generated');
     print(
