@@ -49,6 +49,32 @@ class StringUtils {
     return result;
   }
 
+  /// Sanitize property name for Dart properties (camelCase)
+  /// Examples: "auth-errors" -> "authErrors", "en_US" -> "enUs", "de_DE" -> "deDe"
+  static String sanitizePropertyName(String name) {
+    if (name.isEmpty) return name;
+    
+    // Convert to camelCase: split by hyphens/spaces/underscores, capitalize each word except first
+    final parts = name.toLowerCase()
+        .replaceAll(RegExp(r'[^a-zA-Z0-9\-\s_]'), '')
+        .split(RegExp(r'[-\s_]+'))
+        .where((part) => part.isNotEmpty)
+        .toList();
+    
+    if (parts.isEmpty) return 'property';
+    
+    // First part lowercase, rest capitalize first letter
+    final result = parts.first + parts.skip(1).map((part) => 
+      part.substring(0, 1).toUpperCase() + part.substring(1)).join('');
+    
+    // If starts with number, add prefix
+    if (result.isNotEmpty && RegExp(r'^[0-9]').hasMatch(result)) {
+      return 'property${result.substring(0, 1).toUpperCase()}${result.substring(1)}';
+    }
+    
+    return result;
+  }
+
   /// Sanitize sheet name for class naming
   static String sanitizeSheetName(String sheetName) {
     String cleaned =

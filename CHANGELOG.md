@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.7] - 2025-10-08
+
+- Fix running without arguments, automatically loading configuration from `pubspec.yaml`
+- Added `dart run excel_translator log` to print current pubspec configuration
+
 ## [1.0.6] - 2025-10-08
 
 - Skip invalid columns, not entire sheets

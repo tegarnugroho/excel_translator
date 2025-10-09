@@ -60,7 +60,7 @@ class MainCodeDataSource {
     for (final sheet in sheets) {
       final sheetClassName =
           '${StringUtils.sanitizeClassName(sheet.name)}Localizations';
-      final propertyName = StringUtils.sanitizeFileName(sheet.name);
+      final propertyName = StringUtils.sanitizePropertyName(sheet.name);
       buffer.writeln('  late final $sheetClassName $propertyName;');
     }
     buffer.writeln();
@@ -70,7 +70,7 @@ class MainCodeDataSource {
     for (final sheet in sheets) {
       final sheetClassName =
           '${StringUtils.sanitizeClassName(sheet.name)}Localizations';
-      final propertyName = StringUtils.sanitizeFileName(sheet.name);
+      final propertyName = StringUtils.sanitizePropertyName(sheet.name);
       buffer.writeln('    $propertyName = $sheetClassName(languageCode);');
     }
     buffer.writeln('  }');
@@ -83,18 +83,21 @@ class MainCodeDataSource {
       
       for (final lang in sortedLanguages.take(5)) {
         final capitalizedLang = languageValidationService.getLanguageName(lang);
+        final camelCaseLang = StringUtils.sanitizePropertyName(lang);
         buffer.writeln('  /// Get $capitalizedLang instance');
-        buffer.writeln("  static $className get $lang => $className('$lang');");
-        addedGetters.add(lang);
+        buffer.writeln("  static $className get $camelCaseLang => $className('$lang');");
+        addedGetters.add(camelCaseLang);
       }
       buffer.writeln();
 
       // Add convenience static getters with full names (only if not already added)
       for (final lang in sortedLanguages.take(5)) {
         final fullName = languageValidationService.getLanguageName(lang);
-        if (!addedGetters.contains(fullName) && fullName != lang) {
+        final camelCaseFullName = StringUtils.sanitizePropertyName(fullName);
+        final camelCaseLang = StringUtils.sanitizePropertyName(lang);
+        if (!addedGetters.contains(camelCaseFullName) && camelCaseFullName != camelCaseLang) {
           buffer.writeln(
-              "  static $className get $fullName => $className('$lang');");
+              "  static $className get $camelCaseFullName => $className('$lang');");
         }
       }
       buffer.writeln();
