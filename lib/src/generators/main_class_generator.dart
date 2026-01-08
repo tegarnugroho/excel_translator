@@ -25,8 +25,9 @@ class MainClassGenerator {
     if (includeFlutterDelegates) {
       buffer.writeln("import 'package:flutter/material.dart';");
       buffer.writeln("import 'package:flutter/cupertino.dart';");
-      buffer
-          .writeln("import 'package:excel_translator/excel_translator.dart';");
+      buffer.writeln(
+        "import 'package:excel_translator/excel_translator.dart';",
+      );
       buffer.writeln("import 'dart:ui' show PlatformDispatcher;");
     }
 
@@ -80,12 +81,14 @@ class MainClassGenerator {
       // Add static helper methods for common languages
       final languageService = LanguageService();
       final addedGetters = <String>{};
-      
+
       for (final lang in sortedLanguages.take(5)) {
         final capitalizedLang = languageService.getLanguageName(lang);
         final camelCaseLang = StringUtils.sanitizePropertyName(lang);
         buffer.writeln('  /// Get $capitalizedLang instance');
-        buffer.writeln("  static $className get $camelCaseLang => $className('$lang');");
+        buffer.writeln(
+          "  static $className get $camelCaseLang => $className('$lang');",
+        );
         addedGetters.add(camelCaseLang);
       }
       buffer.writeln();
@@ -95,9 +98,11 @@ class MainClassGenerator {
         final fullName = languageService.getLanguageName(lang);
         final camelCaseFullName = StringUtils.sanitizePropertyName(fullName);
         final camelCaseLang = StringUtils.sanitizePropertyName(lang);
-        if (!addedGetters.contains(camelCaseFullName) && camelCaseFullName != camelCaseLang) {
+        if (!addedGetters.contains(camelCaseFullName) &&
+            camelCaseFullName != camelCaseLang) {
           buffer.writeln(
-              "  static $className get $camelCaseFullName => $className('$lang');");
+            "  static $className get $camelCaseFullName => $className('$lang');",
+          );
         }
       }
       buffer.writeln();
@@ -114,19 +119,23 @@ class MainClassGenerator {
       buffer.writeln('  static String getSystemLanguage() {');
       buffer.writeln('    try {');
       buffer.writeln(
-          '      // Try to get from Flutter${String.fromCharCode(39)}s PlatformDispatcher first');
+        '      // Try to get from Flutter${String.fromCharCode(39)}s PlatformDispatcher first',
+      );
       buffer.writeln(
-          '      final locales = PlatformDispatcher.instance.locales;');
+        '      final locales = PlatformDispatcher.instance.locales;',
+      );
       buffer.writeln('      if (locales.isNotEmpty) {');
       buffer.writeln(
-          '        final locale = locales.first.languageCode.toLowerCase();');
+        '        final locale = locales.first.languageCode.toLowerCase();',
+      );
       buffer.writeln('        if (supportedLanguages.contains(locale)) {');
       buffer.writeln('          return locale;');
       buffer.writeln('        }');
       buffer.writeln('      }');
       buffer.writeln('    } catch (e) {');
       buffer.writeln(
-          '      // Fall back to other methods if PlatformDispatcher fails');
+        '      // Fall back to other methods if PlatformDispatcher fails',
+      );
       buffer.writeln('    }');
       buffer.writeln();
       buffer.writeln('    // Final fallback to English');
@@ -137,18 +146,22 @@ class MainClassGenerator {
       // Add current getter
       buffer.writeln('  /// Get current localization based on system language');
       buffer.writeln(
-          '  static $className get current => $className(getSystemLanguage());');
+        '  static $className get current => $className(getSystemLanguage());',
+      );
       buffer.writeln();
 
       // Add Flutter delegates
       buffer.writeln('  /// Delegate for localizations');
       buffer.writeln(
-          '  static const ${className}Delegate delegate = ${className}Delegate();');
+        '  static const ${className}Delegate delegate = ${className}Delegate();',
+      );
       buffer.writeln();
       buffer.writeln(
-          '  /// All localization delegates including Flutter${String.fromCharCode(39)}s built-in delegates');
+        '  /// All localization delegates including Flutter${String.fromCharCode(39)}s built-in delegates',
+      );
       buffer.writeln(
-          '  static const List<LocalizationsDelegate<dynamic>> delegates = [');
+        '  static const List<LocalizationsDelegate<dynamic>> delegates = [',
+      );
       buffer.writeln('    delegate, // Custom localizations');
       buffer.writeln('    GlobalMaterialLocalizations.delegate,');
       buffer.writeln('    GlobalWidgetsLocalizations.delegate,');
@@ -163,13 +176,15 @@ class MainClassGenerator {
     if (includeFlutterDelegates) {
       buffer.writeln();
       buffer.writeln(
-          'class ${className}Delegate extends LocalizationsDelegate<$className> {');
+        'class ${className}Delegate extends LocalizationsDelegate<$className> {',
+      );
       buffer.writeln('  const ${className}Delegate();');
       buffer.writeln();
       buffer.writeln('  @override');
       buffer.writeln('  bool isSupported(Locale locale) {');
       buffer.writeln(
-          '    return $className.supportedLanguages.contains(locale.languageCode);');
+        '    return $className.supportedLanguages.contains(locale.languageCode);',
+      );
       buffer.writeln('  }');
       buffer.writeln();
       buffer.writeln('  @override');
@@ -186,4 +201,3 @@ class MainClassGenerator {
     await file.writeAsString(buffer.toString());
   }
 }
-

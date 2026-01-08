@@ -45,8 +45,10 @@ excel_translator:
       expect(config.includeFlutterDelegates, isFalse);
     });
 
-    test('should return null when no excel_translator section exists', () async {
-      final pubspecContent = '''
+    test(
+      'should return null when no excel_translator section exists',
+      () async {
+        final pubspecContent = '''
 name: test_package
 version: 1.0.0
 
@@ -55,13 +57,14 @@ dependencies:
     sdk: flutter
 ''';
 
-      final pubspecFile = File(path.join(tempDir.path, 'pubspec.yaml'));
-      await pubspecFile.writeAsString(pubspecContent);
+        final pubspecFile = File(path.join(tempDir.path, 'pubspec.yaml'));
+        await pubspecFile.writeAsString(pubspecContent);
 
-      final config = configService.loadFromPubspec(tempDir.path);
+        final config = configService.loadFromPubspec(tempDir.path);
 
-      expect(config, isNull);
-    });
+        expect(config, isNull);
+      },
+    );
 
     test('should return null when pubspec.yaml does not exist', () {
       final config = configService.loadFromPubspec('/non/existent/path');
@@ -73,7 +76,10 @@ dependencies:
       final config = configService.getDefault();
 
       expect(config.className, equals('AppLocalizations'));
-      expect(config.includeFlutterDelegates, isNull); // null means use default true
+      expect(
+        config.includeFlutterDelegates,
+        isNull,
+      ); // null means use default true
       expect(config.excelFilePath, isNull);
       expect(config.outputDir, isNull);
     });
@@ -96,7 +102,10 @@ dependencies:
 
       // Priority: provided > pubspec > default
       expect(merged.excelFilePath, equals('provided.xlsx')); // from provided
-      expect(merged.className, equals('ProvidedLocalizations')); // from provided
+      expect(
+        merged.className,
+        equals('ProvidedLocalizations'),
+      ); // from provided
       expect(merged.outputDir, equals('lib/pubspec')); // from pubspec
       expect(merged.includeFlutterDelegates, isFalse); // from pubspec
     });

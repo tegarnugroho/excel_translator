@@ -15,7 +15,10 @@ class CsvParser implements IFileParser {
   }
 
   @override
-  Future<List<LocalizationSheet>> parseFile(String filePath, {LanguageService? languageService}) async {
+  Future<List<LocalizationSheet>> parseFile(
+    String filePath, {
+    LanguageService? languageService,
+  }) async {
     final file = File(filePath);
     if (!file.existsSync()) {
       throw FileSystemException('File not found', filePath);
@@ -39,7 +42,8 @@ class CsvParser implements IFileParser {
       final headers = rows.first.map((e) => e.toString()).toList();
       if (headers.isEmpty || headers.first.toLowerCase() != 'key') {
         throw FormatException(
-            'CSV must start with "key" column followed by language codes');
+          'CSV must start with "key" column followed by language codes',
+        );
       }
 
       // Extract language codes (skip first column which is 'key')
@@ -50,8 +54,11 @@ class CsvParser implements IFileParser {
 
       if (languageService != null) {
         // Filter out invalid language codes and get valid ones with their indices
-        validCodesWithIndices = languageService.filterValidLanguageCodes(allLanguageCodes, 'default');
-        
+        validCodesWithIndices = languageService.filterValidLanguageCodes(
+          allLanguageCodes,
+          'default',
+        );
+
         if (validCodesWithIndices.isEmpty) {
           print('⚠️  CSV file: No valid language codes found. Skipping...');
           return [];
@@ -103,12 +110,14 @@ class CsvParser implements IFileParser {
         if (key.isEmpty) continue;
 
         final values = <String, String>{};
-        
+
         // Only process columns with valid language codes
         for (final validCode in validLanguageCodes) {
           final originalIndex = validCodesWithIndices[validCode]!;
-          final columnIndex = originalIndex + 1; // +1 because originalIndex is header index, but we need data column index
-          
+          final columnIndex =
+              originalIndex +
+              1; // +1 because originalIndex is header index, but we need data column index
+
           if (columnIndex < row.length) {
             final value = row[columnIndex]?.toString() ?? '';
             if (value.isNotEmpty) {
@@ -118,10 +127,7 @@ class CsvParser implements IFileParser {
         }
 
         if (values.isNotEmpty) {
-          translations.add(Translation(
-            key: key,
-            values: values,
-          ));
+          translations.add(Translation(key: key, values: values));
         }
       }
 
@@ -134,11 +140,10 @@ class CsvParser implements IFileParser {
           name: 'default',
           translations: translations,
           supportedLanguages: languages,
-        )
+        ),
       ];
     } catch (e) {
       throw FormatException('Failed to parse CSV file: $e');
     }
   }
 }
-

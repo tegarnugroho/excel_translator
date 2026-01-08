@@ -16,9 +16,11 @@ class ExtensionGenerator {
     buffer.writeln('// ${DateTime.now()}');
     buffer.writeln();
     buffer.writeln(
-        '// Uncomment the lines below to enable BuildContext extension');
+      '// Uncomment the lines below to enable BuildContext extension',
+    );
     buffer.writeln(
-        '// This provides easy access like: context.loc.localizations.hello');
+      '// This provides easy access like: context.loc.localizations.hello',
+    );
     buffer.writeln('//');
     buffer.writeln("// import 'package:flutter/material.dart';");
     buffer.writeln("// import 'generated_localizations.dart';");

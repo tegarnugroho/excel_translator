@@ -14,4 +14,3 @@ export 'src/utils/utils.dart';
 
 // Re-export flutter_localizations so users don't need to add it manually
 export 'package:flutter_localizations/flutter_localizations.dart';
-

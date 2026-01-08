@@ -29,11 +29,14 @@ void main() {
       expect(languageService.isValidLanguageCode('zh_CN'), isTrue);
     });
 
-    test('should validate locale format with dash (backward compatibility)', () {
-      expect(languageService.isValidLanguageCode('en-US'), isTrue);
-      expect(languageService.isValidLanguageCode('pt-BR'), isTrue);
-      expect(languageService.isValidLanguageCode('zh-CN'), isTrue);
-    });
+    test(
+      'should validate locale format with dash (backward compatibility)',
+      () {
+        expect(languageService.isValidLanguageCode('en-US'), isTrue);
+        expect(languageService.isValidLanguageCode('pt-BR'), isTrue);
+        expect(languageService.isValidLanguageCode('zh-CN'), isTrue);
+      },
+    );
 
     test('should get language names', () {
       expect(languageService.getLanguageName('en'), isNotEmpty);
@@ -43,7 +46,7 @@ void main() {
 
     test('should return valid language codes set', () {
       final codes = languageService.validLanguageCodes;
-      
+
       expect(codes, isNotEmpty);
       expect(codes.contains('en'), isTrue);
       expect(codes.contains('id'), isTrue);
@@ -52,9 +55,12 @@ void main() {
 
     test('should filter valid language codes from list', () {
       final testCodes = ['en', 'invalid', 'id', 'xyz', 'es'];
-      
-      final validCodes = languageService.filterValidLanguageCodes(testCodes, 'test_sheet');
-      
+
+      final validCodes = languageService.filterValidLanguageCodes(
+        testCodes,
+        'test_sheet',
+      );
+
       expect(validCodes.keys, containsAll(['en', 'id', 'es']));
       expect(validCodes.keys, isNot(contains('invalid')));
       expect(validCodes.keys, isNot(contains('xyz')));
@@ -69,14 +75,21 @@ void main() {
 
     test('should throw when validating invalid language codes', () {
       expect(
-        () => languageService.validateLanguageCodes(['invalid', 'xyz'], 'test_sheet'),
+        () => languageService.validateLanguageCodes([
+          'invalid',
+          'xyz',
+        ], 'test_sheet'),
         throwsException,
       );
     });
 
     test('should pass validation for valid language codes', () {
       expect(
-        () => languageService.validateLanguageCodes(['en', 'id', 'es'], 'test_sheet'),
+        () => languageService.validateLanguageCodes([
+          'en',
+          'id',
+          'es',
+        ], 'test_sheet'),
         returnsNormally,
       );
     });

@@ -4,11 +4,7 @@ class Language {
   final String name;
   final String? region;
 
-  const Language({
-    required this.code,
-    required this.name,
-    this.region,
-  });
+  const Language({required this.code, required this.name, this.region});
 
   /// Create a locale-specific language (e.g., en_US, pt_BR)
   Language.locale({
@@ -28,11 +24,7 @@ class Language {
   /// Check if this is a locale-specific language
   bool get hasRegion => region != null && region!.isNotEmpty;
 
-  Language copyWith({
-    String? code,
-    String? name,
-    String? region,
-  }) {
+  Language copyWith({String? code, String? name, String? region}) {
     return Language(
       code: code ?? this.code,
       name: name ?? this.name,
@@ -41,8 +33,7 @@ class Language {
   }
 
   @override
-  String toString() =>
-      'Language(code: $code, name: $name, region: $region)';
+  String toString() => 'Language(code: $code, name: $name, region: $region)';
 
   @override
   bool operator ==(Object other) {

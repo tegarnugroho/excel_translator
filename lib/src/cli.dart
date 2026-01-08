@@ -34,7 +34,9 @@ class ExcelTranslatorCLI {
     // Require at least 2 arguments for manual mode
     if (arguments.length < 2) {
       _printUsage();
-      throw Exception('Insufficient arguments. Use --help for usage information.');
+      throw Exception(
+        'Insufficient arguments. Use --help for usage information.',
+      );
     }
 
     final filePath = arguments[0];
@@ -49,7 +51,9 @@ class ExcelTranslatorCLI {
         className = arg.substring('--class-name='.length);
       } else if (arg.startsWith('-c=')) {
         className = arg.substring('-c='.length);
-      } else if (arg == '--no-delegates' || arg == '--no-flutter-delegates' || arg == '-nd') {
+      } else if (arg == '--no-delegates' ||
+          arg == '--no-flutter-delegates' ||
+          arg == '-nd') {
         includeFlutterDelegates = false;
       } else if (arg.startsWith('--delegates=')) {
         final value = arg.substring('--delegates='.length);
@@ -105,7 +109,8 @@ class ExcelTranslatorCLI {
       print('Output Dir: ${config.outputDir ?? "(not set)"}');
       print('Class Name: ${config.className ?? "AppLocalizations"}');
       print(
-          'Include Delegates: ${(config.includeFlutterDelegates ?? true) ? "true" : "false"}');
+        'Include Delegates: ${(config.includeFlutterDelegates ?? true) ? "true" : "false"}',
+      );
     } else {
       print('No configuration found in pubspec.yaml');
       print('');
@@ -122,23 +127,37 @@ class ExcelTranslatorCLI {
     print('Excel Translator - Generate type-safe Flutter localizations');
     print('');
     print('Usage:');
-    print('  dart run excel_translator                    # Auto-detect from pubspec.yaml');
-    print('  dart run excel_translator <file> <output>    # Generate from file');
-    print('  dart run excel_translator log                # Show current config');
+    print(
+      '  dart run excel_translator                    # Auto-detect from pubspec.yaml',
+    );
+    print(
+      '  dart run excel_translator <file> <output>    # Generate from file',
+    );
+    print(
+      '  dart run excel_translator log                # Show current config',
+    );
     print('  dart run excel_translator --help             # Show this help');
     print('');
     print('Arguments:');
-    print('  <file>                  Excel/CSV/ODS file path (.xlsx, .csv, .ods)');
+    print(
+      '  <file>                  Excel/CSV/ODS file path (.xlsx, .csv, .ods)',
+    );
     print('  <output>                Output directory');
     print('');
     print('Options:');
-    print('  -c, --class-name=NAME   Generated class name (default: AppLocalizations)');
-    print('  -d, --delegates=BOOL    Include Flutter delegates (default: true)');
+    print(
+      '  -c, --class-name=NAME   Generated class name (default: AppLocalizations)',
+    );
+    print(
+      '  -d, --delegates=BOOL    Include Flutter delegates (default: true)',
+    );
     print('  --no-delegates          Disable Flutter delegates');
     print('  -h, --help              Show this help');
     print('');
     print('Examples:');
-    print('  dart run excel_translator assets/localizations.xlsx lib/generated');
+    print(
+      '  dart run excel_translator assets/localizations.xlsx lib/generated',
+    );
     print('  dart run excel_translator file.csv lib/l10n --class-name=L10n');
     print('  dart run excel_translator file.ods lib/i18n --no-delegates');
     print('');

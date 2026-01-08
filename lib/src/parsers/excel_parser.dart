@@ -15,7 +15,10 @@ class ExcelParser implements IFileParser {
   }
 
   @override
-  Future<List<LocalizationSheet>> parseFile(String filePath, {LanguageService? languageService}) async {
+  Future<List<LocalizationSheet>> parseFile(
+    String filePath, {
+    LanguageService? languageService,
+  }) async {
     final file = File(filePath);
     final bytes = file.readAsBytesSync();
     final decoder = TableParser.decodeBytes(bytes);
@@ -46,10 +49,15 @@ class ExcelParser implements IFileParser {
 
       if (languageService != null) {
         // Filter out invalid language codes and get valid ones with their indices
-        validCodesWithIndices = languageService.filterValidLanguageCodes(allLanguageCodes, tableName);
-        
+        validCodesWithIndices = languageService.filterValidLanguageCodes(
+          allLanguageCodes,
+          tableName,
+        );
+
         if (validCodesWithIndices.isEmpty) {
-          print('⚠️  Sheet "$tableName": No valid language codes found. Skipping sheet...');
+          print(
+            '⚠️  Sheet "$tableName": No valid language codes found. Skipping sheet...',
+          );
           continue;
         }
 
@@ -104,8 +112,10 @@ class ExcelParser implements IFileParser {
         // Only process columns with valid language codes
         for (final validCode in validLanguageCodes) {
           final originalIndex = validCodesWithIndices[validCode]!;
-          final columnIndex = originalIndex + 1; // +1 because originalIndex is 0-based header index, but we need 1-based for data
-          
+          final columnIndex =
+              originalIndex +
+              1; // +1 because originalIndex is 0-based header index, but we need 1-based for data
+
           if (columnIndex < row.length) {
             final cell = row[columnIndex];
             if (cell != null) {
@@ -120,15 +130,16 @@ class ExcelParser implements IFileParser {
       }
 
       if (translations.isNotEmpty) {
-        sheets.add(LocalizationSheet(
-          name: tableName,
-          translations: translations,
-          supportedLanguages: languages,
-        ));
+        sheets.add(
+          LocalizationSheet(
+            name: tableName,
+            translations: translations,
+            supportedLanguages: languages,
+          ),
+        );
       }
     }
 
     return sheets;
   }
 }
-

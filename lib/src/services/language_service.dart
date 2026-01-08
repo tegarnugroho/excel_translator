@@ -39,8 +39,9 @@ class LanguageService {
   void validateLanguageCodes(List<String> languageCodes, String sheetName) {
     if (languageCodes.isEmpty) {
       throw Exception(
-          'Sheet "$sheetName": No language codes found in header row.\n'
-          'Please ensure the first row contains valid language codes (e.g., en, id, es).');
+        'Sheet "$sheetName": No language codes found in header row.\n'
+        'Please ensure the first row contains valid language codes (e.g., en, id, es).',
+      );
     }
 
     final invalidCodes = <String>[];
@@ -52,18 +53,22 @@ class LanguageService {
 
     if (invalidCodes.isNotEmpty) {
       throw Exception(
-          'Sheet "$sheetName": Invalid language codes found in header: ${invalidCodes.join(', ')}\n'
-          'Valid language codes are ISO 639-1 codes like: en, id, es, fr, de, pt, etc.\n'
-          'You can also use locale formats like: en_US, pt_BR, zh_CN (preferred) or en-US, pt-BR, zh-CN');
+        'Sheet "$sheetName": Invalid language codes found in header: ${invalidCodes.join(', ')}\n'
+        'Valid language codes are ISO 639-1 codes like: en, id, es, fr, de, pt, etc.\n'
+        'You can also use locale formats like: en_US, pt_BR, zh_CN (preferred) or en-US, pt-BR, zh-CN',
+      );
     }
 
     print(
-        '✅ Sheet "$sheetName": Valid language codes found: ${languageCodes.join(', ')}');
+      '✅ Sheet "$sheetName": Valid language codes found: ${languageCodes.join(', ')}',
+    );
   }
 
   /// Filter out invalid language codes and return only valid ones with their indices
   Map<String, int> filterValidLanguageCodes(
-      List<String> languageCodes, String sheetName) {
+    List<String> languageCodes,
+    String sheetName,
+  ) {
     final validCodesWithIndices = <String, int>{};
     final invalidCodes = <String>[];
 
@@ -78,16 +83,20 @@ class LanguageService {
 
     if (invalidCodes.isNotEmpty) {
       print(
-          '⚠️  Sheet "$sheetName": Skipping invalid language code columns: ${invalidCodes.join(', ')}');
+        '⚠️  Sheet "$sheetName": Skipping invalid language code columns: ${invalidCodes.join(', ')}',
+      );
       print(
-          '   Valid language codes are ISO 639-1 codes like: en, id, es, fr, de, pt, etc.');
+        '   Valid language codes are ISO 639-1 codes like: en, id, es, fr, de, pt, etc.',
+      );
       print(
-          '   You can also use locale formats like: en_US, pt_BR, zh_CN (preferred) or en-US, pt-BR, zh-CN');
+        '   You can also use locale formats like: en_US, pt_BR, zh_CN (preferred) or en-US, pt-BR, zh-CN',
+      );
     }
 
     if (validCodesWithIndices.isNotEmpty) {
       print(
-          '✅ Sheet "$sheetName": Processing valid language codes: ${validCodesWithIndices.keys.join(', ')}');
+        '✅ Sheet "$sheetName": Processing valid language codes: ${validCodesWithIndices.keys.join(', ')}',
+      );
     }
 
     return validCodesWithIndices;
@@ -164,12 +173,14 @@ class LanguageService {
   }
 
   File? _findLanguageJsonFile() {
-    final currentFile =
-        File(path.fromUri(Uri.parse(Platform.script.toString())));
+    final currentFile = File(
+      path.fromUri(Uri.parse(Platform.script.toString())),
+    );
     final packageRoot = _findPackageRoot(currentFile.parent);
 
-    final libAssetsJsonFile =
-        File(path.join(packageRoot.path, 'lib', 'assets', 'lang.json'));
+    final libAssetsJsonFile = File(
+      path.join(packageRoot.path, 'lib', 'assets', 'lang.json'),
+    );
     if (libAssetsJsonFile.existsSync()) {
       return libAssetsJsonFile;
     }
@@ -195,7 +206,8 @@ class LanguageService {
       langArray = data['lang'] as List;
     } else {
       throw Exception(
-          'Invalid language data format - expected "lang" property with array');
+        'Invalid language data format - expected "lang" property with array',
+      );
     }
 
     _validLanguageCodes = <String>{};
@@ -245,7 +257,7 @@ class LanguageService {
       'he',
       'th',
       'vi',
-      'uk'
+      'uk',
     };
 
     _languageNames = {
@@ -272,7 +284,7 @@ class LanguageService {
       'he': 'hebrew',
       'th': 'thai',
       'vi': 'vietnamese',
-      'uk': 'ukrainian'
+      'uk': 'ukrainian',
     };
   }
 }

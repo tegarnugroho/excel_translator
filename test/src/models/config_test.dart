@@ -23,7 +23,10 @@ void main() {
       expect(config.excelFilePath, isNull);
       expect(config.outputDir, isNull);
       expect(config.className, isNull);
-      expect(config.includeFlutterDelegates, isNull); // null means use default true
+      expect(
+        config.includeFlutterDelegates,
+        isNull,
+      ); // null means use default true
     });
 
     test('should create copy with modified fields using copyWith', () {
