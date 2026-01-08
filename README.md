@@ -4,14 +4,14 @@ Generate type-safe Flutter/Dart localizations from multiple file formats (Excel,
 
 ## Features
 
-- 📊 **Multi-format support** - Excel (.xlsx), CSV (.csv), and ODS (.ods) files
-- 📋 **Multi-sheet support** - Organize translations by feature/category (Excel & ODS)
-- 🎯 **Type-safe generated code** - Compile-time safety with auto-completion
-- 🔤 **String interpolation** - Dynamic values using `{variable}` or `%variable$s` syntax
-- 🌍 **184+ language codes** - Full ISO 639-1 support with country variants
-- 🐪 **CamelCase methods** - Modern naming (app_title → appTitle)
-- ✅ **Automatic validation** - Validates language codes with helpful error messages
-- 🚀 **Zero-config CLI** - Works with pubspec.yaml configuration
+- **Multi-format support** - Excel (.xlsx), CSV (.csv), and ODS (.ods) files
+- **Multi-sheet support** - Organize translations by feature/category (Excel & ODS)
+- **Type-safe generated code** - Compile-time safety with auto-completion
+- **String interpolation** - Dynamic values using `{variable}` or `%variable$s` syntax
+- **184+ language codes** - Full ISO 639-1 support with country variants
+- **CamelCase methods** - Modern naming (app_title → appTitle)
+- **Automatic validation** - Validates language codes with helpful error messages
+- **Zero-config CLI** - Works with pubspec.yaml configuration
 
 ## Supported Formats
 
