@@ -1,5 +1,29 @@
 # Changelog
 
+## [2.0.0] - 2026-01-08
+
+### Major Architecture Refactoring
+
+- **Simplified Structure**: Replaced complex Clean Architecture with streamlined service-oriented design
+- **Removed Layers**: Eliminated unnecessary domain/data/application/presentation layers
+- **Unified Models**: Consolidated entities into single `models` package
+- **Streamlined Services**: Merged repositories and use cases into `services` layer
+- **Enhanced Parsers**: Split data sources into dedicated `parsers` for input processing
+- **Optimized Generators**: Created focused `generators` for output code generation
+- **Improved Utils**: Centralized utilities in dedicated `utils` package
+
+### Bug Fixes
+
+- Fixed CLI exit handling for better testability
+- Resolved config merging issues with nullable types
+- Fixed table alignment in README.md documentation
+
+### Internal Improvements
+
+- Better error handling and validation
+- Improved code maintainability and readability
+- Enhanced type safety throughout the codebase
+
 ## [1.0.7] - 2025-10-08
 
 - Fix running without arguments, automatically loading configuration from `pubspec.yaml`
@@ -13,21 +37,21 @@
 
 ## [1.0.5] - 2025-09-06
 
-### 🐛 Fixes
+### Fixes
 
 - Improved pub.dev analysis score and compliance
 - Fixed Web/WASM compatibility issues
 - Enhanced code formatting and organization
 - Optimized package structure for better performance
 
-### 📚 Documentation
+### Documentation
 
 - Updated installation instructions
 - Improved code documentation and comments
 
 ## [1.0.4] - 2025-09-06
 
-### 🔄 Major Dependency Update
+### Major Dependency Update
 
 - **Unified Parser**: Replaced individual packages (`excel`, `csv`, `spreadsheet_decoder`) with unified `table_parser` package
 - **Enhanced Performance**: Better memory handling and parsing performance for large files
@@ -42,7 +66,7 @@
 
 ## [1.0.3] - 2025-09-04
 
-### 🐛 Bug Fixes
+### Bug Fixes
 
 - Fixed CSV and ODS file parsing issues
 - Resolved missing language data file issues

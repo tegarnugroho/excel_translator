@@ -4,22 +4,22 @@ Generate type-safe Flutter/Dart localizations from multiple file formats (Excel,
 
 ## Features
 
-- 📊 **Multi-format support** - Excel (.xlsx), CSV (.csv), and ODS (.ods) files
-- 📋 **Multi-sheet support** - Organize translations by feature/category (Excel & ODS)
-- 🎯 **Type-safe generated code** - Compile-time safety with auto-completion
-- 🔤 **String interpolation** - Dynamic values using `{variable}` or `%variable$s` syntax
-- 🌍 **184+ language codes** - Full ISO 639-1 support with country variants
-- 🐪 **CamelCase methods** - Modern naming (app_title → appTitle)
-- ✅ **Automatic validation** - Validates language codes with helpful error messages
-- 🚀 **Zero-config CLI** - Works with pubspec.yaml configuration
+- **Multi-format support** - Excel (.xlsx), CSV (.csv), and ODS (.ods) files
+- **Multi-sheet support** - Organize translations by feature/category (Excel & ODS)
+- **Type-safe generated code** - Compile-time safety with auto-completion
+- **String interpolation** - Dynamic values using `{variable}` or `%variable$s` syntax
+- **184+ language codes** - Full ISO 639-1 support with country variants
+- **CamelCase methods** - Modern naming (app_title → appTitle)
+- **Automatic validation** - Validates language codes with helpful error messages
+- **Zero-config CLI** - Works with pubspec.yaml configuration
 
 ## Supported Formats
 
-| Format | Extension | Multi-sheet | Best for |
-|--------|-----------|-------------|----------|
-| **Excel** | `.xlsx` | ✅ | Complex projects with multiple categories |
-| **CSV** | `.csv` | ❌ | Simple projects, version control friendly |
-| **ODS** | `.ods` | ✅ | Open-source projects, LibreOffice users |
+|Format|Extension|Multi-sheet|Best for|
+|------|---------|-----------|--------|
+|Excel|`.xlsx`|✅|Complex projects|
+|CSV|`.csv`|❌|Simple projects|
+|ODS|`.ods`|✅|Open-source|
 
 All formats support the same feature set including string interpolation, language validation, and type-safe code generation.
 
@@ -27,8 +27,25 @@ All formats support the same feature set including string interpolation, languag
 
 ```yaml
 dependencies:
-  excel_translator: ^1.0.7
+  excel_translator: ^2.0.0
 ```
+
+### Automatic Publishing
+
+This package uses GitHub Actions for automatic publishing to pub.dev. When you merge changes to the `main` branch that affect:
+- `pubspec.yaml`
+- `lib/` directory
+- `CHANGELOG.md`
+
+The package will automatically run tests, analysis, and publish to pub.dev if all checks pass.
+
+#### Setup for Automatic Publishing
+
+1. Go to your GitHub repository settings
+2. Navigate to **Secrets and variables** → **Actions**
+3. Add a new repository secret named `PUB_DEV_ACCESS_TOKEN`
+4. Get your token from [pub.dev → Account → Authorized Access Tokens](https://pub.dev/account/tokens)
+5. The workflow will automatically publish new versions when merged to main
 
 ## Quick Start
 
@@ -38,11 +55,11 @@ Choose your preferred format and create a file with language codes in the header
 
 #### Excel (.xlsx) - Best for complex projects
 
-| key | en | id | es |
-|-----|----|----|-----|
-| hello | Hello | Halo | Hola |
-| app_title | My App | Aplikasi Saya | Mi App |
-| welcome_message | Welcome {name}! | Selamat datang {name}! | ¡Bienvenido {name}! |
+|key|en|id|es|
+|---|---|---|---|
+|hello|Hello|Halo|Hola|
+|app_title|My App|Aplikasi Saya|Mi App|
+|welcome_message|Welcome {name}!|Selamat datang {name}!|¡Bienvenido {name}!|
 
 #### CSV (.csv) - Best for simple projects
 
@@ -180,26 +197,26 @@ MaterialApp(
 
 ### Single Sheet Example
 
-| key | en | id | es |
-|-----|----|----|-----|
-| title | Home | Beranda | Inicio |
-| save_button | Save | Simpan | Guardar |
+|key|en|id|es|
+|---|---|---|---|
+|title|Home|Beranda|Inicio|
+|save_button|Save|Simpan|Guardar|
 
 ### Multi-Sheet Example
 
 **Sheet "login":**
 
-| key | en | id |
-|-----|----|----|
-| title | Login | Masuk |
-| forgot_password | Forgot Password? | Lupa Kata Sandi? |
+|key|en|id|
+|---|---|---|
+|title|Login|Masuk|
+|forgot_password|Forgot Password?|Lupa Kata Sandi?|
 
 **Sheet "buttons":**
 
-| key | en | id |
-|-----|----|----|
-| submit | Submit | Kirim |
-| cancel | Cancel | Batal |
+|key|en|id|
+|---|---|---|
+|submit|Submit|Kirim|
+|cancel|Cancel|Batal|
 
 Generates:
 

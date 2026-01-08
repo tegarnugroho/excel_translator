@@ -1,17 +1,17 @@
-// Excel Translator - Generate localizations from Excel files
 library excel_translator;
 
-// Export domain layer (business logic)
-export 'src/domain/domain.dart';
+// Export models (core data structures)
+export 'src/models/models.dart';
 
-// Export application service
-export 'src/application/translator_service.dart';
+// Export services (business logic)
+export 'src/services/services.dart';
 
-// Export core utilities
-export 'src/core/core.dart';
+// Export main translator service
+export 'src/translator_service.dart';
 
-// Export data layer for advanced usage (hiding conflicting names)
-export 'src/data/data.dart' hide LocalizationSheet, LocalizationEntry;
+// Export utilities
+export 'src/utils/utils.dart';
 
 // Re-export flutter_localizations so users don't need to add it manually
 export 'package:flutter_localizations/flutter_localizations.dart';
+
