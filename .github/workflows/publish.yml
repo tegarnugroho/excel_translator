@@ -2,45 +2,12 @@ name: Publish to pub.dev
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+*' # tag-pattern on pub.dev: 'v{{version}}'
 
+# Publish using the reusable workflow from dart-lang.
 jobs:
   publish:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Dart
-        uses: dart-lang/setup-dart@v1
-        with:
-          sdk: stable
-
-      - name: Setup Flutter
-        uses: flutter-actions/setup-flutter@v3
-        with:
-          channel: stable
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Run tests
-        run: flutter test
-
-      - name: Analyze code
-        run: flutter analyze
-
-      - name: Check formatting
-        run: dart format --set-exit-if-changed .
-
-      - name: Setup Pub Credentials  
-        run: |
-          mkdir -p $HOME/.pub-cache
-          cat <<EOF > $HOME/.pub-cache/credentials.json
-          ${{ secrets.PUB_DEV_ACCESS_TOKEN }}
-          EOF
-
-      - name: Publish to pub.dev
-        run: dart pub publish --force
+    permissions:
+      id-token: write # Required for authentication using OIDC
+    uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
