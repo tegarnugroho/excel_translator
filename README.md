@@ -33,6 +33,7 @@ dependencies:
 ### Automatic Publishing
 
 This package uses GitHub Actions for automatic publishing to pub.dev. When you merge changes to the `main` branch that affect:
+
 - `pubspec.yaml`
 - `lib/` directory
 - `CHANGELOG.md`
