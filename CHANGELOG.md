@@ -1,6 +1,23 @@
 # Changelog
 
-## [2.0.0] - 2026-01-08
+## [2.1.0] - 2026-01-08
+
+### New Features
+
+- Added --version and -v flags to CLI for checking package version
+- Display version information in help output
+- Improved version detection to show main package version consistently across directories
+
+### Bug Fixes
+
+- Fixed Dart keyword conflict in generated property names (e.g., 'default' -> 'defaultValue')
+- Resolved compilation errors when sheet names match Dart reserved keywords
+
+### Internal Improvements
+
+- Enhanced CLI argument parsing and help display
+- Better error handling for version reading
+- Improved code generation robustness
 
 ### Major Architecture Refactoring
 

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'translator_service.dart';
 import 'services/services.dart';
 
@@ -24,6 +25,9 @@ class ExcelTranslatorCLI {
     if (arguments.length == 1) {
       if (arguments[0] == '--help' || arguments[0] == '-h') {
         _printUsage();
+        return;
+      } else if (arguments[0] == '--version' || arguments[0] == '-v') {
+        _printVersion();
         return;
       } else if (arguments[0] == 'log') {
         await _printConfig();
@@ -124,6 +128,9 @@ class ExcelTranslatorCLI {
   }
 
   void _printUsage() {
+    // Show version first
+    _printVersion();
+    print('');
     print('Excel Translator - Generate type-safe Flutter localizations');
     print('');
     print('Usage:');
@@ -137,6 +144,7 @@ class ExcelTranslatorCLI {
       '  dart run excel_translator log                # Show current config',
     );
     print('  dart run excel_translator --help             # Show this help');
+    print('  dart run excel_translator --version          # Show version');
     print('');
     print('Arguments:');
     print(
@@ -152,6 +160,7 @@ class ExcelTranslatorCLI {
       '  -d, --delegates=BOOL    Include Flutter delegates (default: true)',
     );
     print('  --no-delegates          Disable Flutter delegates');
+    print('  -v, --version           Show version');
     print('  -h, --help              Show this help');
     print('');
     print('Examples:');
@@ -166,5 +175,37 @@ class ExcelTranslatorCLI {
     print('    excel_file: assets/localizations.xlsx');
     print('    output_dir: lib/generated');
     print('    class_name: AppLocalizations  # optional');
+  }
+
+  void _printVersion() {
+    // Try to read version from pubspec.yaml in current directory
+    try {
+      final pubspecFile = File('pubspec.yaml');
+      if (pubspecFile.existsSync()) {
+        final content = pubspecFile.readAsStringSync();
+        final versionMatch = RegExp(r'version:\s*([^\s]+)').firstMatch(content);
+        if (versionMatch != null) {
+          final version = versionMatch.group(1)!;
+          // If we're in an example or test directory, try to find the main package version
+          if (version.contains('1.0.0') &&
+              File('../pubspec.yaml').existsSync()) {
+            final mainPubspec = File('../pubspec.yaml');
+            final mainContent = mainPubspec.readAsStringSync();
+            final mainVersionMatch = RegExp(
+              r'version:\s*([^\s]+)',
+            ).firstMatch(mainContent);
+            if (mainVersionMatch != null) {
+              print('Excel Translator v${mainVersionMatch.group(1)}');
+              return;
+            }
+          }
+          print('Excel Translator v$version');
+          return;
+        }
+      }
+    } catch (e) {
+      // Fall back to hardcoded version if reading fails
+    }
+    print('Excel Translator v2.0.0');
   }
 }

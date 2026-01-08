@@ -1,7 +1,75 @@
-// String utility functions for Excel Translator
-
 /// String manipulation utilities
 class StringUtils {
+  /// Dart reserved keywords that cannot be used as identifiers
+  static const Set<String> _dartKeywords = {
+    'abstract',
+    'as',
+    'assert',
+    'async',
+    'await',
+    'break',
+    'case',
+    'catch',
+    'class',
+    'const',
+    'continue',
+    'default',
+    'deferred',
+    'do',
+    'dynamic',
+    'else',
+    'enum',
+    'export',
+    'extends',
+    'extension',
+    'external',
+    'factory',
+    'false',
+    'final',
+    'finally',
+    'for',
+    'Function',
+    'get',
+    'goto',
+    'if',
+    'implements',
+    'import',
+    'in',
+    'interface',
+    'is',
+    'late',
+    'library',
+    'mixin',
+    'new',
+    'null',
+    'operator',
+    'part',
+    'required',
+    'rethrow',
+    'return',
+    'set',
+    'show',
+    'static',
+    'super',
+    'switch',
+    'sync',
+    'this',
+    'throw',
+    'true',
+    'try',
+    'typedef',
+    'var',
+    'void',
+    'while',
+    'with',
+    'yield',
+  };
+
+  /// Check if a string is a Dart reserved keyword
+  static bool isDartKeyword(String word) {
+    return _dartKeywords.contains(word);
+  }
+
   /// Capitalize first letter of a string
   static String capitalize(String text) {
     if (text.isEmpty) return text;
@@ -76,11 +144,18 @@ class StringUtils {
             .join('');
 
     // If starts with number, add prefix
-    if (result.isNotEmpty && RegExp(r'^[0-9]').hasMatch(result)) {
-      return 'property${result.substring(0, 1).toUpperCase()}${result.substring(1)}';
+    var finalResult = result;
+    if (finalResult.isNotEmpty && RegExp(r'^[0-9]').hasMatch(finalResult)) {
+      finalResult =
+          'property${finalResult.substring(0, 1).toUpperCase()}${finalResult.substring(1)}';
     }
 
-    return result;
+    // If it's a Dart keyword, append 'Value' to make it valid
+    if (isDartKeyword(finalResult)) {
+      finalResult = '${finalResult}Value';
+    }
+
+    return finalResult;
   }
 
   /// Sanitize sheet name for class naming
