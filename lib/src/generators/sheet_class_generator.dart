@@ -11,7 +11,8 @@ class SheetClassGenerator {
     String outputDir,
   ) async {
     final buffer = StringBuffer();
-    final className = '${StringUtils.sanitizeClassName(sheet.name)}Localizations';
+    final className =
+        '${StringUtils.sanitizeClassName(sheet.name)}Localizations';
 
     // Add generation comment
     buffer.writeln('// GENERATED CODE - DO NOT MODIFY BY HAND');
@@ -40,7 +41,8 @@ class SheetClassGenerator {
       if (hasInterpolation) {
         // Generate method with parameters
         final params = StringUtils.extractInterpolationParams(
-            translation.values.values.first);
+          translation.values.values.first,
+        );
         final paramList = params.map((p) => 'dynamic $p').join(', ');
 
         buffer.writeln('  String $methodName({$paramList}) {');
@@ -48,25 +50,31 @@ class SheetClassGenerator {
 
         for (final languageCode in sheet.languageCodes) {
           final translatedValue = translation.values[languageCode] ?? '';
-          final normalizedValue = StringUtils.normalizeInterpolation(translatedValue);
+          final normalizedValue = StringUtils.normalizeInterpolation(
+            translatedValue,
+          );
           buffer.writeln("      case '$languageCode':");
           buffer.writeln("        return '''$normalizedValue'''");
 
           // Add interpolation replacements
           for (final param in params) {
             buffer.writeln(
-                "            .replaceAll('{$param}', $param.toString())");
+              "            .replaceAll('{$param}', $param.toString())",
+            );
           }
           buffer.writeln("            ;");
         }
 
         buffer.writeln("      default:");
         final defaultTranslation = translation.values.values.first;
-        final normalizedDefault = StringUtils.normalizeInterpolation(defaultTranslation);
+        final normalizedDefault = StringUtils.normalizeInterpolation(
+          defaultTranslation,
+        );
         buffer.writeln("        return '''$normalizedDefault'''");
         for (final param in params) {
           buffer.writeln(
-              "            .replaceAll('{$param}', $param.toString())");
+            "            .replaceAll('{$param}', $param.toString())",
+          );
         }
         buffer.writeln("            ;");
         buffer.writeln('    }');
@@ -93,7 +101,8 @@ class SheetClassGenerator {
 
     buffer.writeln('}');
 
-    final fileName = '${StringUtils.sanitizeFileName(sheet.name)}_localizations.dart';
+    final fileName =
+        '${StringUtils.sanitizeFileName(sheet.name)}_localizations.dart';
     final file = File(path.join(outputDir, fileName));
     await file.writeAsString(buffer.toString());
   }

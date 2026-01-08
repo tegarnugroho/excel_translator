@@ -3,19 +3,10 @@ class Translation {
   final String key;
   final Map<String, String> values;
 
-  const Translation({
-    required this.key,
-    required this.values,
-  });
+  const Translation({required this.key, required this.values});
 
-  Translation copyWith({
-    String? key,
-    Map<String, String>? values,
-  }) {
-    return Translation(
-      key: key ?? this.key,
-      values: values ?? this.values,
-    );
+  Translation copyWith({String? key, Map<String, String>? values}) {
+    return Translation(key: key ?? this.key, values: values ?? this.values);
   }
 
   @override

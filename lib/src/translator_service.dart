@@ -19,11 +19,11 @@ class TranslatorService {
     MainClassGenerator? mainGenerator,
     SheetClassGenerator? sheetGenerator,
     ExtensionGenerator? extensionGenerator,
-  })  : _configService = configService ?? ConfigService(),
-        _languageService = languageService ?? LanguageService(),
-        _mainGenerator = mainGenerator ?? MainClassGenerator(),
-        _sheetGenerator = sheetGenerator ?? SheetClassGenerator(),
-        _extensionGenerator = extensionGenerator ?? ExtensionGenerator();
+  }) : _configService = configService ?? ConfigService(),
+       _languageService = languageService ?? LanguageService(),
+       _mainGenerator = mainGenerator ?? MainClassGenerator(),
+       _sheetGenerator = sheetGenerator ?? SheetClassGenerator(),
+       _extensionGenerator = extensionGenerator ?? ExtensionGenerator();
 
   /// Factory constructor with default dependencies
   factory TranslatorService.create() {
@@ -104,7 +104,8 @@ class TranslatorService {
       );
 
       Logger.success(
-          'Generated localization classes in $finalOutputDir successfully!');
+        'Generated localization classes in $finalOutputDir successfully!',
+      );
     } catch (e, stackTrace) {
       Logger.error('Generation failed', e, stackTrace);
       rethrow;
@@ -119,7 +120,8 @@ class TranslatorService {
         config.excelFilePath == null ||
         config.outputDir == null) {
       throw Exception(
-          'Configuration not found in pubspec.yaml. Please add excel_translator section with excel_file and output_dir');
+        'Configuration not found in pubspec.yaml. Please add excel_translator section with excel_file and output_dir',
+      );
     }
 
     await generateFromFile(

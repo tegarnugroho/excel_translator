@@ -79,7 +79,7 @@ void main() {
       final arguments = [
         'test.xlsx',
         'lib/generated',
-        '--class-name=CustomLocalizations'
+        '--class-name=CustomLocalizations',
       ];
 
       // Act
@@ -97,7 +97,7 @@ void main() {
       final arguments = [
         'test.xlsx',
         'lib/generated',
-        '--no-flutter-delegates'
+        '--no-flutter-delegates',
       ];
 
       // Act
@@ -116,7 +116,7 @@ void main() {
         'custom.xlsx',
         'lib/custom',
         '--class-name=MyLocalizations',
-        '--no-flutter-delegates'
+        '--no-flutter-delegates',
       ];
 
       // Act
@@ -129,15 +129,17 @@ void main() {
       expect(mockService.lastIncludeFlutterDelegates, isFalse);
     });
 
-    test('should call service with correct parameters even when error occurs',
-        () {
-      // Arrange
-      mockService.shouldThrowError = true;
+    test(
+      'should call service with correct parameters even when error occurs',
+      () {
+        // Arrange
+        mockService.shouldThrowError = true;
 
-      // Act - just verify the service gets called before error
-      // We won't complete the run since it calls exit()
-      expect(mockService.lastFilePath, isNull); // Not called yet
-    });
+        // Act - just verify the service gets called before error
+        // We won't complete the run since it calls exit()
+        expect(mockService.lastFilePath, isNull); // Not called yet
+      },
+    );
 
     test('should validate arguments before calling service', () {
       // This test just verifies basic CLI structure
@@ -150,7 +152,7 @@ void main() {
         'input.xlsx', // position 0: filePath
         'output/directory', // position 1: outputDir
         '--class-name=TestLocalizations',
-        '--no-flutter-delegates'
+        '--no-flutter-delegates',
       ];
 
       // Act

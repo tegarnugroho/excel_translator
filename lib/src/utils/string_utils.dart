@@ -12,19 +12,19 @@ class StringUtils {
   /// Examples: "auth-errors" -> "AuthErrors", "mobile-errors" -> "MobileErrors"
   static String sanitizeClassName(String name) {
     if (name.isEmpty) return name;
-    
+
     // Replace hyphens, underscores, and spaces with nothing, but treat them as word boundaries
     final parts = name.toLowerCase().split(RegExp(r'[-_\s]+'));
-    
+
     // Capitalize each part and join
     final result = parts
         .where((part) => part.isNotEmpty)
         .map((part) => capitalize(part))
         .join('');
-    
+
     // Remove any remaining non-alphanumeric characters
     final cleaned = result.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '');
-    
+
     // If starts with number, add prefix
     if (cleaned.isNotEmpty && RegExp(r'^[0-9]').hasMatch(cleaned)) {
       return 'Class${cleaned}';
@@ -36,12 +36,13 @@ class StringUtils {
   /// Examples: "auth-errors" -> "auth_errors", "mobile-errors" -> "mobile_errors"
   static String sanitizeFileName(String name) {
     if (name.isEmpty) return name;
-    
+
     // Convert to lowercase and replace hyphens and spaces with underscores
-    final result = name.toLowerCase()
+    final result = name
+        .toLowerCase()
         .replaceAll(RegExp(r'[-\s]+'), '_')
         .replaceAll(RegExp(r'[^a-zA-Z0-9_]'), '');
-    
+
     // If starts with number, add prefix
     if (result.isNotEmpty && RegExp(r'^[0-9]').hasMatch(result)) {
       return 'file_${result}';
@@ -53,32 +54,41 @@ class StringUtils {
   /// Examples: "auth-errors" -> "authErrors", "en_US" -> "enUs", "de_DE" -> "deDe"
   static String sanitizePropertyName(String name) {
     if (name.isEmpty) return name;
-    
+
     // Convert to camelCase: split by hyphens/spaces/underscores, capitalize each word except first
-    final parts = name.toLowerCase()
+    final parts = name
+        .toLowerCase()
         .replaceAll(RegExp(r'[^a-zA-Z0-9\-\s_]'), '')
         .split(RegExp(r'[-\s_]+'))
         .where((part) => part.isNotEmpty)
         .toList();
-    
+
     if (parts.isEmpty) return 'property';
-    
+
     // First part lowercase, rest capitalize first letter
-    final result = parts.first + parts.skip(1).map((part) => 
-      part.substring(0, 1).toUpperCase() + part.substring(1)).join('');
-    
+    final result =
+        parts.first +
+        parts
+            .skip(1)
+            .map(
+              (part) => part.substring(0, 1).toUpperCase() + part.substring(1),
+            )
+            .join('');
+
     // If starts with number, add prefix
     if (result.isNotEmpty && RegExp(r'^[0-9]').hasMatch(result)) {
       return 'property${result.substring(0, 1).toUpperCase()}${result.substring(1)}';
     }
-    
+
     return result;
   }
 
   /// Sanitize sheet name for class naming
   static String sanitizeSheetName(String sheetName) {
-    String cleaned =
-        sheetName.toLowerCase().replaceAll(RegExp(r'[^a-zA-Z0-9]'), '');
+    String cleaned = sheetName.toLowerCase().replaceAll(
+      RegExp(r'[^a-zA-Z0-9]'),
+      '',
+    );
 
     // If starts with number, add prefix
     if (cleaned.isNotEmpty && RegExp(r'^[0-9]').hasMatch(cleaned)) {
@@ -97,11 +107,15 @@ class StringUtils {
     if (parts.length <= 1) {
       result = key.toLowerCase().replaceAll(RegExp(r'[^a-zA-Z0-9]'), '');
     } else {
-      final camelCase = parts.first +
+      final camelCase =
+          parts.first +
           parts
               .skip(1)
-              .map((part) =>
-                  part.isEmpty ? '' : part[0].toUpperCase() + part.substring(1))
+              .map(
+                (part) => part.isEmpty
+                    ? ''
+                    : part[0].toUpperCase() + part.substring(1),
+              )
               .join('');
 
       result = camelCase.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '');
@@ -130,7 +144,9 @@ class StringUtils {
   static String toSnakeCase(String camelCase) {
     return camelCase
         .replaceAllMapped(
-            RegExp(r'[A-Z]'), (match) => '_${match.group(0)!.toLowerCase()}')
+          RegExp(r'[A-Z]'),
+          (match) => '_${match.group(0)!.toLowerCase()}',
+        )
         .replaceFirst(RegExp(r'^_'), '');
   }
 

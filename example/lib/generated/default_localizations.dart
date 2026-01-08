@@ -39,21 +39,14 @@ class DefaultLocalizations {
   String welcomeMessage({dynamic name}) {
     switch (_languageCode) {
       case 'en':
-        return '''Welcome {name}!'''
-            .replaceAll('{name}', name.toString())
-            ;
+        return '''Welcome {name}!'''.replaceAll('{name}', name.toString());
       case 'id':
         return '''Selamat datang {name}!'''
-            .replaceAll('{name}', name.toString())
-            ;
+            .replaceAll('{name}', name.toString());
       case 'es':
-        return '''¡Bienvenido {name}!'''
-            .replaceAll('{name}', name.toString())
-            ;
+        return '''¡Bienvenido {name}!'''.replaceAll('{name}', name.toString());
       default:
-        return '''Welcome {name}!'''
-            .replaceAll('{name}', name.toString())
-            ;
+        return '''Welcome {name}!'''.replaceAll('{name}', name.toString());
     }
   }
 
@@ -112,5 +105,4 @@ class DefaultLocalizations {
         return '''Save''';
     }
   }
-
 }

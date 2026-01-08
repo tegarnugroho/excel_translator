@@ -36,7 +36,8 @@ class ExcelTranslatorConfig {
       excelFilePath: other.excelFilePath ?? excelFilePath,
       outputDir: other.outputDir ?? outputDir,
       className: other.className ?? className,
-      includeFlutterDelegates: other.includeFlutterDelegates ?? includeFlutterDelegates,
+      includeFlutterDelegates:
+          other.includeFlutterDelegates ?? includeFlutterDelegates,
     );
   }
 

@@ -4,10 +4,7 @@ import '../../../lib/src/models/language.dart';
 void main() {
   group('Language Entity Tests', () {
     test('should create language with basic code and name', () {
-      const language = Language(
-        code: 'en',
-        name: 'English',
-      );
+      const language = Language(code: 'en', name: 'English');
 
       expect(language.code, equals('en'));
       expect(language.name, equals('English'));
@@ -17,11 +14,7 @@ void main() {
     });
 
     test('should create language with region', () {
-      const language = Language(
-        code: 'en',
-        name: 'English',
-        region: 'US',
-      );
+      const language = Language(code: 'en', name: 'English', region: 'US');
 
       expect(language.code, equals('en'));
       expect(language.name, equals('English'));
@@ -45,27 +38,16 @@ void main() {
     });
 
     test('should handle empty region correctly', () {
-      const language = Language(
-        code: 'fr',
-        name: 'French',
-        region: '',
-      );
+      const language = Language(code: 'fr', name: 'French', region: '');
 
       expect(language.fullCode, equals('fr'));
       expect(language.hasRegion, isFalse);
     });
 
     test('should create copy with modified fields using copyWith', () {
-      const original = Language(
-        code: 'es',
-        name: 'Spanish',
-        region: 'ES',
-      );
+      const original = Language(code: 'es', name: 'Spanish', region: 'ES');
 
-      final modified = original.copyWith(
-        name: 'Español',
-        region: 'MX',
-      );
+      final modified = original.copyWith(name: 'Español', region: 'MX');
 
       expect(modified.code, equals('es')); // unchanged
       expect(modified.name, equals('Español'));
@@ -74,50 +56,26 @@ void main() {
     });
 
     test('should implement equality correctly', () {
-      const language1 = Language(
-        code: 'de',
-        name: 'German',
-        region: 'DE',
-      );
+      const language1 = Language(code: 'de', name: 'German', region: 'DE');
 
-      const language2 = Language(
-        code: 'de',
-        name: 'German',
-        region: 'DE',
-      );
+      const language2 = Language(code: 'de', name: 'German', region: 'DE');
 
-      const language3 = Language(
-        code: 'de',
-        name: 'German',
-        region: 'AT',
-      );
+      const language3 = Language(code: 'de', name: 'German', region: 'AT');
 
       expect(language1, equals(language2));
       expect(language1, isNot(equals(language3)));
     });
 
     test('should implement hashCode correctly', () {
-      const language1 = Language(
-        code: 'it',
-        name: 'Italian',
-        region: 'IT',
-      );
+      const language1 = Language(code: 'it', name: 'Italian', region: 'IT');
 
-      const language2 = Language(
-        code: 'it',
-        name: 'Italian',
-        region: 'IT',
-      );
+      const language2 = Language(code: 'it', name: 'Italian', region: 'IT');
 
       expect(language1.hashCode, equals(language2.hashCode));
     });
 
     test('should provide meaningful toString representation', () {
-      const language = Language(
-        code: 'ja',
-        name: 'Japanese',
-        region: 'JP',
-      );
+      const language = Language(code: 'ja', name: 'Japanese', region: 'JP');
 
       final stringRepresentation = language.toString();
 
