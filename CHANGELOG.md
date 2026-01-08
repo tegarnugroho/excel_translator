@@ -18,7 +18,7 @@
 - Resolved config merging issues with nullable types
 - Fixed table alignment in README.md documentation
 
-### 📦 Internal Improvements
+### Internal Improvements
 
 - Better error handling and validation
 - Improved code maintainability and readability
@@ -37,21 +37,21 @@
 
 ## [1.0.5] - 2025-09-06
 
-### 🐛 Fixes
+### Fixes
 
 - Improved pub.dev analysis score and compliance
 - Fixed Web/WASM compatibility issues
 - Enhanced code formatting and organization
 - Optimized package structure for better performance
 
-### 📚 Documentation
+### Documentation
 
 - Updated installation instructions
 - Improved code documentation and comments
 
 ## [1.0.4] - 2025-09-06
 
-### 🔄 Major Dependency Update
+### Major Dependency Update
 
 - **Unified Parser**: Replaced individual packages (`excel`, `csv`, `spreadsheet_decoder`) with unified `table_parser` package
 - **Enhanced Performance**: Better memory handling and parsing performance for large files
@@ -66,7 +66,7 @@
 
 ## [1.0.3] - 2025-09-04
 
-### 🐛 Bug Fixes
+### Bug Fixes
 
 - Fixed CSV and ODS file parsing issues
 - Resolved missing language data file issues
