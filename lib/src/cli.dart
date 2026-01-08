@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'translator_service.dart';
 import 'services/services.dart';
 
@@ -25,17 +24,17 @@ class ExcelTranslatorCLI {
     if (arguments.length == 1) {
       if (arguments[0] == '--help' || arguments[0] == '-h') {
         _printUsage();
-        exit(0);
+        return;
       } else if (arguments[0] == 'log') {
         await _printConfig();
-        exit(0);
+        return;
       }
     }
 
     // Require at least 2 arguments for manual mode
     if (arguments.length < 2) {
       _printUsage();
-      exit(1);
+      throw Exception('Insufficient arguments. Use --help for usage information.');
     }
 
     final filePath = arguments[0];
@@ -50,7 +49,7 @@ class ExcelTranslatorCLI {
         className = arg.substring('--class-name='.length);
       } else if (arg.startsWith('-c=')) {
         className = arg.substring('-c='.length);
-      } else if (arg == '--no-delegates' || arg == '-nd') {
+      } else if (arg == '--no-delegates' || arg == '--no-flutter-delegates' || arg == '-nd') {
         includeFlutterDelegates = false;
       } else if (arg.startsWith('--delegates=')) {
         final value = arg.substring('--delegates='.length);
@@ -68,10 +67,9 @@ class ExcelTranslatorCLI {
         className: className,
         includeFlutterDelegates: includeFlutterDelegates,
       );
-      exit(0);
     } catch (e) {
       print('Error: $e');
-      exit(1);
+      rethrow;
     }
   }
 
@@ -80,7 +78,6 @@ class ExcelTranslatorCLI {
   Future<void> _runFromPubspec() async {
     try {
       await _translatorService.generateFromPubspec();
-      exit(0);
     } catch (e) {
       print('Error: $e');
       print('\nTip: Add excel_translator configuration to your pubspec.yaml:');
@@ -92,7 +89,7 @@ class ExcelTranslatorCLI {
       print('');
       print('Or provide parameters:');
       print('  dart run excel_translator <file> <output_dir>');
-      exit(1);
+      rethrow;
     }
   }
 
@@ -108,7 +105,7 @@ class ExcelTranslatorCLI {
       print('Output Dir: ${config.outputDir ?? "(not set)"}');
       print('Class Name: ${config.className ?? "AppLocalizations"}');
       print(
-          'Include Delegates: ${config.includeFlutterDelegates ? "true" : "false"}');
+          'Include Delegates: ${(config.includeFlutterDelegates ?? true) ? "true" : "false"}');
     } else {
       print('No configuration found in pubspec.yaml');
       print('');

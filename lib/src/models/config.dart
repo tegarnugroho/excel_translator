@@ -3,13 +3,13 @@ class ExcelTranslatorConfig {
   final String? excelFilePath;
   final String? outputDir;
   final String? className;
-  final bool includeFlutterDelegates;
+  final bool? includeFlutterDelegates;
 
   const ExcelTranslatorConfig({
     this.excelFilePath,
     this.outputDir,
     this.className,
-    this.includeFlutterDelegates = true,
+    this.includeFlutterDelegates,
   });
 
   /// Create a copy with modified fields
@@ -36,7 +36,7 @@ class ExcelTranslatorConfig {
       excelFilePath: other.excelFilePath ?? excelFilePath,
       outputDir: other.outputDir ?? outputDir,
       className: other.className ?? className,
-      includeFlutterDelegates: other.includeFlutterDelegates,
+      includeFlutterDelegates: other.includeFlutterDelegates ?? includeFlutterDelegates,
     );
   }
 

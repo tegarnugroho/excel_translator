@@ -52,7 +52,7 @@ class TranslatorService {
       final finalFilePath = config.excelFilePath ?? filePath;
       final finalOutputDir = config.outputDir ?? outputDir;
       final finalClassName = config.className ?? 'AppLocalizations';
-      final finalIncludeDelegates = config.includeFlutterDelegates;
+      final finalIncludeDelegates = config.includeFlutterDelegates ?? true;
 
       if (finalFilePath.isEmpty) {
         throw Exception('Excel file path is required');
@@ -126,7 +126,7 @@ class TranslatorService {
       filePath: config.excelFilePath!,
       outputDir: config.outputDir!,
       className: config.className,
-      includeFlutterDelegates: config.includeFlutterDelegates,
+      includeFlutterDelegates: config.includeFlutterDelegates ?? true,
       pubspecPath: pubspecPath,
     );
   }

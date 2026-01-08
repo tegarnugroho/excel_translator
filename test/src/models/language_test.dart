@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import '../../../../lib/src/domain/entities/language.dart';
+import '../../../lib/src/models/language.dart';
 
 void main() {
   group('Language Entity Tests', () {

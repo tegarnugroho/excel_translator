@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import '../../../../lib/src/domain/entities/excel_translator_config.dart';
+import '../../../lib/src/models/config.dart';
 
 void main() {
   group('ExcelTranslatorConfig Entity Tests', () {
@@ -23,7 +23,7 @@ void main() {
       expect(config.excelFilePath, isNull);
       expect(config.outputDir, isNull);
       expect(config.className, isNull);
-      expect(config.includeFlutterDelegates, isTrue); // default value
+      expect(config.includeFlutterDelegates, isNull); // null means use default true
     });
 
     test('should create copy with modified fields using copyWith', () {

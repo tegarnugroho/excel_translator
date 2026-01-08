@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
-import '../../../lib/src/presentation/cli.dart';
-import '../../../lib/src/application/translator_service.dart';
+import '../../lib/src/cli.dart';
+import '../../lib/src/translator_service.dart';
 
 class MockTranslatorService implements TranslatorService {
   String? lastFilePath;
@@ -32,7 +32,7 @@ class MockTranslatorService implements TranslatorService {
   }
 
   @override
-  Future<void> generateFromPubspec(String pubspecPath) async {
+  Future<void> generateFromPubspec([String? pubspecPath]) async {
     lastPubspecPath = pubspecPath;
 
     if (shouldThrowError) {
