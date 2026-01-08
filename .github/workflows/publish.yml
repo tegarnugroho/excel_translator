@@ -4,10 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'pubspec.yaml'
-      - 'lib/**'
-      - 'CHANGELOG.md'
 
 jobs:
   publish:
@@ -23,9 +19,9 @@ jobs:
           sdk: stable
 
       - name: Setup Flutter
-        uses: subosito/flutter-action@v3
+        uses: flutter-actions/setup-flutter@v3
         with:
-          flutter-version: stable
+          channel: stable
 
       - name: Install dependencies
         run: flutter pub get
