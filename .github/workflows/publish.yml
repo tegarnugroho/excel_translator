@@ -35,7 +35,10 @@ jobs:
       - name: Check formatting
         run: dart format --set-exit-if-changed .
 
+      - name: Setup Pub Credentials
+        run: |
+          mkdir -p ~/.pub-cache
+          echo '${{ secrets.PUB_DEV_ACCESS_TOKEN }}' > ~/.pub-cache/credentials.json
+
       - name: Publish to pub.dev
         run: dart pub publish --force
-        env:
-          PUB_TOKEN: ${{ secrets.PUB_DEV_ACCESS_TOKEN }}
