@@ -23,7 +23,7 @@ class ConfigService {
   ExcelTranslatorConfig getDefault() {
     return const ExcelTranslatorConfig(
       className: 'AppLocalizations',
-      includeFlutterDelegates: true,
+      includeFlutterDelegates: null, // Will use default true when resolved
     );
   }
 

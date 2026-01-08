@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import '../../../lib/src/application/translator_service.dart';
+import '../../lib/src/translator_service.dart';
 
 void main() {
   group('TranslatorService Tests', () {
