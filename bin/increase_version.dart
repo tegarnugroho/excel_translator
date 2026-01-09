@@ -68,15 +68,32 @@ void main(List<String> args) {
 
 String generateChangelog(String currentVersion) {
   try {
-    // Get the latest tag
-    final tagResult = Process.runSync('git', ['describe', '--tags', '--abbrev=0']);
-    final latestTag = tagResult.exitCode == 0 ? (tagResult.stdout as String).trim() : 'HEAD~10'; // fallback
-
-    final result = Process.runSync('git', ['log', '--oneline', '$latestTag..HEAD']);
+    // Get commits from main to HEAD with file changes
+    final result = Process.runSync('git', ['log', '--oneline', '--name-status', 'main..HEAD']);
     if (result.exitCode == 0) {
-      final commits = (result.stdout as String).trim().split('\n');
-      if (commits.isNotEmpty && commits.first.isNotEmpty) {
-        return commits.map((commit) => '- ${commit.split(' ').skip(1).join(' ')}').join('\n');
+      final output = (result.stdout as String).trim();
+      if (output.isNotEmpty) {
+        // Parse the output
+        final lines = output.split('\n');
+        final changelog = <String>[];
+        String? currentCommit;
+        for (final line in lines) {
+          if (line.contains(' ') && !line.startsWith('M\t') && !line.startsWith('A\t') && !line.startsWith('D\t')) {
+            // Commit line: hash message
+            currentCommit = line.split(' ').skip(1).join(' ');
+          } else if ((line.startsWith('M\t') || line.startsWith('A\t') || line.startsWith('D\t')) && currentCommit != null) {
+            // File change
+            final parts = line.split('\t');
+            final status = parts[0];
+            final file = parts[1];
+            final statusText = status == 'M' ? 'Modified' : status == 'A' ? 'Added' : 'Deleted';
+            changelog.add('- $currentCommit ($statusText: $file)');
+            currentCommit = null; // One entry per commit-file
+          }
+        }
+        if (changelog.isNotEmpty) {
+          return changelog.join('\n');
+        }
       }
     }
   } catch (e) {
