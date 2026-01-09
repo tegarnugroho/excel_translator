@@ -41,12 +41,49 @@ void main(List<String> args) {
 
   // Update CHANGELOG.md
   final changelogFile = File('CHANGELOG.md');
-  final changelogContent = changelogFile.readAsStringSync();
   final today = DateTime.now().toIso8601String().split('T').first;
   final changes = generateChangelog(currentVersion);
-  final newEntry = '## [$newVersion] - $today\n\n### Changes\n\n$changes\n';
-  final updatedChangelog = newEntry + changelogContent;
-  changelogFile.writeAsStringSync(updatedChangelog);
+
+  // Build new changelog entry (EXACT format)
+  final newEntry =
+      '## [$newVersion] - $today\n\n'
+      '### Changes\n\n'
+      '$changes';
+
+  // Read existing changelog (if any)
+  var oldContent = changelogFile.existsSync()
+      ? changelogFile.readAsStringSync()
+      : '';
+
+  const marker = '# Changelog';
+
+  // Ensure marker exists
+  if (!oldContent.contains(marker)) {
+    oldContent = '$marker\n\n';
+  }
+
+  // Extract content AFTER marker
+  final markerIndex = oldContent.indexOf(marker);
+  var rest = oldContent.substring(markerIndex + marker.length);
+
+  // Normalize old content:
+  // - remove leading/trailing blank lines
+  // - ensure exactly ONE blank line between sections
+  rest = rest
+      .replaceAll(RegExp(r'\r\n'), '\n')
+      .replaceFirst(RegExp(r'^\n+'), '')
+      .replaceFirst(RegExp(r'\n+$'), '');
+
+  // Rebuild changelog from scratch (THIS IS THE KEY)
+  final finalContent = [
+    marker,
+    '',
+    newEntry,
+    if (rest.isNotEmpty) '',
+    rest,
+  ].join('\n');
+
+  changelogFile.writeAsStringSync('$finalContent\n');
 
   // Update hardcoded version in cli.dart
   final cliFile = File('lib/src/cli.dart');

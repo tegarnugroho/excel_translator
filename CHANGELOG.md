@@ -1,10 +1,11 @@
+# Changelog
+
 ## [2.1.1] - 2026-01-09
 
 ### Changes
 
 - Add version management script to automate version updates and changelog generation (Added: bin/increase_version.dart)
 - Update generated localization files with new timestamps and formatting improvements (Deleted: .github/workflows/publish.yml)
-# Changelog
 
 ## [2.1.0] - 2026-01-08
 
