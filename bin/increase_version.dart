@@ -69,7 +69,12 @@ void main(List<String> args) {
 String generateChangelog(String currentVersion) {
   try {
     // Get commits from main to HEAD with file changes
-    final result = Process.runSync('git', ['log', '--oneline', '--name-status', 'main..HEAD']);
+    final result = Process.runSync('git', [
+      'log',
+      '--oneline',
+      '--name-status',
+      'main..HEAD',
+    ]);
     if (result.exitCode == 0) {
       final output = (result.stdout as String).trim();
       if (output.isNotEmpty) {
@@ -78,15 +83,25 @@ String generateChangelog(String currentVersion) {
         final changelog = <String>[];
         String? currentCommit;
         for (final line in lines) {
-          if (line.contains(' ') && !line.startsWith('M\t') && !line.startsWith('A\t') && !line.startsWith('D\t')) {
+          if (line.contains(' ') &&
+              !line.startsWith('M\t') &&
+              !line.startsWith('A\t') &&
+              !line.startsWith('D\t')) {
             // Commit line: hash message
             currentCommit = line.split(' ').skip(1).join(' ');
-          } else if ((line.startsWith('M\t') || line.startsWith('A\t') || line.startsWith('D\t')) && currentCommit != null) {
+          } else if ((line.startsWith('M\t') ||
+                  line.startsWith('A\t') ||
+                  line.startsWith('D\t')) &&
+              currentCommit != null) {
             // File change
             final parts = line.split('\t');
             final status = parts[0];
             final file = parts[1];
-            final statusText = status == 'M' ? 'Modified' : status == 'A' ? 'Added' : 'Deleted';
+            final statusText = status == 'M'
+                ? 'Modified'
+                : status == 'A'
+                ? 'Added'
+                : 'Deleted';
             changelog.add('- $currentCommit ($statusText: $file)');
             currentCommit = null; // One entry per commit-file
           }
