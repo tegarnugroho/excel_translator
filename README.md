@@ -1,5 +1,8 @@
 # Excel Translator - Multi-Format Localizations
 
+[![pub package](https://img.shields.io/pub/v/excel_translator.svg)](https://pub.dev/packages/excel_translator)
+[![License: MIT](https://img.shields.io/badge/license-MIT-purple.svg)](https://opensource.org/licenses/MIT)
+
 Generate type-safe Flutter/Dart localizations from multiple file formats (Excel, CSV, ODS) with automatic language validation and modern Dart conventions.
 
 ## Features
