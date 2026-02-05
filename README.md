@@ -1,5 +1,8 @@
 # Excel Translator - Multi-Format Localizations
 
+[![pub package](https://img.shields.io/pub/v/excel_translator.svg)](https://pub.dev/packages/excel_translator)
+[![License: MIT](https://img.shields.io/badge/license-MIT-purple.svg)](https://opensource.org/licenses/MIT)
+
 Generate type-safe Flutter/Dart localizations from multiple file formats (Excel, CSV, ODS) with automatic language validation and modern Dart conventions.
 
 ## Features
@@ -27,26 +30,8 @@ All formats support the same feature set including string interpolation, languag
 
 ```yaml
 dependencies:
-  excel_translator: ^2.1.1
+  excel_translator: ^2.1.2
 ```
-
-### Automatic Publishing
-
-This package uses GitHub Actions for automatic publishing to pub.dev. When you merge changes to the `main` branch that affect:
-
-- `pubspec.yaml`
-- `lib/` directory
-- `CHANGELOG.md`
-
-The package will automatically run tests, analysis, and publish to pub.dev if all checks pass.
-
-#### Setup for Automatic Publishing
-
-1. Go to your GitHub repository settings
-2. Navigate to **Secrets and variables** → **Actions**
-3. Add a new repository secret named `PUB_DEV_ACCESS_TOKEN`
-4. Get your token from [pub.dev → Account → Authorized Access Tokens](https://pub.dev/account/tokens)
-5. The workflow will automatically publish new versions when merged to main
 
 ## Quick Start
 
