@@ -60,7 +60,7 @@ class LanguageService {
     }
 
     print(
-      '✅ Sheet "$sheetName": Valid language codes found: ${languageCodes.join(', ')}',
+      'Sheet "$sheetName": Valid language codes found: ${languageCodes.join(', ')}',
     );
   }
 
@@ -83,7 +83,7 @@ class LanguageService {
 
     if (invalidCodes.isNotEmpty) {
       print(
-        '⚠️  Sheet "$sheetName": Skipping invalid language code columns: ${invalidCodes.join(', ')}',
+        'WARNING: Sheet "$sheetName": Skipping invalid language code columns: ${invalidCodes.join(', ')}',
       );
       print(
         '   Valid language codes are ISO 639-1 codes like: en, id, es, fr, de, pt, etc.',
@@ -95,7 +95,7 @@ class LanguageService {
 
     if (validCodesWithIndices.isNotEmpty) {
       print(
-        '✅ Sheet "$sheetName": Processing valid language codes: ${validCodesWithIndices.keys.join(', ')}',
+        'INFO: Sheet "$sheetName": Processing valid language codes: ${validCodesWithIndices.keys.join(', ')}',
       );
     }
 
