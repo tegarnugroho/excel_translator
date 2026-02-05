@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.2] - 2026-02-05
+
+### Changes
+
+- Refactor logging messages in LanguageService and Logger for consistency by removing emojis and standardizing format (Modified: lib/src/services/language_service.dart)
+- Remove timestamp comments from generated localization files and update README for clarity on automatic publishing setup (Modified: README.md)
+
 ## [2.1.1] - 2026-01-09
 
 ### Changes

@@ -27,7 +27,7 @@ All formats support the same feature set including string interpolation, languag
 
 ```yaml
 dependencies:
-  excel_translator: ^2.1.1
+  excel_translator: ^2.1.2
 ```
 
 ## Quick Start
