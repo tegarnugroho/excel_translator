@@ -14,28 +14,28 @@ class Logger {
   /// Log debug message
   static void debug(String message) {
     if (_level.index <= LogLevel.debug.index) {
-      print('🐛 DEBUG: $message');
+      print('DEBUG: $message');
     }
   }
 
   /// Log info message
   static void info(String message) {
     if (_level.index <= LogLevel.info.index) {
-      print('ℹ️  INFO: $message');
+      print('INFO: $message');
     }
   }
 
   /// Log warning message
   static void warning(String message) {
     if (_level.index <= LogLevel.warning.index) {
-      print('⚠️  WARNING: $message');
+      print('WARNING: $message');
     }
   }
 
   /// Log error message
   static void error(String message, [dynamic error, StackTrace? stackTrace]) {
     if (_level.index <= LogLevel.error.index) {
-      print('❌ ERROR: $message');
+      print('ERROR: $message');
       if (error != null) {
         print('   Cause: $error');
       }
@@ -48,14 +48,14 @@ class Logger {
   /// Log success message
   static void success(String message) {
     if (_level.index <= LogLevel.info.index) {
-      print('✅ SUCCESS: $message');
+      print('SUCCESS: $message');
     }
   }
 
   /// Log progress message
   static void progress(String message) {
     if (_level.index <= LogLevel.info.index) {
-      print('🔄 PROGRESS: $message');
+      print('PROGRESS: $message');
     }
   }
 }
