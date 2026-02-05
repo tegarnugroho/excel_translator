@@ -30,24 +30,6 @@ dependencies:
   excel_translator: ^2.1.1
 ```
 
-### Automatic Publishing
-
-This package uses GitHub Actions for automatic publishing to pub.dev. When you merge changes to the `main` branch that affect:
-
-- `pubspec.yaml`
-- `lib/` directory
-- `CHANGELOG.md`
-
-The package will automatically run tests, analysis, and publish to pub.dev if all checks pass.
-
-#### Setup for Automatic Publishing
-
-1. Go to your GitHub repository settings
-2. Navigate to **Secrets and variables** → **Actions**
-3. Add a new repository secret named `PUB_DEV_ACCESS_TOKEN`
-4. Get your token from [pub.dev → Account → Authorized Access Tokens](https://pub.dev/account/tokens)
-5. The workflow will automatically publish new versions when merged to main
-
 ## Quick Start
 
 ### 1. Create Your Localization File
