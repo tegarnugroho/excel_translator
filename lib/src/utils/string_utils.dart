@@ -173,40 +173,56 @@ class StringUtils {
   }
 
   /// Sanitize method name - convert to camelCase
-  /// Example: app_title -> appTitle, welcome_message -> welcomeMessage
+  /// Example: app_title -> appTitle, welcome_message -> welcomeMessage, find product -> findProduct
   static String sanitizeMethodName(String key) {
-    // Convert to camelCase
-    final parts = key.toLowerCase().split('_');
-    String result;
+    if (key.isEmpty) return key;
 
-    if (parts.length <= 1) {
-      result = key.toLowerCase().replaceAll(RegExp(r'[^a-zA-Z0-9]'), '');
-    } else {
-      final camelCase =
-          parts.first +
-          parts
-              .skip(1)
-              .map(
-                (part) => part.isEmpty
-                    ? ''
-                    : part[0].toUpperCase() + part.substring(1),
-              )
-              .join('');
+    // Convert to camelCase: split by hyphens/spaces/underscores
+    final parts = key
+        .toLowerCase()
+        .replaceAll(RegExp(r'[^a-zA-Z0-9\-\s_]'), '')
+        .split(RegExp(r'[-\s_]+'))
+        .where((part) => part.isNotEmpty)
+        .toList();
 
-      result = camelCase.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '');
-    }
+    if (parts.isEmpty) return 'method';
+
+    // First part lowercase, rest capitalize first letter
+    final result = parts.first +
+        parts
+            .skip(1)
+            .map(
+              (part) => part.substring(0, 1).toUpperCase() + part.substring(1),
+            )
+            .join('');
 
     // Add key prefix if starts with number
-    if (result.isNotEmpty && RegExp(r'^[0-9]').hasMatch(result)) {
-      return 'key\$${result}';
+    var finalResult = result;
+    if (finalResult.isNotEmpty && RegExp(r'^[0-9]').hasMatch(finalResult)) {
+      finalResult =
+          'method${finalResult.substring(0, 1).toUpperCase()}${finalResult.substring(1)}';
     }
-    return result;
+
+    // If it's a Dart keyword, append 'Value' to make it valid
+    if (isDartKeyword(finalResult)) {
+      finalResult = '${finalResult}Value';
+    }
+
+    return finalResult;
   }
 
-  /// Convert snake_case to camelCase
-  static String toCamelCase(String snakeCase) {
-    final parts = snakeCase.toLowerCase().split('_');
-    if (parts.length <= 1) return snakeCase.toLowerCase();
+  /// Convert snake_case/kebab-case/space-separated to camelCase
+  static String toCamelCase(String text) {
+    if (text.isEmpty) return text;
+
+    final parts = text
+        .toLowerCase()
+        .split(RegExp(r'[-\s_]+'))
+        .where((part) => part.isNotEmpty)
+        .toList();
+
+    if (parts.isEmpty) return text.toLowerCase();
+    if (parts.length == 1) return parts.first;
 
     return parts.first +
         parts

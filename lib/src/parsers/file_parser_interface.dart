@@ -35,4 +35,10 @@ abstract class IFileParser {
     String filePath, {
     LanguageService? languageService,
   });
+
+  /// Parse file from bytes and return localization sheets
+  Future<List<LocalizationSheet>> parseFileFromBytes(
+    List<int> bytes, {
+    LanguageService? languageService,
+  });
 }
