@@ -1,0 +1,8 @@
+builders:
+  excel_translator:
+    import: "package:excel_translator/builder.dart"
+    builder_factories: ["excelTranslatorBuilder"]
+    build_extensions: {'pubspec.yaml': ['lib/generated/generated_localizations.dart', 'lib/generated/build_context_extension.dart']}
+    auto_apply: root_package
+    build_to: source
+    applies_builders: ["source_gen|combining_builder"]
