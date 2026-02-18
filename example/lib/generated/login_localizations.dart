@@ -120,4 +120,18 @@ class LoginLocalizations {
     }
   }
 
+  /// Translation for key: findProduct
+  String get findproduct {
+    switch (_languageCode) {
+      case 'en':
+        return '''Find Product''';
+      case 'id':
+        return '''Cari Product''';
+      case 'es':
+        return '''Buscar Producto''';
+      default:
+        return '''Find Product''';
+    }
+  }
+
 }

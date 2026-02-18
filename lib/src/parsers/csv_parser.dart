@@ -20,130 +20,137 @@ class CsvParser implements IFileParser {
     LanguageService? languageService,
   }) async {
     final file = File(filePath);
-    if (!file.existsSync()) {
-      throw FileSystemException('File not found', filePath);
+    final bytes = file.readAsBytesSync();
+    return parseFileFromBytes(bytes, languageService: languageService);
+  }
+
+  @override
+  Future<List<LocalizationSheet>> parseFileFromBytes(
+    List<int> bytes, {
+    LanguageService? languageService,
+  }) async {
+    final csvContent = String.fromCharCodes(bytes);
+    return _parseCsv(csvContent, languageService);
+  }
+
+  List<LocalizationSheet> _parseCsv(
+    String csvContent,
+    LanguageService? languageService,
+  ) {
+    // Normalize line endings
+    final normalizedContent = csvContent.replaceAll('\r\n', '\n').replaceAll('\r', '\n');
+
+    final decoder = TableParser.decodeCsv(normalizedContent);
+    final table = decoder.tables['Sheet1']!;
+    final rows = table.rows;
+
+    if (rows.isEmpty) {
+      return [];
     }
 
-    try {
-      var csvContent = file.readAsStringSync();
+    // First row should contain language headers (key, en, id, etc.)
+    final headers = rows.first.map((e) => e.toString()).toList();
+    if (headers.isEmpty || headers.first.toLowerCase() != 'key') {
+      throw FormatException(
+        'CSV must start with "key" column followed by language codes',
+      );
+    }
 
-      // Normalize line endings
-      csvContent = csvContent.replaceAll('\r\n', '\n').replaceAll('\r', '\n');
+    // Extract language codes (skip first column which is 'key')
+    final allLanguageCodes = headers.skip(1).toList();
 
-      final decoder = TableParser.decodeCsv(csvContent);
-      final table = decoder.tables['Sheet1']!;
-      final rows = table.rows;
+    List<String> validLanguageCodes;
+    Map<String, int> validCodesWithIndices;
 
-      if (rows.isEmpty) {
+    if (languageService != null) {
+      // Filter out invalid language codes and get valid ones with their indices
+      validCodesWithIndices = languageService.filterValidLanguageCodes(
+        allLanguageCodes,
+        'default',
+      );
+
+      if (validCodesWithIndices.isEmpty) {
+        print('⚠️  CSV file: No valid language codes found. Skipping...');
         return [];
       }
 
-      // First row should contain language headers (key, en, id, etc.)
-      final headers = rows.first.map((e) => e.toString()).toList();
-      if (headers.isEmpty || headers.first.toLowerCase() != 'key') {
-        throw FormatException(
-          'CSV must start with "key" column followed by language codes',
-        );
+      validLanguageCodes = validCodesWithIndices.keys.toList();
+    } else {
+      // No validation - use all language codes
+      validLanguageCodes = allLanguageCodes;
+      validCodesWithIndices = <String, int>{};
+      for (int i = 0; i < allLanguageCodes.length; i++) {
+        validCodesWithIndices[allLanguageCodes[i]] = i;
       }
+    }
 
-      // Extract language codes (skip first column which is 'key')
-      final allLanguageCodes = headers.skip(1).toList();
+    // Create Language entities only for valid codes
+    final languages = validLanguageCodes.map((code) {
+      final normalizedCode = code.toLowerCase().trim();
+      String languageCode;
+      String? region;
 
-      List<String> validLanguageCodes;
-      Map<String, int> validCodesWithIndices;
-
-      if (languageService != null) {
-        // Filter out invalid language codes and get valid ones with their indices
-        validCodesWithIndices = languageService.filterValidLanguageCodes(
-          allLanguageCodes,
-          'default',
-        );
-
-        if (validCodesWithIndices.isEmpty) {
-          print('⚠️  CSV file: No valid language codes found. Skipping...');
-          return [];
-        }
-
-        validLanguageCodes = validCodesWithIndices.keys.toList();
+      if (normalizedCode.contains('_')) {
+        final parts = normalizedCode.split('_');
+        languageCode = parts[0];
+        region = parts.length > 1 ? parts[1] : null;
+      } else if (normalizedCode.contains('-')) {
+        final parts = normalizedCode.split('-');
+        languageCode = parts[0];
+        region = parts.length > 1 ? parts[1] : null;
       } else {
-        // No validation - use all language codes
-        validLanguageCodes = allLanguageCodes;
-        validCodesWithIndices = <String, int>{};
-        for (int i = 0; i < allLanguageCodes.length; i++) {
-          validCodesWithIndices[allLanguageCodes[i]] = i;
-        }
+        languageCode = normalizedCode;
+        region = null;
       }
 
-      // Create Language entities only for valid codes
-      final languages = validLanguageCodes.map((code) {
-        final normalizedCode = code.toLowerCase().trim();
-        String languageCode;
-        String? region;
+      return Language(
+        code: languageCode,
+        name: languageCode, // Will be resolved by validation repository
+        region: region,
+      );
+    }).toList();
 
-        if (normalizedCode.contains('_')) {
-          final parts = normalizedCode.split('_');
-          languageCode = parts[0];
-          region = parts.length > 1 ? parts[1] : null;
-        } else if (normalizedCode.contains('-')) {
-          final parts = normalizedCode.split('-');
-          languageCode = parts[0];
-          region = parts.length > 1 ? parts[1] : null;
-        } else {
-          languageCode = normalizedCode;
-          region = null;
-        }
+    // Parse entries
+    final translations = <Translation>[];
+    for (int i = 1; i < rows.length; i++) {
+      final row = rows[i];
+      if (row.isEmpty) continue;
 
-        return Language(
-          code: languageCode,
-          name: languageCode, // Will be resolved by validation repository
-          region: region,
-        );
-      }).toList();
+      final key = row.first.toString();
+      if (key.isEmpty) continue;
 
-      // Parse entries
-      final translations = <Translation>[];
-      for (int i = 1; i < rows.length; i++) {
-        final row = rows[i];
-        if (row.isEmpty) continue;
+      final values = <String, String>{};
 
-        final key = row.first.toString();
-        if (key.isEmpty) continue;
+      // Only process columns with valid language codes
+      for (final validCode in validLanguageCodes) {
+        final originalIndex = validCodesWithIndices[validCode]!;
+        final columnIndex =
+            originalIndex +
+            1; // +1 because originalIndex is header index, but we need data column index
 
-        final values = <String, String>{};
-
-        // Only process columns with valid language codes
-        for (final validCode in validLanguageCodes) {
-          final originalIndex = validCodesWithIndices[validCode]!;
-          final columnIndex =
-              originalIndex +
-              1; // +1 because originalIndex is header index, but we need data column index
-
-          if (columnIndex < row.length) {
-            final value = row[columnIndex]?.toString() ?? '';
-            if (value.isNotEmpty) {
-              values[validCode] = value;
-            }
+        if (columnIndex < row.length) {
+          final value = row[columnIndex]?.toString() ?? '';
+          if (value.isNotEmpty) {
+            values[validCode] = value;
           }
         }
-
-        if (values.isNotEmpty) {
-          translations.add(Translation(key: key, values: values));
-        }
       }
 
-      if (translations.isEmpty) {
-        return [];
+      if (values.isNotEmpty) {
+        translations.add(Translation(key: key, values: values));
       }
-
-      return [
-        LocalizationSheet(
-          name: 'default',
-          translations: translations,
-          supportedLanguages: languages,
-        ),
-      ];
-    } catch (e) {
-      throw FormatException('Failed to parse CSV file: $e');
     }
+
+    if (translations.isEmpty) {
+      return [];
+    }
+
+    return [
+      LocalizationSheet(
+        name: 'default',
+        translations: translations,
+        supportedLanguages: languages,
+      ),
+    ];
   }
 }

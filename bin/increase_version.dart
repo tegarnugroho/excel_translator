@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:yaml/yaml.dart';
+import 'package:path/path.dart' as path;
 
 void main(List<String> args) {
   if (args.isEmpty) {
@@ -13,8 +14,13 @@ void main(List<String> args) {
     exit(1);
   }
 
+  // Find project root directory (where pubspec.yaml is located)
+  final scriptPath = Platform.script.toFilePath();
+  final scriptDir = path.dirname(scriptPath);
+  final projectRoot = path.dirname(scriptDir); // Parent of bin directory
+
   // Read pubspec.yaml
-  final pubspecFile = File('pubspec.yaml');
+  final pubspecFile = File(path.join(projectRoot, 'pubspec.yaml'));
   final pubspecContent = pubspecFile.readAsStringSync();
   final pubspecYaml = loadYaml(pubspecContent) as Map;
 
@@ -31,7 +37,7 @@ void main(List<String> args) {
   pubspecFile.writeAsStringSync(updatedPubspec);
 
   // Update README.md
-  final readmeFile = File('README.md');
+  final readmeFile = File(path.join(projectRoot, 'README.md'));
   final readmeContent = readmeFile.readAsStringSync();
   final updatedReadme = readmeContent.replaceFirst(
     RegExp(r'excel_translator: \^\d+\.\d+\.\d+'),
@@ -40,7 +46,7 @@ void main(List<String> args) {
   readmeFile.writeAsStringSync(updatedReadme);
 
   // Update CHANGELOG.md
-  final changelogFile = File('CHANGELOG.md');
+  final changelogFile = File(path.join(projectRoot, 'CHANGELOG.md'));
   final today = DateTime.now().toIso8601String().split('T').first;
   final changes = generateChangelog(currentVersion);
 
@@ -86,7 +92,7 @@ void main(List<String> args) {
   changelogFile.writeAsStringSync('$finalContent\n');
 
   // Update hardcoded version in cli.dart
-  final cliFile = File('lib/src/cli.dart');
+  final cliFile = File(path.join(projectRoot, 'lib/src/cli.dart'));
   final cliContent = cliFile.readAsStringSync();
   final updatedCli = cliContent.replaceFirst(
     "print('Excel Translator v2.0.0');",
