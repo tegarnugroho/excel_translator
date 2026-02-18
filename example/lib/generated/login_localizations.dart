@@ -128,7 +128,7 @@ class LoginLocalizations {
       case 'id':
         return '''Cari Product''';
       case 'es':
-        return '''selemente''';
+        return '''Buscar Producto''';
       default:
         return '''Find Product''';
     }
