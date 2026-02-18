@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.1.3] - 2026-02-18
+
+### Changes
+
+- Fix translation for 'findProduct' in Spanish (Modified: example/lib/generated/login_localizations.dart)
+- Update example_localizations.xlsx with new translations (Modified: example/assets/example_localizations.xlsx)
+- Add build configuration and localization support for Excel Translator (Added: build.yaml)
+- Add pub.dev badges to README (Modified: README.md)
+- Update version to 2.1.2 in changelog, README, and pubspec.yaml (Modified: CHANGELOG.md)
+- Refactor logging messages in LanguageService and Logger for consistency by removing emojis and standardizing format (Modified: lib/src/services/language_service.dart)
+- Remove timestamp comments from generated localization files and update README for clarity on automatic publishing setup (Modified: README.md)
+
 ## [2.1.2] - 2026-02-05
 
 ### Changes
