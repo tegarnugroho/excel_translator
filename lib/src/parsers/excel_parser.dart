@@ -21,12 +21,26 @@ class ExcelParser implements IFileParser {
   }) async {
     final file = File(filePath);
     final bytes = file.readAsBytesSync();
-    final decoder = TableParser.decodeBytes(bytes);
+    return parseFileFromBytes(bytes, languageService: languageService);
+  }
 
+  @override
+  Future<List<LocalizationSheet>> parseFileFromBytes(
+    List<int> bytes, {
+    LanguageService? languageService,
+  }) async {
+    final decoder = TableParser.decodeBytes(bytes);
+    return _parseTables(decoder.tables, languageService);
+  }
+
+  List<LocalizationSheet> _parseTables(
+    Map<String, dynamic> tables,
+    LanguageService? languageService,
+  ) {
     List<LocalizationSheet> sheets = [];
 
-    for (final tableName in decoder.tables.keys) {
-      final table = decoder.tables[tableName]!;
+    for (final tableName in tables.keys) {
+      final table = tables[tableName]!;
       final rows = table.rows;
 
       if (rows.isEmpty) continue;
