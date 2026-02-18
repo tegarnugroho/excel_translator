@@ -26,6 +26,7 @@ dependencies:
   path: ^1.9.1
   yaml: ^3.1.2
   glob: ^2.1.0
+  build: any
 
 dev_dependencies:
   flutter_test:
