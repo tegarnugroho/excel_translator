@@ -40,7 +40,10 @@ class CsvParser implements IFileParser {
     // Normalize line endings
     final normalizedContent = csvContent.replaceAll('\r\n', '\n').replaceAll('\r', '\n');
 
-    final decoder = TableParser.decodeCsv(normalizedContent);
+    final decoder = TableParser.decodeCsv(
+      normalizedContent,
+      textDelimiter: '"',
+    );
     final table = decoder.tables['Sheet1']!;
     final rows = table.rows;
 

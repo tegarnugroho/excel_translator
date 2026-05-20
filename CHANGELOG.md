@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.1.4] - 2026-05-20
+
+### Fixed
+
+- Fix CSV parser to properly handle commas inside quoted fields by setting `textDelimiter: '"'` parameter in TableParser
+
 ## [2.1.3] - 2026-02-18
 
 ### Changes
