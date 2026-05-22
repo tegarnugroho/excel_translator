@@ -12,18 +12,10 @@ import 'src/generators/generators.dart';
 /// Triggered by pubspec.yaml. Also reruns when the excel/csv/ods file changes
 /// because reading it via buildStep registers it as an implicit dependency.
 ///
-/// Output directory defaults to lib/generated. To use a custom directory,
-/// set output_dir in your build.yaml builder options:
-///
-///   targets:
-///     $default:
-///       builders:
-///         excel_translator|excel_translator:
-///           options:
-///             output_dir: lib/config/l10n
-///
-/// The output_dir in pubspec.yaml is used by the CLI only. When running via
-/// build_runner, the build.yaml options value takes precedence.
+/// Output directory is resolved in priority order:
+///   1. build.yaml options.output_dir (explicit override)
+///   2. pubspec.yaml excel_translator.output_dir (default, works for build_runner)
+///   3. lib/generated (fallback)
 class ExcelTranslatorBuilder implements Builder {
   final _sheetGenerator = SheetClassGenerator();
   final _mainGenerator = MainClassGenerator();
