@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.1.6] - 2026-05-22
+
+### Changes
+
+- Update README to enhance clarity on localization features and usage instructions (Modified: README.md)
+- Update CHANGELOG for version 2.1.5; bump version in README and pubspec.yaml (Modified: CHANGELOG.md)
+- Refactor localization classes and enhance logging in LanguageService (Deleted: example/lib/generated/buttons_localizations.dart)
+- Add settings configuration, refactor builders, and improve localization generation logic (Added: .claude/settings.local.json)
+
 ## [2.1.5] - 2026-05-22
 
 ### Changes
