@@ -54,7 +54,10 @@ class ExcelTranslatorBuilder implements Builder {
     final parser = FileParserFactory.createParser(excelFile);
     final sheets = await parser.parseFileFromBytes(
       bytes,
-      languageService: LanguageService(),
+      languageService: LanguageService(
+        logInfo: log.info,
+        logWarning: log.warning,
+      ),
     );
 
     if (sheets.isEmpty) {
