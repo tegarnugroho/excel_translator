@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.1.5] - 2026-05-22
+
+### Changes
+
+- Add optional `build_runner` integration support
+- Refactor localization generator architecture for CLI and Builder modes
+- Improve localization generation flow and logging
+- Remove `example/lib/generated/buttons_localizations.dart`
+
 ## [2.1.4] - 2026-05-20
 
 ### Fixed
