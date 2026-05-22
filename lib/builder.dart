@@ -11,22 +11,35 @@ import 'src/generators/generators.dart';
 /// Triggered by pubspec.yaml. Also reruns when the excel/csv/ods file changes
 /// because reading it via buildStep registers it as an implicit dependency.
 ///
-/// Outputs into lib/generated (configurable via output_dir in pubspec.yaml,
-/// but the value must match what is declared in build_extensions below):
-///   - generated_localizations.dart  — all classes in one file (inline mode)
-///   - build_context_extension.dart
+/// Output directory defaults to lib/generated. To use a custom directory,
+/// set output_dir in your build.yaml builder options:
+///
+///   targets:
+///     $default:
+///       builders:
+///         excel_translator|excel_translator:
+///           options:
+///             output_dir: lib/config/l10n
+///
+/// The output_dir in pubspec.yaml is used by the CLI only. When running via
+/// build_runner, the build.yaml options value takes precedence.
 class ExcelTranslatorBuilder implements Builder {
   final _sheetGenerator = SheetClassGenerator();
   final _mainGenerator = MainClassGenerator();
   final _extensionGenerator = ExtensionGenerator();
 
+  final String _outputDir;
+
+  ExcelTranslatorBuilder({String outputDir = 'lib/generated'})
+      : _outputDir = outputDir;
+
   @override
-  final buildExtensions = const {
-    'pubspec.yaml': [
-      'lib/generated/generated_localizations.dart',
-      'lib/generated/build_context_extension.dart',
-    ],
-  };
+  Map<String, List<String>> get buildExtensions => {
+        'pubspec.yaml': [
+          '$_outputDir/generated_localizations.dart',
+          '$_outputDir/build_context_extension.dart',
+        ],
+      };
 
   @override
   Future<void> build(BuildStep buildStep) async {
@@ -67,7 +80,16 @@ class ExcelTranslatorBuilder implements Builder {
 
     sheets.sort((a, b) => a.name.compareTo(b.name));
 
-    final outputDir = config['output_dir'] as String? ?? 'lib/generated';
+    final pubspecOutputDir = config['output_dir'] as String?;
+    if (pubspecOutputDir != null && pubspecOutputDir != _outputDir) {
+      log.warning(
+        'excel_translator: output_dir "$pubspecOutputDir" in pubspec.yaml is '
+        'ignored when using build_runner. Set output_dir via build.yaml options '
+        'instead (currently using "$_outputDir"). '
+        'See package README for details.',
+      );
+    }
+    final outputDir = _outputDir;
     final className = config['class_name'] as String? ?? 'AppLocalizations';
     final includeDelegates =
         config['include_flutter_delegates'] as bool? ?? true;
@@ -130,5 +152,6 @@ class ExcelTranslatorBuilder implements Builder {
   }
 }
 
-Builder excelTranslatorBuilder(BuilderOptions options) =>
-    ExcelTranslatorBuilder();
+Builder excelTranslatorBuilder(BuilderOptions options) => ExcelTranslatorBuilder(
+      outputDir: options.config['output_dir'] as String? ?? 'lib/generated',
+    );
