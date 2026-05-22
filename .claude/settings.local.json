@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\pc\\\\Dev\\\\Projects\\\\excel_translator\" -Recurse -Force)",
+      "Bash(Select-Object -Property FullName)",
+      "Bash(Sort-Object FullName)",
+      "Bash(cd \"/c/Users/pc/Dev/Projects/excel_translator\" && find . -type f \\\\\\( -name \"*.dart\" -o -name \"*.yaml\" -o -name \"*.json\" -o -name \"*.md\" \\\\\\) ! -path \"./.dart_tool/*\" ! -path \"./.git/*\" ! -path \"./example/.dart_tool/*\" ! -path \"./example/build/*\" | sort)",
+      "Read(//c/c/Users/pc/Dev/Projects/**)",
+      "Bash(dart analyze *)"
+    ]
+  }
+}
