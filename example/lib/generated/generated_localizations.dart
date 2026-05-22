@@ -5,8 +5,204 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:excel_translator/excel_translator.dart';
 import 'dart:ui' show PlatformDispatcher;
-import 'login_localizations.dart';
-import 'buttons_localizations.dart';
+
+class ButtonsLocalizations {
+  final String _languageCode;
+
+  const ButtonsLocalizations(this._languageCode);
+
+  /// Translation for key: submit
+  String get submit {
+    switch (_languageCode) {
+      case 'en':
+        return '''Submit''';
+      case 'id':
+        return '''Kirim''';
+      case 'es':
+        return '''Enviar''';
+      default:
+        return '''Submit''';
+    }
+  }
+
+  /// Translation for key: delete
+  String get delete {
+    switch (_languageCode) {
+      case 'en':
+        return '''Delete''';
+      case 'id':
+        return '''Hapus''';
+      case 'es':
+        return '''Eliminar''';
+      default:
+        return '''Delete''';
+    }
+  }
+
+  /// Translation for key: edit
+  String get edit {
+    switch (_languageCode) {
+      case 'en':
+        return '''Edit''';
+      case 'id':
+        return '''Edit''';
+      case 'es':
+        return '''Editar''';
+      default:
+        return '''Edit''';
+    }
+  }
+
+  /// Translation for key: refresh
+  String get refresh {
+    switch (_languageCode) {
+      case 'en':
+        return '''Refresh''';
+      case 'id':
+        return '''Muat ulang''';
+      case 'es':
+        return '''Actualizar''';
+      default:
+        return '''Refresh''';
+    }
+  }
+
+}
+
+class LoginLocalizations {
+  final String _languageCode;
+
+  const LoginLocalizations(this._languageCode);
+
+  /// Translation for key: hello
+  String get hello {
+    switch (_languageCode) {
+      case 'en':
+        return '''Hello''';
+      case 'id':
+        return '''Halo''';
+      case 'es':
+        return '''Hola''';
+      default:
+        return '''Hello''';
+    }
+  }
+
+  /// Translation for key: goodbye
+  String get goodbye {
+    switch (_languageCode) {
+      case 'en':
+        return '''Goodbye''';
+      case 'id':
+        return '''Selamat tinggal''';
+      case 'es':
+        return '''Adiós''';
+      default:
+        return '''Goodbye''';
+    }
+  }
+
+  /// Translation for key: welcome_message
+  String welcomeMessage({dynamic name}) {
+    switch (_languageCode) {
+      case 'en':
+        return '''Welcome {name}!'''
+            .replaceAll('{name}', name.toString())
+            ;
+      case 'id':
+        return '''Selamat datang {name}!'''
+            .replaceAll('{name}', name.toString())
+            ;
+      case 'es':
+        return '''¡Bienvenido {name}!'''
+            .replaceAll('{name}', name.toString())
+            ;
+      default:
+        return '''Welcome {name}!'''
+            .replaceAll('{name}', name.toString())
+            ;
+    }
+  }
+
+  /// Translation for key: user_count
+  String userCount({dynamic count}) {
+    switch (_languageCode) {
+      case 'en':
+        return '''You have {count} users'''
+            .replaceAll('{count}', count.toString())
+            ;
+      case 'id':
+        return '''Anda memiliki {count} pengguna'''
+            .replaceAll('{count}', count.toString())
+            ;
+      case 'es':
+        return '''Tienes {count} usuarios'''
+            .replaceAll('{count}', count.toString())
+            ;
+      default:
+        return '''You have {count} users'''
+            .replaceAll('{count}', count.toString())
+            ;
+    }
+  }
+
+  /// Translation for key: app_title
+  String get appTitle {
+    switch (_languageCode) {
+      case 'en':
+        return '''My Amazing App''';
+      case 'id':
+        return '''Aplikasi Menakjubkan Saya''';
+      case 'es':
+        return '''Mi Aplicación Increíble''';
+      default:
+        return '''My Amazing App''';
+    }
+  }
+
+  /// Translation for key: save_button
+  String get saveButton {
+    switch (_languageCode) {
+      case 'en':
+        return '''Save''';
+      case 'id':
+        return '''Simpan''';
+      case 'es':
+        return '''Guardar''';
+      default:
+        return '''Save''';
+    }
+  }
+
+  /// Translation for key: cancel_button
+  String get cancelButton {
+    switch (_languageCode) {
+      case 'en':
+        return '''Cancel''';
+      case 'id':
+        return '''Batal''';
+      case 'es':
+        return '''Cancelar''';
+      default:
+        return '''Cancel''';
+    }
+  }
+
+  /// Translation for key: findProduct
+  String get findproduct {
+    switch (_languageCode) {
+      case 'en':
+        return '''Find Product''';
+      case 'id':
+        return '''Cari Product''';
+      case 'es':
+        return '''Buscar Producto''';
+      default:
+        return '''Find Product''';
+    }
+  }
+
+}
 
 class AppLocalizations {
   final String languageCode;
@@ -17,12 +213,12 @@ class AppLocalizations {
     'id',
   ];
 
-  late final LoginLocalizations login;
   late final ButtonsLocalizations buttons;
+  late final LoginLocalizations login;
 
   AppLocalizations(this.languageCode) {
-    login = LoginLocalizations(languageCode);
     buttons = ButtonsLocalizations(languageCode);
+    login = LoginLocalizations(languageCode);
   }
 
   /// Get english instance

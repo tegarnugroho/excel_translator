@@ -7,6 +7,20 @@ class LanguageService {
   Set<String>? _validLanguageCodes;
   Map<String, String>? _languageNames;
 
+  final void Function(String)? _logInfo;
+  final void Function(String)? _logWarning;
+
+  LanguageService({
+    void Function(String)? logInfo,
+    void Function(String)? logWarning,
+  }) : _logInfo = logInfo,
+       _logWarning = logWarning;
+
+  void _info(String msg) =>
+      _logInfo != null ? _logInfo(msg) : print('INFO: $msg');
+  void _warn(String msg) =>
+      _logWarning != null ? _logWarning(msg) : print('WARNING: $msg');
+
   /// Check if language code is valid
   bool isValidLanguageCode(String code) {
     _ensureDataLoaded();
@@ -59,9 +73,7 @@ class LanguageService {
       );
     }
 
-    print(
-      'Sheet "$sheetName": Valid language codes found: ${languageCodes.join(', ')}',
-    );
+    _info('Sheet "$sheetName": Valid language codes found: ${languageCodes.join(', ')}');
   }
 
   /// Filter out invalid language codes and return only valid ones with their indices
@@ -82,21 +94,13 @@ class LanguageService {
     }
 
     if (invalidCodes.isNotEmpty) {
-      print(
-        'WARNING: Sheet "$sheetName": Skipping invalid language code columns: ${invalidCodes.join(', ')}',
-      );
-      print(
-        '   Valid language codes are ISO 639-1 codes like: en, id, es, fr, de, pt, etc.',
-      );
-      print(
-        '   You can also use locale formats like: en_US, pt_BR, zh_CN (preferred) or en-US, pt-BR, zh-CN',
-      );
+      _warn('Sheet "$sheetName": Skipping invalid language code columns: ${invalidCodes.join(', ')}');
+      _warn('   Valid language codes are ISO 639-1 codes like: en, id, es, fr, de, pt, etc.');
+      _warn('   You can also use locale formats like: en_US, pt_BR, zh_CN (preferred) or en-US, pt-BR, zh-CN');
     }
 
     if (validCodesWithIndices.isNotEmpty) {
-      print(
-        'INFO: Sheet "$sheetName": Processing valid language codes: ${validCodesWithIndices.keys.join(', ')}',
-      );
+      _info('Sheet "$sheetName": Processing valid language codes: ${validCodesWithIndices.keys.join(', ')}');
     }
 
     return validCodesWithIndices;
