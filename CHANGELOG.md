@@ -1,5 +1,36 @@
 # Changelog
 
+## [2.1.7] - 2026-05-22
+
+### Changes
+
+- Fix build.yaml: restore required build_extensions field (Modified: build.yaml)
+- Refactor build configuration by removing build_extensions from build.yaml and updating output directory documentation in builder.dart (Modified: build.yaml)
+- Enhance Excel Translator configuration to support multi-file generation option and update CLI for new argument parsing (Modified: lib/builder.dart)
+- Update Excel Translator configuration to use CSV file for translations and enhance output directory handling in builder (Modified: CHANGELOG.md)
+- Update README to enhance clarity on localization features and usage instructions (Modified: README.md)
+- Update CHANGELOG for version 2.1.5; bump version in README and pubspec.yaml (Modified: CHANGELOG.md)
+- Refactor localization classes and enhance logging in LanguageService (Deleted: example/lib/generated/buttons_localizations.dart)
+- Add settings configuration, refactor builders, and improve localization generation logic (Added: .claude/settings.local.json)
+
+## [2.1.6] - 2026-05-22
+
+### Changes
+
+- Update README to enhance clarity on localization features and usage instructions (Modified: README.md)
+- Update CHANGELOG for version 2.1.5; bump version in README and pubspec.yaml (Modified: CHANGELOG.md)
+- Refactor localization classes and enhance logging in LanguageService (Deleted: example/lib/generated/buttons_localizations.dart)
+- Add settings configuration, refactor builders, and improve localization generation logic (Added: .claude/settings.local.json)
+
+## [2.1.5] - 2026-05-22
+
+### Changes
+
+- Add optional `build_runner` integration support
+- Refactor localization generator architecture for CLI and Builder modes
+- Improve localization generation flow and logging
+- Remove `example/lib/generated/buttons_localizations.dart`
+
 ## [2.1.4] - 2026-05-20
 
 ### Fixed

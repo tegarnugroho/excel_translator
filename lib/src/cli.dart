@@ -47,6 +47,7 @@ class ExcelTranslatorCLI {
     final outputDir = arguments[1];
     String className = 'AppLocalizations';
     bool includeFlutterDelegates = true;
+    bool? multiFile;
 
     // Parse optional arguments
     for (int i = 2; i < arguments.length; i++) {
@@ -65,6 +66,10 @@ class ExcelTranslatorCLI {
       } else if (arg.startsWith('-d=')) {
         final value = arg.substring('-d='.length);
         includeFlutterDelegates = value.toLowerCase() == 'true';
+      } else if (arg == '--single-file' || arg == '-sf') {
+        multiFile = false;
+      } else if (arg == '--multi-file' || arg == '-mf') {
+        multiFile = true;
       }
     }
 
@@ -74,6 +79,7 @@ class ExcelTranslatorCLI {
         outputDir: outputDir,
         className: className,
         includeFlutterDelegates: includeFlutterDelegates,
+        multiFile: multiFile,
       );
     } catch (e) {
       print('Error: $e');
@@ -160,6 +166,12 @@ class ExcelTranslatorCLI {
       '  -d, --delegates=BOOL    Include Flutter delegates (default: true)',
     );
     print('  --no-delegates          Disable Flutter delegates');
+    print(
+      '  --multi-file, -mf       One file per sheet + main file (default)',
+    );
+    print(
+      '  --single-file, -sf      Everything in one generated_localizations.dart',
+    );
     print('  -v, --version           Show version');
     print('  -h, --help              Show this help');
     print('');
@@ -168,13 +180,14 @@ class ExcelTranslatorCLI {
       '  dart run excel_translator assets/localizations.xlsx lib/generated',
     );
     print('  dart run excel_translator file.csv lib/l10n --class-name=L10n');
-    print('  dart run excel_translator file.ods lib/i18n --no-delegates');
+    print('  dart run excel_translator file.ods lib/i18n --single-file');
     print('');
     print('Configuration (pubspec.yaml):');
     print('  excel_translator:');
     print('    excel_file: assets/localizations.xlsx');
     print('    output_dir: lib/generated');
     print('    class_name: AppLocalizations  # optional');
+    print('    multi_file: true              # optional, default true');
   }
 
   void _printVersion() {
