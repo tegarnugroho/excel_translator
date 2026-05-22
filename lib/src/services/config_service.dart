@@ -16,6 +16,7 @@ class ConfigService {
       className: configData['class_name'] as String?,
       includeFlutterDelegates:
           configData['include_flutter_delegates'] as bool? ?? true,
+      multiFile: configData['multi_file'] as bool?,
     );
   }
 
@@ -51,6 +52,7 @@ class ConfigService {
     String? outputDir,
     String? className,
     bool? includeFlutterDelegates,
+    bool? multiFile,
     String? pubspecPath,
   }) {
     final pubspecConfig = loadFromPubspec(pubspecPath);
@@ -59,12 +61,14 @@ class ConfigService {
     if (excelFilePath != null ||
         outputDir != null ||
         className != null ||
-        includeFlutterDelegates != null) {
+        includeFlutterDelegates != null ||
+        multiFile != null) {
       providedConfig = ExcelTranslatorConfig(
         excelFilePath: excelFilePath,
         outputDir: outputDir,
         className: className,
         includeFlutterDelegates: includeFlutterDelegates ?? true,
+        multiFile: multiFile,
       );
     }
 

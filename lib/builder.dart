@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:build/build.dart';
 import 'package:yaml/yaml.dart';
 
@@ -80,15 +81,6 @@ class ExcelTranslatorBuilder implements Builder {
 
     sheets.sort((a, b) => a.name.compareTo(b.name));
 
-    final pubspecOutputDir = config['output_dir'] as String?;
-    if (pubspecOutputDir != null && pubspecOutputDir != _outputDir) {
-      log.warning(
-        'excel_translator: output_dir "$pubspecOutputDir" in pubspec.yaml is '
-        'ignored when using build_runner. Set output_dir via build.yaml options '
-        'instead (currently using "$_outputDir"). '
-        'See package README for details.',
-      );
-    }
     final outputDir = _outputDir;
     final className = config['class_name'] as String? ?? 'AppLocalizations';
     final includeDelegates =
@@ -152,6 +144,19 @@ class ExcelTranslatorBuilder implements Builder {
   }
 }
 
-Builder excelTranslatorBuilder(BuilderOptions options) => ExcelTranslatorBuilder(
-      outputDir: options.config['output_dir'] as String? ?? 'lib/generated',
-    );
+Builder excelTranslatorBuilder(BuilderOptions options) {
+  // build.yaml options take priority, then fall back to pubspec.yaml
+  final optionsDir = options.config['output_dir'] as String?;
+  if (optionsDir != null) {
+    return ExcelTranslatorBuilder(outputDir: optionsDir);
+  }
+
+  String? pubspecDir;
+  try {
+    final content = File('pubspec.yaml').readAsStringSync();
+    final yaml = loadYaml(content) as YamlMap;
+    pubspecDir = yaml['excel_translator']?['output_dir'] as String?;
+  } catch (_) {}
+
+  return ExcelTranslatorBuilder(outputDir: pubspecDir ?? 'lib/generated');
+}
