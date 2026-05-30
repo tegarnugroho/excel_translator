@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.1.8] - 2026-05-30
+
+### Changes
+
+- Add string sanitization methods for interpolation parameters and update tests (Modified: lib/src/utils/string_utils.dart)
+
 ## [2.1.7] - 2026-05-22
 
 ### Changes
