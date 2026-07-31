@@ -7,6 +7,7 @@ class MockTranslatorService implements TranslatorService {
   String? lastOutputDir;
   String? lastClassName;
   bool? lastIncludeFlutterDelegates;
+  bool? lastMultiFile;
   String? lastPubspecPath;
 
   bool shouldThrowError = false;
@@ -18,12 +19,14 @@ class MockTranslatorService implements TranslatorService {
     required String outputDir,
     String? className,
     bool? includeFlutterDelegates,
+    bool? multiFile,
     String? pubspecPath,
   }) async {
     lastFilePath = filePath;
     lastOutputDir = outputDir;
     lastClassName = className;
     lastIncludeFlutterDelegates = includeFlutterDelegates;
+    lastMultiFile = multiFile;
     lastPubspecPath = pubspecPath;
 
     if (shouldThrowError) {

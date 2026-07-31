@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:table_parser/table_parser.dart';
 import '../models/models.dart';
@@ -29,7 +30,16 @@ class CsvParser implements IFileParser {
     List<int> bytes, {
     LanguageService? languageService,
   }) async {
-    final csvContent = String.fromCharCodes(bytes);
+    // Decode as UTF-8. Using String.fromCharCodes here would treat each byte as
+    // a code unit (Latin-1), turning every non-ASCII character into mojibake.
+    var csvContent = utf8.decode(bytes);
+
+    // Strip the UTF-8 BOM that Excel/Google Sheets exports often prepend;
+    // otherwise it sticks to the first header cell and breaks the 'key' check.
+    if (csvContent.isNotEmpty && csvContent.codeUnitAt(0) == 0xFEFF) {
+      csvContent = csvContent.substring(1);
+    }
+
     return _parseCsv(csvContent, languageService);
   }
 

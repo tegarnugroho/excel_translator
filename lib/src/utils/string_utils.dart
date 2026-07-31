@@ -241,11 +241,28 @@ class StringUtils {
         .replaceFirst(RegExp(r'^_'), '');
   }
 
+  /// Sanitize interpolation parameter names to valid Dart identifiers (camelCase)
+  /// Examples: user_name → userName, name → name, id → id
+  static String sanitizeInterpolationParam(String param) {
+    if (param.isEmpty) return param;
+    
+    // Skip numeric parameters
+    if (RegExp(r'^\d+$').hasMatch(param)) return param;
+    
+    // Convert snake_case/kebab-case to camelCase
+    if (param.contains('_') || param.contains('-')) {
+      return toCamelCase(param);
+    }
+    
+    return param;
+  }
+
   /// Extract interpolation parameters from text
   /// Supports three formats:
-  /// - Curly brace style: `{param}` → ["param"]
+  /// - Curly brace style: `{param}` or `{user_name}` → ["param", "userName"]
   /// - Positional printf style: `%1$s`, `%2$s` → ["1", "2"]
-  /// - Named printf style: `%information$s`, `%name$s` → ["information", "name"]
+  /// - Named printf style: `%information$s`, `%user_name$s` → ["information", "userName"]
+  /// Parameters with underscores are automatically converted to camelCase
   static List<String> extractInterpolationParams(String text) {
     // Matches {paramName}, %123$s (numeric), and %paramName$s (named)
     final regex = RegExp(r'\{([^}]+)\}|%([a-zA-Z_][a-zA-Z0-9_]*|\d+)\$s');
@@ -256,10 +273,12 @@ class StringUtils {
     for (final match in matches) {
       if (match.group(1) != null) {
         // Curly brace format: {param}
-        params.add(match.group(1)!);
+        final rawParam = match.group(1)!;
+        params.add(sanitizeInterpolationParam(rawParam));
       } else if (match.group(2) != null) {
         // Printf format: %param$s or %123$s
-        params.add(match.group(2)!);
+        final rawParam = match.group(2)!;
+        params.add(sanitizeInterpolationParam(rawParam));
       }
     }
 
@@ -271,12 +290,21 @@ class StringUtils {
     return text.contains(RegExp(r'\{[^}]+\}|%([a-zA-Z_][a-zA-Z0-9_]*|\d+)\$s'));
   }
 
-  /// Normalize interpolation parameters to curly brace format
-  /// Converts `%param$s` to `{param}` for consistent handling
+  /// Normalize interpolation parameters to curly brace format with camelCase names
+  /// Converts `%param$s` to `{param}` and `{user_name}` to `{userName}` for consistent handling
   static String normalizeInterpolation(String text) {
-    return text.replaceAllMapped(
+    // First, convert printf-style to curly brace format
+    var result = text.replaceAllMapped(
       RegExp(r'%([a-zA-Z_][a-zA-Z0-9_]*|\d+)\$s'),
       (match) => '{${match.group(1)}}',
     );
+    
+    // Then, convert parameter names to camelCase
+    result = result.replaceAllMapped(
+      RegExp(r'\{([^}]+)\}'),
+      (match) => '{${sanitizeInterpolationParam(match.group(1)!)}}',
+    );
+    
+    return result;
   }
 }
