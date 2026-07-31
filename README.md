@@ -72,7 +72,7 @@ Add to `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  excel_translator: ^2.1.8
+  excel_translator: ^2.1.9
 ```
 
 For `build_runner` integration, also add to `dev_dependencies`:
