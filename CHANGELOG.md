@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.1.9] - 2026-07-31
+
+### Changes
+
+- Fix UTF-8 decoding in CSV parser: `String.fromCharCodes` decoded bytes as
+  Latin-1, mangling every non-ASCII character (emoji, accents, CJK) into
+  mojibake in generated localizations. Now decodes with `utf8.decode` and
+  strips a leading UTF-8 BOM from Excel/Sheets exports.
+  (Modified: lib/src/parsers/csv_parser.dart)
+
+## [2.1.8] - 2026-05-30
+
+### Changes
+
+- Add string sanitization methods for interpolation parameters and update tests (Modified: lib/src/utils/string_utils.dart)
+
 ## [2.1.7] - 2026-05-22
 
 ### Changes
