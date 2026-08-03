@@ -219,6 +219,6 @@ class ExcelTranslatorCLI {
     } catch (e) {
       // Fall back to hardcoded version if reading fails
     }
-    print('Excel Translator v2.1.9');
+    print('Excel Translator v2.2.0');
   }
 }

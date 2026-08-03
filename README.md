@@ -33,7 +33,7 @@ loc.buttons.submit                       // "Submit"
 
 ```yaml
 dependencies:
-  excel_translator: ^2.1.9
+  excel_translator: ^2.2.0
 
 dev_dependencies:
   build_runner: ^2.4.0   # only for watch mode
