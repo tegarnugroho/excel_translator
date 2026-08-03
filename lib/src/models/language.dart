@@ -13,6 +13,23 @@ class Language {
     required this.region,
   });
 
+  /// Canonical form of a raw header code: 'en-US', ' EN_us ' -> 'en_us'.
+  ///
+  /// Translation values must be keyed by this form, otherwise they no longer
+  /// match [fullCode] and the whole column reads as empty.
+  static String normalizeCode(String raw) =>
+      raw.toLowerCase().trim().replaceAll('-', '_');
+
+  /// Build a language from a raw header code ('en', 'en_US', 'pt-BR').
+  factory Language.fromCode(String raw) {
+    final parts = normalizeCode(raw).split('_');
+    return Language(
+      code: parts.first,
+      name: parts.first, // Will be resolved by validation repository
+      region: parts.length > 1 && parts[1].isNotEmpty ? parts[1] : null,
+    );
+  }
+
   /// Get the full language code including region if present
   String get fullCode {
     if (region != null && region!.isNotEmpty) {

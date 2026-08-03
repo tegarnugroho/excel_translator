@@ -1,5 +1,43 @@
 # Changelog
 
+## [2.2.0] - 2026-08-03
+
+### Fixes
+
+- Escape translation values before writing them into generated code. Values were
+  interpolated raw into `'''...'''` literals, so a `$`, `'''`, `\` or `${...}`
+  produced code that did not compile — and `${...}` was executed as Dart in the
+  consuming app. Values are now emitted as fully escaped single-quoted literals.
+  (Modified: lib/src/generators/sheet_class_generator.dart, lib/src/utils/string_utils.dart)
+- Collect interpolation parameters from every language instead of only the first
+  one. A placeholder that existed in one translation but not another
+  (`en: "Hello"`, `id: "Halo {name}"`) leaked into the UI as literal text.
+  (Modified: lib/src/generators/sheet_class_generator.dart)
+- Validate placeholder names. `{1+1}` used to be emitted as the parameter
+  `dynamic 1+1`; unusable names now stay literal text, and positional printf
+  params (`%1$s`) become `arg1`.
+  (Modified: lib/src/utils/string_utils.dart)
+- Resolve locales through the new generated `resolveLanguage()` helper.
+  `of(context)`, `getSystemLanguage()` and the delegate matched only
+  `locale.languageCode`, so a sheet using country variants (`en_US`) never
+  matched and always fell back to the default value.
+  (Modified: lib/src/generators/main_class_generator.dart)
+- Key translation values by the normalized language code. A header written as
+  `en_US` was stored as `en_US` but looked up as `en_us`, which emptied the
+  entire column in the generated code.
+  (Modified: lib/src/models/language.dart, lib/src/parsers/csv_parser.dart,
+  lib/src/parsers/excel_parser.dart, lib/src/parsers/ods_parser.dart)
+
+### Changes
+
+- Generated files carry `// ignore_for_file: type=lint`, and interpolations omit
+  unnecessary braces, so generated code no longer trips consumer lint rules.
+- Interpolation happens through real Dart string interpolation instead of a
+  chain of `replaceAll` calls at runtime.
+- New generator tests: escaping, interpolation and locale resolution, plus a
+  test that runs `dart analyze` and executes the generated code.
+  (Added: test/src/generators/)
+
 ## [2.1.9] - 2026-07-31
 
 ### Changes

@@ -257,6 +257,39 @@ class StringUtils {
     return param;
   }
 
+  /// Escape a translation value so it can be embedded in a single-quoted Dart
+  /// string literal without breaking the generated code.
+  ///
+  /// Backslashes and `$` must be escaped first: an unescaped `$` turns the rest
+  /// of the value into a Dart interpolation expression, which is both a compile
+  /// error (`Total: $100`) and an injection vector (`${deleteEverything()}`).
+  static String escapeDartString(String value) {
+    return value
+        .replaceAll('\\', r'\\')
+        .replaceAll(r'$', r'\$')
+        .replaceAll("'", r"\'")
+        .replaceAll('\r', r'\r')
+        .replaceAll('\n', r'\n');
+  }
+
+  /// Convert a raw interpolation placeholder name to a valid Dart identifier.
+  ///
+  /// Returns null when the placeholder cannot be represented as an identifier
+  /// (`{1+1}`, `{}`, `{a b}`); callers should then emit the placeholder as
+  /// literal text instead of a parameter.
+  static String? toDartParamName(String raw) {
+    final trimmed = raw.trim();
+    if (trimmed.isEmpty) return null;
+
+    // Positional printf params (%1$s) have no name of their own.
+    if (RegExp(r'^\d+$').hasMatch(trimmed)) return 'arg$trimmed';
+
+    final camelCase = sanitizeInterpolationParam(trimmed);
+    if (!RegExp(r'^[a-zA-Z_][a-zA-Z0-9_]*$').hasMatch(camelCase)) return null;
+
+    return isDartKeyword(camelCase) ? '${camelCase}Value' : camelCase;
+  }
+
   /// Extract interpolation parameters from text
   /// Supports three formats:
   /// - Curly brace style: `{param}` or `{user_name}` → ["param", "userName"]

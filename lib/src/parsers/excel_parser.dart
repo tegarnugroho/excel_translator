@@ -86,30 +86,7 @@ class ExcelParser implements IFileParser {
       }
 
       // Create Language entities only for valid codes
-      final languages = validLanguageCodes.map((code) {
-        final normalizedCode = code.toLowerCase().trim();
-        String languageCode;
-        String? region;
-
-        if (normalizedCode.contains('_')) {
-          final parts = normalizedCode.split('_');
-          languageCode = parts[0];
-          region = parts.length > 1 ? parts[1] : null;
-        } else if (normalizedCode.contains('-')) {
-          final parts = normalizedCode.split('-');
-          languageCode = parts[0];
-          region = parts.length > 1 ? parts[1] : null;
-        } else {
-          languageCode = normalizedCode;
-          region = null;
-        }
-
-        return Language(
-          code: languageCode,
-          name: languageCode, // Will be resolved by validation repository
-          region: region,
-        );
-      }).toList();
+      final languages = validLanguageCodes.map(Language.fromCode).toList();
 
       // Parse data rows
       final translations = <Translation>[];
@@ -133,7 +110,7 @@ class ExcelParser implements IFileParser {
           if (columnIndex < row.length) {
             final cell = row[columnIndex];
             if (cell != null) {
-              values[validCode] = cell.toString();
+              values[Language.normalizeCode(validCode)] = cell.toString();
             }
           }
         }

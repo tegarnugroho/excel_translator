@@ -5,6 +5,62 @@ import '../utils/string_utils.dart';
 
 /// Generator for individual sheet localization classes
 class SheetClassGenerator {
+  static final _placeholderPattern = RegExp(r'\{([^{}]*)\}');
+
+  /// Dart parameter names for a translation, unioned across every language.
+  ///
+  /// A placeholder present in only one language (`en: "Hello"`,
+  /// `id: "Halo {name}"`) still has to become a parameter, otherwise it leaks
+  /// into the UI as literal text.
+  List<String> _paramsFor(Translation translation) {
+    final params = <String>{};
+    for (final value in translation.values.values) {
+      final normalized = StringUtils.normalizeInterpolation(value);
+      for (final match in _placeholderPattern.allMatches(normalized)) {
+        final name = StringUtils.toDartParamName(match.group(1)!);
+        if (name != null) params.add(name);
+      }
+    }
+    return params.toList();
+  }
+
+  /// Build a Dart string literal for [value].
+  ///
+  /// Every character is escaped; known placeholders are re-emitted as real Dart
+  /// interpolations, unknown ones stay literal text.
+  String _literal(String value, Set<String> params) {
+    if (params.isEmpty) {
+      return "'${StringUtils.escapeDartString(value)}'";
+    }
+
+    final normalized = StringUtils.normalizeInterpolation(value);
+    final buffer = StringBuffer("'");
+    var index = 0;
+
+    for (final match in _placeholderPattern.allMatches(normalized)) {
+      buffer.write(
+        StringUtils.escapeDartString(normalized.substring(index, match.start)),
+      );
+      final name = StringUtils.toDartParamName(match.group(1)!);
+      if (name != null && params.contains(name)) {
+        // Braces only where the following character would extend the
+        // identifier, so the output stays lint-clean in consumer projects.
+        final nextChar = match.end < normalized.length
+            ? normalized[match.end]
+            : '';
+        final needsBraces = RegExp(r'[a-zA-Z0-9_$]').hasMatch(nextChar);
+        buffer.write(needsBraces ? '\${$name}' : '\$$name');
+      } else {
+        buffer.write(StringUtils.escapeDartString(match.group(0)!));
+      }
+      index = match.end;
+    }
+
+    buffer.write(StringUtils.escapeDartString(normalized.substring(index)));
+    buffer.write("'");
+    return buffer.toString();
+  }
+
   /// Generate class body only (no file header). Used by builder for inline mode.
   String generateClassBody(LocalizationSheet sheet) {
     final buffer = StringBuffer();
@@ -21,56 +77,29 @@ class SheetClassGenerator {
       final methodName = StringUtils.sanitizeMethodName(translation.key);
       buffer.writeln('  /// Translation for key: ${translation.key}');
 
-      final hasInterpolation = translation.values.values.any(
-        (value) => StringUtils.hasInterpolation(value),
-      );
+      final params = _paramsFor(translation);
+      final paramSet = params.toSet();
+      final defaultTranslation = translation.values.values.first;
 
-      if (hasInterpolation) {
-        final params = StringUtils.extractInterpolationParams(
-          translation.values.values.first,
-        );
+      if (params.isNotEmpty) {
         final paramList = params.map((p) => 'dynamic $p').join(', ');
-
         buffer.writeln('  String $methodName({$paramList}) {');
-        buffer.writeln('    switch (_languageCode) {');
-
-        for (final languageCode in sheet.languageCodes) {
-          final translatedValue = translation.values[languageCode] ?? '';
-          final normalizedValue = StringUtils.normalizeInterpolation(translatedValue);
-          buffer.writeln("      case '$languageCode':");
-          buffer.writeln("        return '''$normalizedValue'''");
-          for (final param in params) {
-            buffer.writeln("            .replaceAll('{$param}', $param.toString())");
-          }
-          buffer.writeln("            ;");
-        }
-
-        buffer.writeln("      default:");
-        final defaultTranslation = translation.values.values.first;
-        final normalizedDefault = StringUtils.normalizeInterpolation(defaultTranslation);
-        buffer.writeln("        return '''$normalizedDefault'''");
-        for (final param in params) {
-          buffer.writeln("            .replaceAll('{$param}', $param.toString())");
-        }
-        buffer.writeln("            ;");
-        buffer.writeln('    }');
-        buffer.writeln('  }');
       } else {
         buffer.writeln('  String get $methodName {');
-        buffer.writeln('    switch (_languageCode) {');
-
-        for (final languageCode in sheet.languageCodes) {
-          final translatedValue = translation.values[languageCode] ?? '';
-          buffer.writeln("      case '$languageCode':");
-          buffer.writeln("        return '''$translatedValue''';");
-        }
-
-        buffer.writeln("      default:");
-        final defaultTranslation = translation.values.values.first;
-        buffer.writeln("        return '''$defaultTranslation''';");
-        buffer.writeln('    }');
-        buffer.writeln('  }');
       }
+
+      buffer.writeln('    switch (_languageCode) {');
+
+      for (final languageCode in sheet.languageCodes) {
+        final translatedValue = translation.values[languageCode] ?? '';
+        buffer.writeln("      case '$languageCode':");
+        buffer.writeln('        return ${_literal(translatedValue, paramSet)};');
+      }
+
+      buffer.writeln('      default:');
+      buffer.writeln('        return ${_literal(defaultTranslation, paramSet)};');
+      buffer.writeln('    }');
+      buffer.writeln('  }');
       buffer.writeln();
     }
 
@@ -86,6 +115,7 @@ class SheetClassGenerator {
     final buffer = StringBuffer();
     buffer.writeln('// GENERATED CODE - DO NOT MODIFY BY HAND');
     buffer.writeln('// Generated by Excel Translator');
+    buffer.writeln('// ignore_for_file: type=lint');
     buffer.writeln();
     buffer.write(generateClassBody(sheet));
 
