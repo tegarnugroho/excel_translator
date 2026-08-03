@@ -27,6 +27,6 @@ flutter:
 
 # Excel Translator Configuration
 excel_translator:
-  excel_file: assets/example_localizations.csv
+  excel_file: assets/example_localizations.xlsx
   output_dir: lib/generated
   class_name: AppLocalizations
