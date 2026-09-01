@@ -1,5 +1,29 @@
 # Changelog
 
+## [2.3.0] - 2026-09-01
+
+### Features
+
+- Add `files` configuration for combining multiple translation inputs into one
+  generated localization API. CSV filenames become module names, while XLSX
+  and ODS sources preserve their existing sheet names.
+- Support mixed `.csv`, `.xlsx`, and `.ods` sources through one shared parsing
+  pipeline used by both the CLI and build runner.
+- Register every configured input as a build runner dependency, so changing any
+  source triggers localization regeneration.
+
+### Validation
+
+- Reject configurations containing both `excel_file` and `files`.
+- Report duplicate paths, missing files, unsupported extensions, empty paths,
+  invalid module names, and module collisions instead of silently overwriting.
+
+### Compatibility
+
+- Keep existing `excel_file` configuration and `multi_file` output behavior.
+- Preserve the legacy `default` module for CSV files configured through
+  `excel_file`; filename-derived module names apply to the new `files` mode.
+
 ## [2.2.0] - 2026-08-03
 
 ### Fixes
