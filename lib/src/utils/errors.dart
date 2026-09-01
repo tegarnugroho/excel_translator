@@ -16,6 +16,12 @@ abstract class ExcelTranslatorException implements Exception {
   }
 }
 
+/// Exception thrown when excel_translator configuration is invalid.
+class ConfigurationException extends ExcelTranslatorException {
+  const ConfigurationException(String message, [dynamic cause])
+    : super(message, cause);
+}
+
 /// Exception thrown when file parsing fails
 class FileParsingException extends ExcelTranslatorException {
   const FileParsingException(String message, [dynamic cause])

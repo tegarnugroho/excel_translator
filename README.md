@@ -8,7 +8,7 @@
 
 ---
 
-Keep one Excel workbook. Each sheet is a module (`login`, `home`, `buttons`). Get compile-time safe Dart classes with IDE auto-completion. No `.arb` files, no boilerplate.
+Use one workbook or separate translation files per feature. Each sheet or CSV filename becomes a module (`login`, `home`, `buttons`). Get compile-time safe Dart classes with IDE auto-completion. No `.arb` files, no boilerplate.
 
 ```dart
 loc.login.title                          // "Login"
@@ -62,7 +62,7 @@ Sheet `buttons`:
 | `submit` | Submit | Kirim | Enviar |
 | `cancel` | Cancel | Batal | Cancelar |
 
-CSV works the same, but is single-sheet only:
+Each CSV contains one module:
 
 ```csv
 key,en,id,es
@@ -71,6 +71,8 @@ title,Login,Masuk,"Iniciar sesion"
 
 **2. Configure `pubspec.yaml`.**
 
+Single workbook (its XLSX/ODS sheets become modules):
+
 ```yaml
 excel_translator:
   excel_file: assets/localizations.xlsx   # .xlsx, .csv, or .ods
@@ -78,6 +80,26 @@ excel_translator:
   class_name: AppLocalizations            # optional
   include_flutter_delegates: true         # optional
 ```
+
+Or multiple feature files. CSV module names come from filenames:
+
+```yaml
+excel_translator:
+  files:
+    - assets/translations/common.csv
+    - assets/translations/auth.csv
+    - assets/translations/home_explore.csv
+    - assets/translations/events.csv
+  output_dir: lib/generated
+  class_name: AppLocalizations
+  multi_file: true
+```
+
+`common.csv` becomes `loc.common`, `auth.csv` becomes `loc.auth`, and
+`home_explore.csv` becomes `loc.homeExplore`. Mixed formats are supported:
+CSV filenames supply module names, while XLSX and ODS retain their sheet names.
+Configure either `excel_file` or `files`, never both. `files` controls inputs;
+`multi_file` independently controls generated Dart output organization.
 
 **3. Generate.**
 
@@ -203,10 +225,10 @@ The CLI is a plain Dart script with full filesystem access, so it parses first a
 
 - **build_runner cannot produce per-sheet files**, and its `output_dir` is fixed at `lib/generated`. See the section above.
 - **Prefer the CLI in CI.** `build_runner` is a development tool: extra dev dependency, cache-invalidation overhead on cold builds, and merged output that makes translation diffs harder to review.
-- **One source file.** Neither mode merges multiple workbooks. Merge at the spreadsheet level first.
+- **Input module names must be unique.** CSV filenames and XLSX/ODS sheet names cannot normalize to the same Dart accessor.
 - **Sheet names are public API.** Renaming a sheet is a breaking change for every call site (`loc.login.title`). Settle your naming convention early.
 - **Named language getters cap at 5.** `AppLocalizations.english` / `.en` are generated for the first 5 languages only, to bound code growth. Everything else stays reachable via `AppLocalizations('fr')` or `.current`.
-- **CSV is single-sheet.** Use Excel or ODS for per-module organization.
+- **Each CSV is one module.** Use `files` to organize localization per feature.
 
 ## FAQ
 
@@ -246,11 +268,11 @@ Parse time scales with total key count, not sheet count: a 50-sheet workbook wit
 ## Architecture
 
 ```text
-Excel / CSV / ODS
+excel_file or files[]
        |
-       v  FileParserFactory.createParser()      selects by extension
-  FileParser.parseFile()
-       |                                        -> List<LocalizationSheet>
+       v  TranslationInputService               parses and merges sources
+  FileParserFactory / FileParser                 -> List<LocalizationSheet>
+       |
        v  SheetClassGenerator, MainClassGenerator, ExtensionGenerator
        |
        +-- CLI     -> N + 2 files (one per sheet, main, extension)

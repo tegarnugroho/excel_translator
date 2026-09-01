@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'models/models.dart';
 import 'services/services.dart';
-import 'parsers/parsers.dart';
 import 'generators/generators.dart';
 import 'utils/utils.dart';
 
@@ -9,6 +8,7 @@ import 'utils/utils.dart';
 class TranslatorService {
   final ConfigService _configService;
   final LanguageService _languageService;
+  final TranslationInputService _inputService;
   final MainClassGenerator _mainGenerator;
   final SheetClassGenerator _sheetGenerator;
   final ExtensionGenerator _extensionGenerator;
@@ -16,11 +16,13 @@ class TranslatorService {
   TranslatorService({
     ConfigService? configService,
     LanguageService? languageService,
+    TranslationInputService? inputService,
     MainClassGenerator? mainGenerator,
     SheetClassGenerator? sheetGenerator,
     ExtensionGenerator? extensionGenerator,
   }) : _configService = configService ?? ConfigService(),
        _languageService = languageService ?? LanguageService(),
+       _inputService = inputService ?? TranslationInputService(),
        _mainGenerator = mainGenerator ?? MainClassGenerator(),
        _sheetGenerator = sheetGenerator ?? SheetClassGenerator(),
        _extensionGenerator = extensionGenerator ?? ExtensionGenerator();
@@ -40,7 +42,6 @@ class TranslatorService {
     String? pubspecPath,
   }) async {
     try {
-      // Load configuration with proper merging
       final config = _configService.loadConfiguration(
         excelFilePath: filePath,
         outputDir: outputDir,
@@ -50,65 +51,18 @@ class TranslatorService {
         pubspecPath: pubspecPath,
       );
 
-      // Validate required parameters
       final finalFilePath = config.excelFilePath ?? filePath;
-      final finalOutputDir = config.outputDir ?? outputDir;
-      final finalClassName = config.className ?? 'AppLocalizations';
-      final finalIncludeDelegates = config.includeFlutterDelegates ?? true;
-      final finalMultiFile = config.multiFile ?? true;
-
       if (finalFilePath.isEmpty) {
-        throw Exception('Excel file path is required');
+        throw const ConfigurationException('Translation file path is required');
       }
 
-      if (finalOutputDir.isEmpty) {
-        throw Exception('Output directory is required');
-      }
-
-      Logger.info('Starting localization generation...');
-      Logger.info('File: $finalFilePath');
-      Logger.info('Output: $finalOutputDir');
-      Logger.info('Class: $finalClassName');
-
-      // Check if file exists
-      if (!File(finalFilePath).existsSync()) {
-        throw Exception('File not found: $finalFilePath');
-      }
-
-      // Check if file format is supported
-      if (!FileParserFactory.isSupportedFormat(finalFilePath)) {
-        throw UnsupportedFileFormatException(
-          finalFilePath,
-          FileParserFactory.supportedExtensions,
-        );
-      }
-
-      // Parse file
-      Logger.progress('Parsing file...');
-      final parser = FileParserFactory.createParser(finalFilePath);
-      final sheets = await parser.parseFile(
-        finalFilePath,
-        languageService: _languageService,
-      );
-
-      if (sheets.isEmpty) {
-        throw Exception('No sheets found in file or all sheets are empty');
-      }
-
-      Logger.success('Parsed ${sheets.length} sheet(s)');
-
-      // Generate code
-      Logger.progress('Generating localization classes...');
-      await _generateClasses(
-        sheets: sheets,
-        outputDir: finalOutputDir,
-        className: finalClassName,
-        includeFlutterDelegates: finalIncludeDelegates,
-        multiFile: finalMultiFile,
-      );
-
-      Logger.success(
-        'Generated localization classes in $finalOutputDir successfully!',
+      await _generateFromInputPaths(
+        filePaths: [finalFilePath],
+        outputDir: config.outputDir ?? outputDir,
+        className: config.className ?? 'AppLocalizations',
+        includeFlutterDelegates: config.includeFlutterDelegates ?? true,
+        multiFile: config.multiFile ?? true,
+        deriveCsvModuleNames: false,
       );
     } catch (e, stackTrace) {
       Logger.error('Generation failed', e, stackTrace);
@@ -120,24 +74,75 @@ class TranslatorService {
   Future<void> generateFromPubspec([String? pubspecPath]) async {
     final config = _configService.loadFromPubspec(pubspecPath);
 
-    if (config == null ||
-        config.excelFilePath == null ||
-        config.outputDir == null) {
-      throw Exception(
-        'Configuration not found in pubspec.yaml. Please add excel_translator section with excel_file and output_dir',
+    if (config == null || config.outputDir == null) {
+      throw const ConfigurationException(
+        'Configuration not found in pubspec.yaml. Add excel_translator with excel_file or files and output_dir',
       );
     }
 
-    await generateFromFile(
-      filePath: config.excelFilePath!,
+    final filePaths =
+        config.files ??
+        (config.excelFilePath == null ? null : [config.excelFilePath!]);
+    if (filePaths == null) {
+      throw const ConfigurationException(
+        'Configure either excel_translator.excel_file or excel_translator.files',
+      );
+    }
+
+    await _generateFromInputPaths(
+      filePaths: filePaths,
       outputDir: config.outputDir!,
-      className: config.className,
+      className: config.className ?? 'AppLocalizations',
       includeFlutterDelegates: config.includeFlutterDelegates ?? true,
-      pubspecPath: pubspecPath,
+      multiFile: config.multiFile ?? true,
+      deriveCsvModuleNames: config.files != null,
     );
   }
 
   // Private helper methods
+
+  Future<void> _generateFromInputPaths({
+    required List<String> filePaths,
+    required String outputDir,
+    required String className,
+    required bool includeFlutterDelegates,
+    required bool multiFile,
+    required bool deriveCsvModuleNames,
+  }) async {
+    if (outputDir.isEmpty) {
+      throw const ConfigurationException('Output directory is required');
+    }
+
+    Logger.info('Starting localization generation...');
+    Logger.info('Files: ${filePaths.join(', ')}');
+    Logger.info('Output: $outputDir');
+    Logger.info('Class: $className');
+    Logger.progress('Parsing files...');
+
+    final sheets = await _inputService.parseFileSystemFiles(
+      filePaths,
+      languageService: _languageService,
+      deriveCsvModuleNames: deriveCsvModuleNames,
+    );
+    if (sheets.isEmpty) {
+      throw const FileParsingException(
+        'No sheets found in files or all sheets are empty',
+      );
+    }
+
+    Logger.success('Parsed ${sheets.length} sheet(s)');
+    Logger.progress('Generating localization classes...');
+    await _generateClasses(
+      sheets: sheets,
+      outputDir: outputDir,
+      className: className,
+      includeFlutterDelegates: includeFlutterDelegates,
+      multiFile: multiFile,
+    );
+    Logger.success(
+      'Generated localization classes in $outputDir successfully!',
+    );
+  }
 
   Future<void> _generateClasses({
     required List<LocalizationSheet> sheets,

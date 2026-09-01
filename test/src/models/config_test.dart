@@ -6,12 +6,14 @@ void main() {
     test('should create config with all parameters', () {
       const config = ExcelTranslatorConfig(
         excelFilePath: 'test.xlsx',
+        files: ['common.csv', 'auth.csv'],
         outputDir: 'lib/generated',
         className: 'TestLocalizations',
         includeFlutterDelegates: false,
       );
 
       expect(config.excelFilePath, equals('test.xlsx'));
+      expect(config.files, equals(['common.csv', 'auth.csv']));
       expect(config.outputDir, equals('lib/generated'));
       expect(config.className, equals('TestLocalizations'));
       expect(config.includeFlutterDelegates, isFalse);
@@ -21,6 +23,7 @@ void main() {
       const config = ExcelTranslatorConfig();
 
       expect(config.excelFilePath, isNull);
+      expect(config.files, isNull);
       expect(config.outputDir, isNull);
       expect(config.className, isNull);
       expect(
@@ -39,10 +42,12 @@ void main() {
 
       final modified = original.copyWith(
         excelFilePath: 'modified.xlsx',
+        files: const ['auth.csv'],
         className: 'ModifiedLocalizations',
       );
 
       expect(modified.excelFilePath, equals('modified.xlsx'));
+      expect(modified.files, equals(['auth.csv']));
       expect(modified.outputDir, equals('lib/original')); // unchanged
       expect(modified.className, equals('ModifiedLocalizations'));
       expect(modified.includeFlutterDelegates, isTrue); // unchanged
@@ -83,21 +88,21 @@ void main() {
 
     test('should implement equality correctly', () {
       const config1 = ExcelTranslatorConfig(
-        excelFilePath: 'test.xlsx',
+        files: ['common.csv', 'auth.csv'],
         outputDir: 'lib/generated',
         className: 'TestLocalizations',
         includeFlutterDelegates: true,
       );
 
       const config2 = ExcelTranslatorConfig(
-        excelFilePath: 'test.xlsx',
+        files: ['common.csv', 'auth.csv'],
         outputDir: 'lib/generated',
         className: 'TestLocalizations',
         includeFlutterDelegates: true,
       );
 
       const config3 = ExcelTranslatorConfig(
-        excelFilePath: 'different.xlsx',
+        files: ['common.csv', 'events.csv'],
         outputDir: 'lib/generated',
         className: 'TestLocalizations',
         includeFlutterDelegates: true,
@@ -110,6 +115,7 @@ void main() {
     test('should implement hashCode correctly', () {
       const config1 = ExcelTranslatorConfig(
         excelFilePath: 'test.xlsx',
+        files: ['common.csv'],
         outputDir: 'lib/generated',
         className: 'TestLocalizations',
         includeFlutterDelegates: true,
@@ -117,6 +123,7 @@ void main() {
 
       const config2 = ExcelTranslatorConfig(
         excelFilePath: 'test.xlsx',
+        files: ['common.csv'],
         outputDir: 'lib/generated',
         className: 'TestLocalizations',
         includeFlutterDelegates: true,

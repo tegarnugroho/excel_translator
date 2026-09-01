@@ -1,6 +1,7 @@
 /// Configuration for Excel Translator
 class ExcelTranslatorConfig {
   final String? excelFilePath;
+  final List<String>? files;
   final String? outputDir;
   final String? className;
   final bool? includeFlutterDelegates;
@@ -11,6 +12,7 @@ class ExcelTranslatorConfig {
 
   const ExcelTranslatorConfig({
     this.excelFilePath,
+    this.files,
     this.outputDir,
     this.className,
     this.includeFlutterDelegates,
@@ -20,6 +22,7 @@ class ExcelTranslatorConfig {
   /// Create a copy with modified fields
   ExcelTranslatorConfig copyWith({
     String? excelFilePath,
+    List<String>? files,
     String? outputDir,
     String? className,
     bool? includeFlutterDelegates,
@@ -27,6 +30,7 @@ class ExcelTranslatorConfig {
   }) {
     return ExcelTranslatorConfig(
       excelFilePath: excelFilePath ?? this.excelFilePath,
+      files: files ?? this.files,
       outputDir: outputDir ?? this.outputDir,
       className: className ?? this.className,
       includeFlutterDelegates:
@@ -41,6 +45,7 @@ class ExcelTranslatorConfig {
 
     return ExcelTranslatorConfig(
       excelFilePath: other.excelFilePath ?? excelFilePath,
+      files: other.files ?? files,
       outputDir: other.outputDir ?? outputDir,
       className: other.className ?? className,
       includeFlutterDelegates:
@@ -51,7 +56,7 @@ class ExcelTranslatorConfig {
 
   @override
   String toString() {
-    return 'ExcelTranslatorConfig(excelFilePath: $excelFilePath, outputDir: $outputDir, className: $className, includeFlutterDelegates: $includeFlutterDelegates, multiFile: $multiFile)';
+    return 'ExcelTranslatorConfig(excelFilePath: $excelFilePath, files: $files, outputDir: $outputDir, className: $className, includeFlutterDelegates: $includeFlutterDelegates, multiFile: $multiFile)';
   }
 
   @override
@@ -59,6 +64,7 @@ class ExcelTranslatorConfig {
     if (identical(this, other)) return true;
     return other is ExcelTranslatorConfig &&
         other.excelFilePath == excelFilePath &&
+        _listEquals(other.files, files) &&
         other.outputDir == outputDir &&
         other.className == className &&
         other.includeFlutterDelegates == includeFlutterDelegates &&
@@ -67,10 +73,24 @@ class ExcelTranslatorConfig {
 
   @override
   int get hashCode {
-    return excelFilePath.hashCode ^
-        outputDir.hashCode ^
-        className.hashCode ^
-        includeFlutterDelegates.hashCode ^
-        multiFile.hashCode;
+    return Object.hash(
+      excelFilePath,
+      files == null ? null : Object.hashAll(files!),
+      outputDir,
+      className,
+      includeFlutterDelegates,
+      multiFile,
+    );
+  }
+
+  static bool _listEquals(List<String>? first, List<String>? second) {
+    if (identical(first, second)) return true;
+    if (first == null || second == null || first.length != second.length) {
+      return false;
+    }
+    for (var index = 0; index < first.length; index++) {
+      if (first[index] != second[index]) return false;
+    }
+    return true;
   }
 }

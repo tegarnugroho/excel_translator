@@ -81,6 +81,7 @@ dependencies:
         isNull,
       ); // null means use default true
       expect(config.excelFilePath, isNull);
+      expect(config.files, isNull);
       expect(config.outputDir, isNull);
     });
 
@@ -122,6 +123,54 @@ dependencies:
       expect(config.outputDir, equals('lib/generated'));
       expect(config.className, equals('TestLocalizations'));
       expect(config.includeFlutterDelegates, isTrue);
+    });
+
+    test('should load multiple translation files', () async {
+      final pubspecFile = File(path.join(tempDir.path, 'pubspec.yaml'));
+      await pubspecFile.writeAsString('''
+name: test_package
+excel_translator:
+  files:
+    - assets/common.csv
+    - assets/auth.csv
+    - assets/home_explore.csv
+  output_dir: lib/generated
+''');
+
+      final config = configService.loadFromPubspec(tempDir.path);
+
+      expect(
+        config!.files,
+        equals([
+          'assets/common.csv',
+          'assets/auth.csv',
+          'assets/home_explore.csv',
+        ]),
+      );
+      expect(config.excelFilePath, isNull);
+    });
+
+    test('should reject excel_file and files together', () async {
+      final pubspecFile = File(path.join(tempDir.path, 'pubspec.yaml'));
+      await pubspecFile.writeAsString('''
+name: test_package
+excel_translator:
+  excel_file: assets/all.xlsx
+  files:
+    - assets/auth.csv
+  output_dir: lib/generated
+''');
+
+      expect(
+        () => configService.loadFromPubspec(tempDir.path),
+        throwsA(
+          predicate(
+            (error) => error.toString().contains(
+              'Configure either excel_file or files, not both',
+            ),
+          ),
+        ),
+      );
     });
   });
 }

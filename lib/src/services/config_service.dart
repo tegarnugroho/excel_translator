@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:yaml/yaml.dart';
 import 'package:path/path.dart' as path;
 import '../models/models.dart';
+import '../utils/errors.dart';
 
 /// Service for loading and managing Excel Translator configuration
 class ConfigService {
@@ -10,8 +11,41 @@ class ConfigService {
     final configData = _loadConfigDataFromPubspec(pubspecPath);
     if (configData == null) return null;
 
+    return parseConfig(configData);
+  }
+
+  /// Parse and validate an excel_translator configuration map.
+  ExcelTranslatorConfig parseConfig(Map<dynamic, dynamic> configData) {
+    final excelFile = configData['excel_file'];
+    final rawFiles = configData['files'];
+
+    if (excelFile != null && excelFile is! String) {
+      throw const ConfigurationException('excel_file must be a string');
+    }
+    if (rawFiles != null && rawFiles is! List) {
+      throw const ConfigurationException('files must be a list of file paths');
+    }
+    if (excelFile != null && rawFiles != null) {
+      throw const ConfigurationException(
+        'Configure either excel_file or files, not both',
+      );
+    }
+
+    List<String>? files;
+    if (rawFiles case final List<dynamic> values) {
+      files = [];
+      for (var index = 0; index < values.length; index++) {
+        final value = values[index];
+        if (value is! String) {
+          throw ConfigurationException('files[$index] must be a string');
+        }
+        files.add(value);
+      }
+    }
+
     return ExcelTranslatorConfig(
-      excelFilePath: configData['excel_file'] as String?,
+      excelFilePath: excelFile as String?,
+      files: files,
       outputDir: configData['output_dir'] as String?,
       className: configData['class_name'] as String?,
       includeFlutterDelegates:
@@ -49,6 +83,7 @@ class ConfigService {
   /// Load complete configuration with proper priority merging
   ExcelTranslatorConfig loadConfiguration({
     String? excelFilePath,
+    List<String>? files,
     String? outputDir,
     String? className,
     bool? includeFlutterDelegates,
@@ -59,12 +94,14 @@ class ConfigService {
 
     ExcelTranslatorConfig? providedConfig;
     if (excelFilePath != null ||
+        files != null ||
         outputDir != null ||
         className != null ||
         includeFlutterDelegates != null ||
         multiFile != null) {
       providedConfig = ExcelTranslatorConfig(
         excelFilePath: excelFilePath,
+        files: files,
         outputDir: outputDir,
         className: className,
         includeFlutterDelegates: includeFlutterDelegates ?? true,
@@ -107,7 +144,9 @@ class ConfigService {
     Directory current;
     if (startPath != null) {
       if (startPath.endsWith('.yaml') || startPath.endsWith('.yml')) {
-        current = File(startPath).parent.absolute;
+        final explicitFile = File(startPath).absolute;
+        if (explicitFile.existsSync()) return explicitFile;
+        current = explicitFile.parent;
       } else {
         current = Directory(startPath).absolute;
         if (!current.existsSync()) {

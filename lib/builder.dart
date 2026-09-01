@@ -3,9 +3,10 @@ import 'dart:io';
 import 'package:build/build.dart';
 import 'package:yaml/yaml.dart';
 
+import 'src/models/models.dart';
 import 'src/services/services.dart';
-import 'src/parsers/parsers.dart';
 import 'src/generators/generators.dart';
+import 'src/utils/utils.dart';
 
 /// Build runner builder for Excel Translator.
 ///
@@ -20,19 +21,21 @@ class ExcelTranslatorBuilder implements Builder {
   final _sheetGenerator = SheetClassGenerator();
   final _mainGenerator = MainClassGenerator();
   final _extensionGenerator = ExtensionGenerator();
+  final _configService = ConfigService();
+  final _inputService = TranslationInputService();
 
   final String _outputDir;
 
   ExcelTranslatorBuilder({String outputDir = 'lib/generated'})
-      : _outputDir = outputDir;
+    : _outputDir = outputDir;
 
   @override
   Map<String, List<String>> get buildExtensions => {
-        'pubspec.yaml': [
-          '$_outputDir/generated_localizations.dart',
-          '$_outputDir/build_context_extension.dart',
-        ],
-      };
+    'pubspec.yaml': [
+      '$_outputDir/generated_localizations.dart',
+      '$_outputDir/build_context_extension.dart',
+    ],
+  };
 
   @override
   Future<void> build(BuildStep buildStep) async {
@@ -42,41 +45,43 @@ class ExcelTranslatorBuilder implements Builder {
       return;
     }
 
-    final excelFile = config['excel_file'] as String?;
-    if (excelFile == null) {
-      log.warning('excel_translator.excel_file not specified in pubspec.yaml');
+    final sourceFiles =
+        config.files ??
+        (config.excelFilePath == null ? null : [config.excelFilePath!]);
+    if (sourceFiles == null) {
+      log.warning(
+        'excel_translator.excel_file or excel_translator.files not specified in pubspec.yaml',
+      );
       return;
     }
 
-    final excelAsset = AssetId(buildStep.inputId.package, excelFile);
-    if (!await buildStep.canRead(excelAsset)) {
-      log.warning('Excel file not found: $excelFile');
-      return;
-    }
-
-    // Reading registers excelAsset as a dependency → builder reruns on change.
-    final bytes = await buildStep.readAsBytes(excelAsset);
-
-    final parser = FileParserFactory.createParser(excelFile);
-    final sheets = await parser.parseFileFromBytes(
-      bytes,
+    final sheets = await _inputService.parseFiles(
+      sourceFiles,
+      deriveCsvModuleNames: config.files != null,
       languageService: LanguageService(
         logInfo: log.info,
         logWarning: log.warning,
       ),
+      loadBytes: (filePath) async {
+        final asset = AssetId(buildStep.inputId.package, filePath);
+        if (!await buildStep.canRead(asset)) {
+          throw FileNotFoundException(filePath);
+        }
+        // Reading registers every source as an implicit dependency.
+        return buildStep.readAsBytes(asset);
+      },
     );
 
     if (sheets.isEmpty) {
-      log.warning('No sheets found in $excelFile');
+      log.warning('No sheets found in ${sourceFiles.join(', ')}');
       return;
     }
 
     sheets.sort((a, b) => a.name.compareTo(b.name));
 
     final outputDir = _outputDir;
-    final className = config['class_name'] as String? ?? 'AppLocalizations';
-    final includeDelegates =
-        config['include_flutter_delegates'] as bool? ?? true;
+    final className = config.className ?? 'AppLocalizations';
+    final includeDelegates = config.includeFlutterDelegates ?? true;
 
     // ── generated_localizations.dart ─────────────────────────────────────────
     // Inline mode: sheet classes + main class in one file (no per-sheet imports).
@@ -105,26 +110,36 @@ class ExcelTranslatorBuilder implements Builder {
 
     // 3. Main class + delegate (shares logic with CLI, just no imports block)
     mainBuffer.write(
-      _mainGenerator.generateClassAndDelegate(sheets, className, includeDelegates),
+      _mainGenerator.generateClassAndDelegate(
+        sheets,
+        className,
+        includeDelegates,
+      ),
     );
 
     await buildStep.writeAsString(
-      AssetId(buildStep.inputId.package,
-          '$outputDir/generated_localizations.dart'),
+      AssetId(
+        buildStep.inputId.package,
+        '$outputDir/generated_localizations.dart',
+      ),
       mainBuffer.toString(),
     );
 
     // ── build_context_extension.dart ─────────────────────────────────────────
     await buildStep.writeAsString(
-      AssetId(buildStep.inputId.package,
-          '$outputDir/build_context_extension.dart'),
+      AssetId(
+        buildStep.inputId.package,
+        '$outputDir/build_context_extension.dart',
+      ),
       _extensionGenerator.generateContent(className),
     );
 
-    log.info('excel_translator: generated localizations from $excelFile');
+    log.info(
+      'excel_translator: generated localizations from ${sourceFiles.join(', ')}',
+    );
   }
 
-  Future<Map<String, dynamic>?> _loadConfig(BuildStep buildStep) async {
+  Future<ExcelTranslatorConfig?> _loadConfig(BuildStep buildStep) async {
     final pubspecAsset = AssetId(buildStep.inputId.package, 'pubspec.yaml');
     if (!await buildStep.canRead(pubspecAsset)) return null;
 
@@ -133,7 +148,7 @@ class ExcelTranslatorBuilder implements Builder {
     final config = yaml['excel_translator'];
     if (config is! YamlMap) return null;
 
-    return config.cast<String, dynamic>();
+    return _configService.parseConfig(config);
   }
 }
 
